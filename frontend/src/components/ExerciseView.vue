@@ -60,14 +60,14 @@
         </div>
 
         <div v-if="executionResults[exercise.id]" class="mt-4">
-          <div v-if="executionResults[exercise.id].output" class="bg-green-50 border border-green-200 rounded p-3 mb-2">
+          <div v-if="executionResults[exercise.id]?.output" class="bg-green-50 border border-green-200 rounded p-3 mb-2">
             <div class="text-sm font-semibold text-green-800 mb-1">Output:</div>
-            <pre class="text-sm text-green-700 whitespace-pre-wrap">{{ executionResults[exercise.id].output }}</pre>
+            <pre class="text-sm text-green-700 whitespace-pre-wrap">{{ executionResults[exercise.id]?.output }}</pre>
           </div>
           
-          <div v-if="executionResults[exercise.id].error" class="bg-red-50 border border-red-200 rounded p-3">
+          <div v-if="executionResults[exercise.id]?.error" class="bg-red-50 border border-red-200 rounded p-3">
             <div class="text-sm font-semibold text-red-800 mb-1">Error:</div>
-            <pre class="text-sm text-red-700 whitespace-pre-wrap">{{ executionResults[exercise.id].error }}</pre>
+            <pre class="text-sm text-red-700 whitespace-pre-wrap">{{ executionResults[exercise.id]?.error }}</pre>
           </div>
         </div>
 
@@ -88,7 +88,8 @@
 import { ref, onMounted } from 'vue';
 import { useCodeExecution } from '../composables/useCodeExecution';
 import { exerciseApi } from '../services/api';
-import type { Exercise, ExecutionResult } from '../types';
+import type { ExecutionResult } from '../types/progress';
+import type { Exercise } from '../types/tutorial';
 
 const props = defineProps<{
   tutorialId: string;
@@ -99,7 +100,7 @@ const loading = ref(false);
 const error = ref<string | null>(null);
 const solutions = ref<Record<string, string>>({});
 const executionResults = ref<Record<string, ExecutionResult>>({});
-const { executing, executeCode } = useCodeExecution();
+const { executing, result, executeCode } = useCodeExecution();
 
 const loadExercises = async () => {
   loading.value = true;
@@ -107,7 +108,7 @@ const loadExercises = async () => {
   try {
     exercises.value = await exerciseApi.getExercises(props.tutorialId);
     // Initialize solutions with starter code
-    exercises.value.forEach(ex => {
+    exercises.value.forEach((ex: Exercise) => {
       if (ex.starterCode) {
         solutions.value[ex.id] = ex.starterCode;
       }
@@ -127,9 +128,9 @@ const executeSolution = async (exerciseId: string) => {
   }
   
   await executeCode(code);
-  if (executing.value === false) {
-    // Store result for this exercise
-    // Note: This is a simplified version - in a real app, you'd want better state management
+  // Store result for this specific exercise
+  if (result.value) {
+    executionResults.value[exerciseId] = result.value;
   }
 };
 

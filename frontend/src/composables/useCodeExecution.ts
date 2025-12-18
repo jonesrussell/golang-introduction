@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import type { ExecutionResult } from '../types';
+import type { ExecutionResult } from '../types/progress';
 import { executionApi } from '../services/api';
 
 export function useCodeExecution() {

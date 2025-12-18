@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue';
-import type { Tutorial, TutorialMetadata } from '../types';
+import type { Tutorial, TutorialMetadata } from '../types/tutorial';
 import { tutorialApi } from '../services/api';
 
 export function useTutorial() {
@@ -43,7 +43,7 @@ export function useTutorial() {
       Advanced: [],
     };
 
-    tutorials.value.forEach(tutorial => {
+    tutorials.value.forEach((tutorial: TutorialMetadata) => {
       const level = tutorial.level || 'Beginner';
       if (grouped[level]) {
         grouped[level].push(tutorial);

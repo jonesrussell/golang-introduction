@@ -36,7 +36,7 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useTutorial } from '../composables/useTutorial';
 import { useProgressStore } from '../stores/progress';
 import SectionViewer from './SectionViewer.vue';
-import type { Section } from '../types';
+import type { Section } from '../types/tutorial';
 
 const props = defineProps<{
   tutorialId: string;
@@ -83,7 +83,7 @@ watch(() => props.tutorialId, async (newId) => {
     if (tutorial.value && progressStore.progress?.currentTutorial === newId) {
       const lastSectionId = progressStore.progress.currentSection;
       if (lastSectionId) {
-        const sectionIndex = tutorial.value.sections.findIndex(s => s.id === lastSectionId);
+        const sectionIndex = tutorial.value.sections.findIndex((s: Section) => s.id === lastSectionId);
         if (sectionIndex >= 0) {
           currentSectionIndex.value = sectionIndex;
         }

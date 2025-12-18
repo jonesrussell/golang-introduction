@@ -1,5 +1,6 @@
 import axios from 'axios';
-import type { Tutorial, TutorialMetadata, Section, Exercise, Progress, ExecutionResult } from '../types';
+import type { Tutorial, TutorialMetadata, Section, Exercise } from '../types/tutorial';
+import type { Progress, ExecutionResult } from '../types/progress';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 

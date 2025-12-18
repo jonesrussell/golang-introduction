@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import type { Progress, TutorialProgress } from '../types';
+import type { Progress, TutorialProgress } from '../types/progress';
 import { progressApi } from '../services/api';
 
 export const useProgressStore = defineStore('progress', () => {

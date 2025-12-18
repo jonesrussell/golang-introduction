@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { useProgressStore } from '../stores/progress';
 import CodeRunner from './CodeRunner.vue';
-import type { Section } from '../types';
+import type { Section } from '../types/tutorial';
 
 const props = defineProps<{
   section: Section;
