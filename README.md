@@ -3,7 +3,7 @@
 A comprehensive video tutorial series for learning Go (Golang) from basics to advanced concepts.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go)](https://golang.org/)
+[![Go Version](https://img.shields.io/badge/Go-1.25+-00ADD8?logo=go)](https://golang.org/)
 [![YouTube](https://img.shields.io/badge/YouTube-@fullstackdev42-red?logo=youtube)](https://www.youtube.com/@fullstackdev42)
 
 ## About
@@ -52,6 +52,16 @@ This repository contains a complete video tutorial series for [FullStackDev42](h
 golang-introduction/
 ├── README.md
 ├── LICENSE
+├── cmd/
+│   └── server/          # Backend API server
+├── internal/            # Internal packages
+│   ├── api/             # HTTP handlers and routes
+│   ├── parser/           # Markdown tutorial parser
+│   ├── executor/         # Go code execution service
+│   └── storage/          # Progress tracking
+├── pkg/
+│   └── models/          # Data models
+├── frontend/            # Vue.js frontend application
 ├── tutorials/           # Video tutorial plans
 │   ├── Tutorial-1-Go-Basics-for-Beginners.md
 │   ├── Tutorial-2-Go-Structs-Definition-Initialization-and-Methods.md
@@ -74,11 +84,30 @@ golang-introduction/
 
 ### Prerequisites
 
-- [Go 1.21+](https://golang.org/dl/) installed
+- [Go 1.25+](https://golang.org/dl/) installed
+- [Node.js](https://nodejs.org/) and npm (for the interactive tutorial web app)
 - A code editor (VS Code or Cursor recommended)
 - Basic programming knowledge (helpful but not required)
 
 ### Quick Start
+
+#### Interactive Tutorial Web App
+
+The interactive tutorial provides a web-based learning experience with step-by-step guidance, code execution, and progress tracking.
+
+```bash
+# Start the backend server
+go run cmd/server/main.go
+
+# In another terminal, start the frontend
+cd frontend
+npm install
+npm run dev
+```
+
+Then open http://localhost:5173 in your browser.
+
+#### Running Code Examples
 
 ```bash
 # Clone the repository
@@ -108,6 +137,14 @@ Jump to the Advanced section (Tutorials 9-13) for production patterns and best p
 
 ## Resources
 
+### Interactive Tutorial Features
+
+- **Step-by-step walkthrough**: Navigate through tutorial sections sequentially
+- **Code execution**: Run Go code examples directly in the browser
+- **Progress tracking**: Track your progress through each tutorial
+- **Exercise system**: Practice with interactive exercises (coming soon)
+- **Modern UI**: Clean, responsive interface built with Vue 3
+
 ### Official Go Resources
 - [Go Tour](https://tour.golang.org) - Interactive Go tutorial
 - [Go Playground](https://play.golang.org) - Run Go code in browser
@@ -118,6 +155,7 @@ Jump to the Advanced section (Tutorials 9-13) for production patterns and best p
 - [YouTube Channel](https://www.youtube.com/@fullstackdev42)
 - [Cheat Sheets](cheatsheets/)
 - [Code Examples](examples/)
+- [Interactive Tutorial](http://localhost:5173) - Run locally with `npm run dev` in the frontend directory
 
 ## Contributing
 
