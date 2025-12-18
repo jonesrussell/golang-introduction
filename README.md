@@ -80,6 +80,33 @@ golang-introduction/
     └── ...
 ```
 
+## Development Status
+
+All four development phases are complete! See [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) for detailed status of each phase:
+
+- ✅ **Phase 1: Core Backend** - Markdown parser, API endpoints, code execution
+- ✅ **Phase 2: Frontend Foundation** - Vue app, tutorial navigation, syntax highlighting
+- ✅ **Phase 3: Interactive Features** - Code execution, progress tracking, section navigation
+- ✅ **Phase 4: Exercises & Polish** - Exercise system, progress visualization, error handling
+
+## Technical Stack
+
+See [TECHNICAL_STACK.md](TECHNICAL_STACK.md) for complete technical stack documentation:
+
+**Backend:**
+- Go 1.25+ with standard library `net/http`
+- `github.com/yuin/goldmark` for markdown parsing
+- `os/exec` for code execution
+
+**Frontend:**
+- Vue 3 with Composition API + TypeScript
+- Vite for build tooling
+- Pinia for state management
+- Shiki for syntax highlighting
+- Monaco Editor (installed, available for upgrade)
+- Axios for API calls
+- Tailwind CSS for styling
+
 ## Getting Started
 
 ### Prerequisites
