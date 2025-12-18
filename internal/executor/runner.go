@@ -146,14 +146,28 @@ func (e *CodeExecutor) Execute(ctx context.Context, code string) (*ExecutionResu
 	if err != nil {
 		return nil, fmt.Errorf("failed to create exec directory: %w", err)
 	}
-	defer os.RemoveAll(execDir)
+
+	// Ensure cleanup happens even if execution fails
+	defer func() {
+		if cleanupErr := os.RemoveAll(execDir); cleanupErr != nil {
+			// Log cleanup error but don't fail the execution
+			fmt.Fprintf(os.Stderr, "Warning: failed to cleanup exec directory: %v\n", cleanupErr)
+		}
+	}()
 
 	// Create temporary Go file in the isolated directory
 	tmpFile, err := os.CreateTemp(execDir, "code-*.go")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create temp file: %w", err)
 	}
-	defer os.Remove(tmpFile.Name())
+	tmpFileName := tmpFile.Name()
+
+	// Ensure file cleanup
+	defer func() {
+		if cleanupErr := os.Remove(tmpFileName); cleanupErr != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to cleanup temp file: %v\n", cleanupErr)
+		}
+	}()
 
 	// Write code to file
 	if _, err := tmpFile.WriteString(code); err != nil {
@@ -167,8 +181,12 @@ func (e *CodeExecutor) Execute(ctx context.Context, code string) (*ExecutionResu
 
 	// Execute with go run
 	// Set working directory to the isolated exec directory
-	cmd := exec.CommandContext(execCtx, "go", "run", tmpFile.Name())
+	cmd := exec.CommandContext(execCtx, "go", "run", tmpFileName)
 	cmd.Dir = execDir
+
+	// Set resource limits if supported (Linux)
+	// Note: This requires platform-specific code or external tools
+	// For now, we rely on timeout and validation
 
 	// Set environment variables - minimal environment for security
 	cmd.Env = []string{

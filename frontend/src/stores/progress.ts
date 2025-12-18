@@ -21,14 +21,21 @@ export const useProgressStore = defineStore('progress', () => {
   };
 
   const updateProgress = async (newProgress: Progress, userId: string = 'default') => {
+    // Optimistic update
+    const previousProgress = progress.value;
+    progress.value = newProgress;
+    localStorage.setItem('tutorial-progress', JSON.stringify(newProgress));
+    
     loading.value = true;
     error.value = null;
     try {
       await progressApi.updateProgress(newProgress, userId);
-      progress.value = newProgress;
-      // Save to localStorage as backup
-      localStorage.setItem('tutorial-progress', JSON.stringify(newProgress));
     } catch (err) {
+      // Revert on error
+      progress.value = previousProgress;
+      if (previousProgress) {
+        localStorage.setItem('tutorial-progress', JSON.stringify(previousProgress));
+      }
       error.value = err instanceof Error ? err.message : 'Failed to update progress';
     } finally {
       loading.value = false;
@@ -36,21 +43,40 @@ export const useProgressStore = defineStore('progress', () => {
   };
 
   const markSectionComplete = async (tutorialId: string, sectionId: string, userId: string = 'default') => {
+    // Optimistic update - update UI immediately
+    if (!progress.value) {
+      progress.value = {
+        UserID: userId,
+        CompletedSections: {},
+        CompletedExercises: {},
+        LastAccessed: new Date().toISOString(),
+      };
+    }
+    
+    if (!progress.value.completedSections[tutorialId]) {
+      progress.value.completedSections[tutorialId] = [];
+    }
+    
+    // Only add if not already completed (idempotent)
+    if (!progress.value.completedSections[tutorialId].includes(sectionId)) {
+      progress.value.completedSections[tutorialId].push(sectionId);
+    }
+    
+    progress.value.currentTutorial = tutorialId;
+    progress.value.currentSection = sectionId;
+    progress.value.LastAccessed = new Date().toISOString();
+    
+    // Save to localStorage immediately
+    localStorage.setItem('tutorial-progress', JSON.stringify(progress.value));
+    
+    // Then sync with server (non-blocking)
     try {
       await progressApi.markSectionComplete(tutorialId, sectionId, userId);
-      if (progress.value) {
-        if (!progress.value.completedSections[tutorialId]) {
-          progress.value.completedSections[tutorialId] = [];
-        }
-        if (!progress.value.completedSections[tutorialId].includes(sectionId)) {
-          progress.value.completedSections[tutorialId].push(sectionId);
-        }
-        progress.value.currentTutorial = tutorialId;
-        progress.value.currentSection = sectionId;
-        localStorage.setItem('tutorial-progress', JSON.stringify(progress.value));
-      }
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Failed to mark section complete';
+      // Log error but don't revert optimistic update
+      // In production, you might want to queue this for retry
+      console.error('Failed to sync progress to server:', err);
+      error.value = err instanceof Error ? err.message : 'Failed to sync progress';
     }
   };
 
