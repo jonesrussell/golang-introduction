@@ -80,6 +80,13 @@ golang-introduction/
     └── ...
 ```
 
+## Quick Links
+
+- [Development Status](DEVELOPMENT_STATUS.md) - Phase completion status
+- [Technical Stack](TECHNICAL_STACK.md) - Complete technology stack
+- [Files Checklist](FILES_CHECKLIST.md) - All created files
+- [Success Criteria](SUCCESS_CRITERIA.md) - Success criteria verification
+
 ## Development Status
 
 All four development phases are complete! See [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md) for detailed status of each phase:
@@ -133,6 +140,18 @@ npm run dev
 ```
 
 Then open http://localhost:5173 in your browser.
+
+#### Docker Setup (Optional)
+
+For containerized development:
+
+```bash
+# Start both backend and frontend with Docker Compose
+docker compose up
+
+# Backend will be available at http://localhost:8080
+# Frontend will be available at http://localhost:5173
+```
 
 #### Running Code Examples
 

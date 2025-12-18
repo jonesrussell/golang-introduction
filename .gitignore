@@ -40,6 +40,8 @@ frontend/.env.*.local
 # Data
 data/
 *.json
+!package.json
+!package-lock.json
 
 # Logs
 *.log
