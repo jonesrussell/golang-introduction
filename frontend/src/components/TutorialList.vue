@@ -20,21 +20,39 @@
             ]"
           >
             <div class="flex justify-between items-start">
-              <div>
-                <h4 class="font-semibold text-lg">{{ tutorial.title }}</h4>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="font-semibold text-lg">{{ tutorial.title }}</h4>
+                  <span
+                    v-if="getTutorialStatus(tutorial.id) === 'completed'"
+                    class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-semibold"
+                  >
+                    ✓ Completed
+                  </span>
+                  <span
+                    v-else-if="getTutorialStatus(tutorial.id) === 'in-progress'"
+                    class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold"
+                  >
+                    In Progress
+                  </span>
+                </div>
                 <p class="text-sm text-gray-600 mt-1">
                   {{ tutorial.duration }} • {{ tutorial.difficulty }}
                 </p>
                 <p class="text-xs text-gray-500 mt-1">
                   {{ tutorial.sectionCount }} sections
                 </p>
-              </div>
-              <div v-if="progressStore.getTutorialProgress(tutorial.id, tutorial.sectionCount).progressPercent > 0">
-                <div class="w-16 h-16 rounded-full border-4 border-blue-500 flex items-center justify-center"
-                     :style="{ background: `conic-gradient(from 0deg, #3b82f6 0% ${progressStore.getTutorialProgress(tutorial.id, tutorial.sectionCount).progressPercent}%, #e5e7eb ${progressStore.getTutorialProgress(tutorial.id, tutorial.sectionCount).progressPercent}% 100%)` }">
-                  <span class="text-xs font-semibold">
-                    {{ Math.round(progressStore.getTutorialProgress(tutorial.id, tutorial.sectionCount).progressPercent) }}%
-                  </span>
+                <!-- Progress bar -->
+                <div class="mt-2">
+                  <div class="w-full bg-gray-200 rounded-full h-1.5">
+                    <div
+                      class="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                      :style="{ width: `${getTutorialProgress(tutorial.id).progressPercent}%` }"
+                    ></div>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-1">
+                    {{ getTutorialProgress(tutorial.id).completedCount }} / {{ tutorial.sectionCount }} sections completed
+                  </p>
                 </div>
               </div>
             </div>
@@ -63,6 +81,25 @@ const progressStore = useProgressStore();
 
 const selectTutorial = (tutorialId: string) => {
   emit('select', tutorialId);
+};
+
+const getTutorialProgress = (tutorialId: string) => {
+  const tutorial = tutorials.value.find(t => t.id === tutorialId);
+  if (!tutorial) {
+    return { completedCount: 0, progressPercent: 0 };
+  }
+  return progressStore.getTutorialProgress(tutorialId, tutorial.sectionCount);
+};
+
+const getTutorialStatus = (tutorialId: string): 'not-started' | 'in-progress' | 'completed' => {
+  const progress = getTutorialProgress(tutorialId);
+  if (progress.progressPercent === 0) {
+    return 'not-started';
+  } else if (progress.progressPercent === 100) {
+    return 'completed';
+  } else {
+    return 'in-progress';
+  }
 };
 
 onMounted(async () => {

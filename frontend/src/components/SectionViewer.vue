@@ -30,10 +30,14 @@
             v-if="example.runnable"
             :code="example.code"
             :language="example.language"
+            :editable="true"
           />
-          <div v-else>
-            <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto"><code>{{ example.code }}</code></pre>
-          </div>
+          <CodeRunner
+            v-else
+            :code="example.code"
+            :language="example.language"
+            :editable="false"
+          />
         </div>
       </div>
 
@@ -45,44 +49,59 @@
       </div>
     </div>
 
-    <div class="flex justify-between mt-8 pt-6 border-t">
+      <div class="flex justify-between items-center mt-8 pt-6 border-t">
       <button
         @click="$emit('previous')"
         :disabled="sectionIndex === 0"
         :class="[
-          'px-4 py-2 rounded',
+          'px-4 py-2 rounded flex items-center gap-2 transition-all',
           sectionIndex === 0
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-blue-500 text-white hover:bg-blue-600'
         ]"
       >
-        Previous Section
+        <span>←</span>
+        <span>Previous Section</span>
       </button>
       
-      <button
-        @click="handleComplete"
-        class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
-      >
-        Mark Complete
-      </button>
+      <div class="flex items-center gap-4">
+        <button
+          @click="handleComplete"
+          :class="[
+            'px-4 py-2 rounded flex items-center gap-2 transition-all',
+            isComplete
+              ? 'bg-green-600 text-white'
+              : 'bg-green-500 text-white hover:bg-green-600'
+          ]"
+        >
+          <span v-if="isComplete">✓</span>
+          <span>{{ isComplete ? 'Completed' : 'Mark Complete' }}</span>
+        </button>
+        
+        <div class="text-sm text-gray-600">
+          {{ sectionIndex + 1 }} / {{ totalSections }}
+        </div>
+      </div>
       
       <button
         @click="$emit('next')"
         :disabled="sectionIndex >= totalSections - 1"
         :class="[
-          'px-4 py-2 rounded',
+          'px-4 py-2 rounded flex items-center gap-2 transition-all',
           sectionIndex >= totalSections - 1
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
             : 'bg-blue-500 text-white hover:bg-blue-600'
         ]"
       >
-        Next Section
+        <span>Next Section</span>
+        <span>→</span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useProgressStore } from '../stores/progress';
 import CodeRunner from './CodeRunner.vue';
 import type { Section } from '../types/tutorial';
@@ -91,6 +110,7 @@ const props = defineProps<{
   section: Section;
   sectionIndex: number;
   totalSections: number;
+  tutorialId?: string;
 }>();
 
 const emit = defineEmits<{
@@ -100,6 +120,11 @@ const emit = defineEmits<{
 }>();
 
 const progressStore = useProgressStore();
+
+const isComplete = computed(() => {
+  if (!props.tutorialId) return false;
+  return progressStore.isSectionComplete(props.tutorialId, props.section.id);
+});
 
 const handleComplete = () => {
   emit('complete');

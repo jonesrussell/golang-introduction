@@ -18,12 +18,14 @@ export const tutorialApi = {
   },
 
   async getTutorial(id: string): Promise<Tutorial> {
-    const response = await api.get<Tutorial>('/tutorial', { params: { id } });
+    // Use new path-based endpoint
+    const response = await api.get<Tutorial>(`/tutorials/${id}`);
     return response.data;
   },
 
   async getTutorialSections(id: string): Promise<Section[]> {
-    const response = await api.get<Section[]>('/tutorial/sections', { params: { id } });
+    // Use new path-based endpoint
+    const response = await api.get<Section[]>(`/tutorials/${id}/sections`);
     return response.data;
   },
 };
@@ -52,7 +54,8 @@ export const progressApi = {
 
 export const exerciseApi = {
   async getExercises(tutorialId: string): Promise<Exercise[]> {
-    const response = await api.get<Exercise[]>('/exercises', { params: { tutorialId } });
+    // Use new path-based endpoint
+    const response = await api.get<Exercise[]>(`/exercises/${tutorialId}`);
     return response.data;
   },
 };

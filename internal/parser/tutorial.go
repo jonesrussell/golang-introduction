@@ -104,32 +104,42 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 				}
 			}
 			
-			// Parse duration
+			// Parse duration - extract just the time range like "25-35 minutes"
+			// Line format: "- **Duration Target:** 25-35 minutes"
 			if strings.Contains(line, "Duration") {
-				parts := strings.Split(line, "Duration")
-				if len(parts) > 1 {
-					metadata.Duration = strings.TrimSpace(strings.Trim(strings.Split(parts[1], "-")[0], "Target:"))
+				re := regexp.MustCompile(`(\d+-\d+\s*(?:minutes?|min))`)
+				matches := re.FindStringSubmatch(line)
+				if len(matches) > 1 {
+					metadata.Duration = matches[1]
 				}
 			}
 			
-			// Parse difficulty
-			if strings.Contains(line, "Difficulty:") {
-				parts := strings.Split(line, "Difficulty:")
+			// Parse difficulty - extract just the level
+			// Line format: "- **Difficulty:** Beginner (no prior Go experience needed)"
+			if strings.Contains(line, "Difficulty:**") {
+				parts := strings.Split(line, "Difficulty:**")
 				if len(parts) > 1 {
-					metadata.Difficulty = strings.TrimSpace(parts[1])
+					diff := strings.TrimSpace(parts[1])
+					// Extract just the first word before any parenthesis
+					if idx := strings.Index(diff, "("); idx > 0 {
+						diff = strings.TrimSpace(diff[:idx])
+					}
+					// Take first word if multiple words
+					words := strings.Fields(diff)
+					if len(words) > 0 {
+						metadata.Difficulty = words[0]
+					}
 				}
 			}
 			
 			// Parse prerequisites
-			if strings.Contains(line, "Prerequisites:") {
-				parts := strings.Split(line, "Prerequisites:")
+			// Line format: "- **Prerequisites:** Basic programming concepts helpful but not required"
+			if strings.Contains(line, "Prerequisites:**") {
+				parts := strings.Split(line, "Prerequisites:**")
 				if len(parts) > 1 {
 					prereqs := strings.TrimSpace(parts[1])
 					if prereqs != "" {
-						metadata.Prerequisites = strings.Split(prereqs, ",")
-						for i, p := range metadata.Prerequisites {
-							metadata.Prerequisites[i] = strings.TrimSpace(p)
-						}
+						metadata.Prerequisites = []string{prereqs}
 					}
 				}
 			}

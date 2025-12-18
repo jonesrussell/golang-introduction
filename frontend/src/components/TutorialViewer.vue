@@ -3,6 +3,24 @@
     <div v-if="loading" class="text-center py-8">Loading tutorial...</div>
     <div v-else-if="error" class="text-red-500 py-8">{{ error }}</div>
     <div v-else-if="tutorial">
+      <!-- Breadcrumb Navigation -->
+      <nav class="mb-4 text-sm text-gray-600">
+        <div class="flex items-center gap-2">
+          <button
+            @click="emit('home')"
+            class="hover:text-blue-600 transition-colors"
+          >
+            Home
+          </button>
+          <span>/</span>
+          <span class="text-gray-800 font-medium">{{ tutorial.title }}</span>
+          <span v-if="currentSection" class="text-gray-500">/</span>
+          <span v-if="currentSection" class="text-gray-800 font-medium">
+            {{ currentSection.title }}
+          </span>
+        </div>
+      </nav>
+
       <div class="mb-6">
         <h1 class="text-3xl font-bold mb-2">{{ tutorial.title }}</h1>
         <div class="flex gap-4 text-sm text-gray-600">
@@ -40,6 +58,10 @@ import type { Section } from '../types/tutorial';
 
 const props = defineProps<{
   tutorialId: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'home'): void;
 }>();
 
 const { currentTutorial, loading, error, loadTutorial } = useTutorial();
@@ -87,6 +109,25 @@ watch(() => props.tutorialId, async (newId) => {
         if (sectionIndex >= 0) {
           currentSectionIndex.value = sectionIndex;
         }
+      }
+    }
+  }
+}, { immediate: true });
+
+onMounted(async () => {
+  await progressStore.loadFromLocalStorage();
+});
+</script>
+
+<style scoped>
+.tutorial-viewer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+</style>
+
+   }
       }
     }
   }

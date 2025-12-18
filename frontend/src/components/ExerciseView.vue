@@ -30,11 +30,10 @@
 
         <div class="mb-4">
           <h4 class="font-semibold mb-2">Your Solution:</h4>
-          <textarea
+          <CodeEditor
             v-model="solutions[exercise.id]"
-            class="w-full h-48 p-3 border border-gray-300 rounded-lg font-mono text-sm"
             :placeholder="exercise.starterCode || 'Write your solution here...'"
-          ></textarea>
+          />
         </div>
 
         <div class="flex gap-2">
@@ -72,11 +71,25 @@
         </div>
 
         <div v-if="exercise.hints && exercise.hints.length > 0" class="mt-4">
-          <details>
-            <summary class="cursor-pointer text-sm text-blue-600 hover:text-blue-800">Show Hints</summary>
-            <ul class="mt-2 list-disc list-inside space-y-1 text-sm text-gray-700">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h4 class="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <span>💡</span>
+              <span>Hints</span>
+            </h4>
+            <ul class="list-disc list-inside space-y-1 text-sm text-blue-800">
               <li v-for="(hint, index) in exercise.hints" :key="index">{{ hint }}</li>
             </ul>
+          </div>
+        </div>
+        
+        <div v-if="exercise.solution" class="mt-4">
+          <details class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <summary class="cursor-pointer text-sm font-semibold text-gray-700 hover:text-gray-900">
+              Show Solution
+            </summary>
+            <div class="mt-3">
+              <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm"><code>{{ exercise.solution }}</code></pre>
+            </div>
           </details>
         </div>
       </div>
@@ -88,6 +101,7 @@
 import { ref, onMounted } from 'vue';
 import { useCodeExecution } from '../composables/useCodeExecution';
 import { exerciseApi } from '../services/api';
+import CodeEditor from './CodeEditor.vue';
 import type { ExecutionResult } from '../types/progress';
 import type { Exercise } from '../types/tutorial';
 
@@ -134,10 +148,33 @@ const executeSolution = async (exerciseId: string) => {
   }
 };
 
-const checkSolution = (exerciseId: string) => {
-  // In a real implementation, this would validate the solution
-  // For now, just show a message
-  alert('Solution checking will be implemented with validation logic');
+const checkSolution = async (exerciseId: string) => {
+  const exercise = exercises.value.find(ex => ex.id === exerciseId);
+  if (!exercise) return;
+
+  const solution = solutions.value[exerciseId] || '';
+  if (!solution.trim()) {
+    error.value = 'Please write a solution first';
+    return;
+  }
+
+  // Execute the solution
+  await executeSolution(exerciseId);
+
+  // If there's an expected output, compare it
+  if (exercise.expectedOutput && result.value) {
+    const matches = result.value.output?.trim() === exercise.expectedOutput.trim();
+    if (matches) {
+      alert('✓ Solution is correct!');
+    } else {
+      alert('Solution output does not match expected output. Check the hints for guidance.');
+    }
+  } else if (result.value && !result.value.error) {
+    // If no expected output but code runs without errors, consider it valid
+    alert('✓ Solution runs successfully!');
+  } else if (result.value?.error) {
+    alert('Solution has errors. Please fix them and try again.');
+  }
 };
 
 onMounted(() => {
