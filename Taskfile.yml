@@ -4,7 +4,7 @@ vars:
   FRONTEND_DIR: frontend
   BACKEND_PORT: 8080
   FRONTEND_PORT: 5173
-  DOCKER_COMPOSE_FILE: docker-compose.yml
+  DOCKER_COMPOSE_FILE: compose.yaml
 
 tasks:
   default:
