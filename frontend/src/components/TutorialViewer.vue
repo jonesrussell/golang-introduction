@@ -30,7 +30,12 @@
         <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
-        <span class="text-neutral-900 dark:text-neutral-100 font-medium">{{ tutorial.title }}</span>
+        <router-link
+          :to="{ name: 'tutorial', params: { id: tutorial.id } }"
+          class="text-neutral-900 dark:text-neutral-100 font-medium hover:text-[#00ADD8] transition-colors"
+        >
+          {{ tutorial.title }}
+        </router-link>
         <template v-if="currentSection">
           <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -91,6 +96,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useTutorial } from '../composables/useTutorial';
 import { useProgressStore } from '../stores/progress';
 import SectionViewer from './SectionViewer.vue';
@@ -98,8 +104,10 @@ import type { Section } from '../types/tutorial';
 
 const props = defineProps<{
   tutorialId: string;
+  sectionIndex?: number;
 }>();
 
+const router = useRouter();
 const { currentTutorial, loading, error, loadTutorial } = useTutorial();
 const progressStore = useProgressStore();
 
@@ -114,15 +122,37 @@ const currentSection = computed((): Section | null => {
   return tutorial.value.sections[currentSectionIndex.value] || null;
 });
 
+const navigateToSection = (index: number) => {
+  if (!tutorial.value) return;
+  
+  // Clamp index to valid range
+  const clampedIndex = Math.max(0, Math.min(index, tutorial.value.sections.length - 1));
+  
+  // Save progress
+  const section = tutorial.value.sections[clampedIndex];
+  if (section) {
+    progressStore.setCurrentSection(tutorial.value.id, section.id);
+  }
+  
+  // Navigate to the section route (1-based in URL)
+  router.push({
+    name: 'tutorial-section',
+    params: {
+      id: tutorial.value.id,
+      sectionIndex: (clampedIndex + 1).toString()
+    }
+  });
+};
+
 const nextSection = () => {
   if (tutorial.value && currentSectionIndex.value < tutorial.value.sections.length - 1) {
-    currentSectionIndex.value++;
+    navigateToSection(currentSectionIndex.value + 1);
   }
 };
 
 const previousSection = () => {
   if (currentSectionIndex.value > 0) {
-    currentSectionIndex.value--;
+    navigateToSection(currentSectionIndex.value - 1);
   }
 };
 
@@ -132,12 +162,16 @@ const markComplete = () => {
   }
 };
 
+// Watch for tutorial ID changes
 watch(() => props.tutorialId, async (newId) => {
   if (newId) {
-    currentSectionIndex.value = 0;
     await loadTutorial(newId);
     await progressStore.loadProgress();
-    if (tutorial.value && progressStore.progress?.currentTutorial === newId) {
+    
+    // Set section index from prop if provided, otherwise use saved progress or default to 0
+    if (props.sectionIndex !== undefined && props.sectionIndex >= 0) {
+      currentSectionIndex.value = props.sectionIndex;
+    } else if (tutorial.value && progressStore.progress?.currentTutorial === newId) {
       const lastSectionId = progressStore.progress.currentSection;
       if (lastSectionId) {
         const sectionIndex = tutorial.value.sections.findIndex((s: Section) => s.id === lastSectionId);
@@ -145,9 +179,26 @@ watch(() => props.tutorialId, async (newId) => {
           currentSectionIndex.value = sectionIndex;
         }
       }
+    } else {
+      currentSectionIndex.value = 0;
     }
   }
 }, { immediate: true });
+
+// Watch for section index prop changes (when navigating via route)
+watch(() => props.sectionIndex, (newIndex) => {
+  if (newIndex !== undefined && newIndex >= 0 && tutorial.value) {
+    // Clamp to valid range
+    const clampedIndex = Math.max(0, Math.min(newIndex, tutorial.value.sections.length - 1));
+    currentSectionIndex.value = clampedIndex;
+    
+    // Update progress to reflect current section
+    const section = tutorial.value.sections[clampedIndex];
+    if (section) {
+      progressStore.setCurrentSection(tutorial.value.id, section.id);
+    }
+  }
+});
 
 onMounted(async () => {
   await progressStore.loadFromLocalStorage();

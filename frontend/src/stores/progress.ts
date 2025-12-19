@@ -83,6 +83,26 @@ export const useProgressStore = defineStore('progress', () => {
     }
   };
 
+  const setCurrentSection = (tutorialId: string, sectionId: string, userId: string = 'default') => {
+    // Initialize progress if it doesn't exist
+    if (!progress.value) {
+      progress.value = {
+        userId: userId,
+        completedSections: {},
+        completedExercises: {},
+        lastAccessed: new Date().toISOString(),
+      };
+    }
+    
+    // Update current tutorial and section
+    progress.value.currentTutorial = tutorialId;
+    progress.value.currentSection = sectionId;
+    progress.value.lastAccessed = new Date().toISOString();
+    
+    // Save to localStorage immediately
+    localStorage.setItem('tutorial-progress', JSON.stringify(progress.value));
+  };
+
   const isSectionComplete = (tutorialId: string, sectionId: string): boolean => {
     if (!progress.value) return false;
     const sections = progress.value.completedSections[tutorialId] || [];
@@ -131,6 +151,7 @@ export const useProgressStore = defineStore('progress', () => {
     loadProgress,
     updateProgress,
     markSectionComplete,
+    setCurrentSection,
     isSectionComplete,
     getTutorialProgress,
     loadFromLocalStorage,

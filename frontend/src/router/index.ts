@@ -16,6 +16,12 @@ const router = createRouter({
       props: true,
     },
     {
+      path: '/tutorial/:id/section/:sectionIndex',
+      name: 'tutorial-section',
+      component: () => import('../views/TutorialView.vue'),
+      props: true,
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('../views/AboutView.vue'),
