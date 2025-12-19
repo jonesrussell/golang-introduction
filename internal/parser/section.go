@@ -57,7 +57,7 @@ func (p *DirectoryParser) ListTutorialDirectories() ([]string, error) {
 		if entry.IsDir() && strings.HasPrefix(entry.Name(), "tutorial-") {
 			// Check if it has tutorial.yaml
 			configPath := filepath.Join(p.tutorialsDir, entry.Name(), "tutorial.yaml")
-			if _, err := os.Stat(configPath); err == nil {
+			if _, statErr := os.Stat(configPath); statErr == nil {
 				// Extract ID from directory name
 				id := strings.TrimPrefix(entry.Name(), "tutorial-")
 				tutorials = append(tutorials, id)
@@ -83,8 +83,8 @@ func (p *DirectoryParser) LoadTutorialConfig(tutorialID string) (*TutorialConfig
 	}
 
 	var config TutorialConfig
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		return nil, fmt.Errorf("failed to parse tutorial config: %w", err)
+	if unmarshalErr := yaml.Unmarshal(data, &config); unmarshalErr != nil {
+		return nil, fmt.Errorf("failed to parse tutorial config: %w", unmarshalErr)
 	}
 
 	// Ensure ID is set
@@ -118,7 +118,7 @@ func (p *DirectoryParser) ListSectionFiles(tutorialID string) ([]string, error) 
 }
 
 // ParseSectionFile parses a single section markdown file
-func (p *DirectoryParser) ParseSectionFile(tutorialID string, filename string, order int) (*models.Section, error) {
+func (p *DirectoryParser) ParseSectionFile(tutorialID, filename string, order int) (*models.Section, error) {
 	filePath := filepath.Join(p.tutorialsDir, fmt.Sprintf("tutorial-%s", tutorialID), "sections", filename)
 
 	content, err := os.ReadFile(filePath)
@@ -182,10 +182,10 @@ func (p *DirectoryParser) ParseTutorialFromDirectory(tutorialID string, includeI
 	}
 
 	for i, filename := range sectionFiles {
-		section, err := p.ParseSectionFile(tutorialID, filename, i+1)
-		if err != nil {
+		section, parseErr := p.ParseSectionFile(tutorialID, filename, i+1)
+		if parseErr != nil {
 			// Log error but continue
-			fmt.Fprintf(os.Stderr, "Warning: failed to parse section %s: %v\n", filename, err)
+			fmt.Fprintf(os.Stderr, "Warning: failed to parse section %s: %v\n", filename, parseErr)
 			continue
 		}
 
@@ -202,7 +202,7 @@ func (p *DirectoryParser) ParseTutorialFromDirectory(tutorialID string, includeI
 }
 
 // LoadInstructorNotes loads instructor notes for a section
-func (p *DirectoryParser) LoadInstructorNotes(tutorialID string, sectionFilename string) (string, error) {
+func (p *DirectoryParser) LoadInstructorNotes(tutorialID, sectionFilename string) (string, error) {
 	notesPath := filepath.Join(p.tutorialsDir, fmt.Sprintf("tutorial-%s", tutorialID), "instructor", sectionFilename)
 
 	content, err := os.ReadFile(notesPath)
@@ -285,6 +285,10 @@ func extractTopics(content string) []string {
 	return topics
 }
 
+// codeBlockMatchGroups is the expected number of capture groups in code block regex:
+// full match, language, attribute (optional), code content
+const codeBlockMatchGroups = 4
+
 func extractCodeExamples(content string) []models.CodeExample {
 	var examples []models.CodeExample
 
@@ -294,36 +298,38 @@ func extractCodeExamples(content string) []models.CodeExample {
 	matches := codeBlockRegex.FindAllStringSubmatch(content, -1)
 
 	for i, match := range matches {
-		if len(match) >= 4 {
-			language := match[1]
-			attribute := match[2] // "runnable", "snippet", or ""
-			code := strings.TrimSpace(match[3])
-
-			// Determine if runnable
-			runnable := false
-			snippet := false
-
-			if attribute == "runnable" {
-				runnable = true
-			} else if attribute == "snippet" {
-				runnable = true
-				snippet = true
-			} else if language == "go" {
-				// Auto-detect: if has package main, it's runnable
-				if strings.Contains(code, "package main") {
-					runnable = true
-				}
-			}
-
-			example := models.CodeExample{
-				ID:       fmt.Sprintf("code-%d", i),
-				Code:     code,
-				Language: language,
-				Runnable: runnable,
-				Snippet:  snippet,
-			}
-			examples = append(examples, example)
+		if len(match) < codeBlockMatchGroups {
+			continue
 		}
+
+		language := match[1]
+		attribute := match[2] // "runnable", "snippet", or ""
+		code := strings.TrimSpace(match[3])
+
+		// Determine if runnable
+		runnable := false
+		snippet := false
+
+		if attribute == "runnable" {
+			runnable = true
+		} else if attribute == "snippet" {
+			runnable = true
+			snippet = true
+		} else if language == "go" {
+			// Auto-detect: if has package main, it's runnable
+			if strings.Contains(code, "package main") {
+				runnable = true
+			}
+		}
+
+		example := models.CodeExample{
+			ID:       fmt.Sprintf("code-%d", i),
+			Code:     code,
+			Language: language,
+			Runnable: runnable,
+			Snippet:  snippet,
+		}
+		examples = append(examples, example)
 	}
 
 	return examples

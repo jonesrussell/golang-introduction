@@ -92,7 +92,7 @@ func ExtractTutorialID(filename string) string {
 // DetermineLevel determines the tutorial level based on tutorial number
 func DetermineLevel(tutorialNum string) string {
 	num := 0
-	fmt.Sscanf(tutorialNum, "%d", &num)
+	_, _ = fmt.Sscanf(tutorialNum, "%d", &num)
 
 	if num >= 1 && num <= 3 {
 		return "Beginner"

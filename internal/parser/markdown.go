@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/jonesrussell/go-fundamentals-best-practices/pkg/models"
@@ -259,17 +260,12 @@ func (p *TutorialParser) ListTutorials() ([]string, error) {
 
 // sortTutorialIDs sorts tutorial IDs numerically
 func sortTutorialIDs(ids []string) {
-	// Simple bubble sort for numeric IDs
-	for i := 0; i < len(ids)-1; i++ {
-		for j := i + 1; j < len(ids); j++ {
-			var numI, numJ int
-			fmt.Sscanf(ids[i], "%d", &numI)
-			fmt.Sscanf(ids[j], "%d", &numJ)
-			if numI > numJ {
-				ids[i], ids[j] = ids[j], ids[i]
-			}
-		}
-	}
+	sort.Slice(ids, func(i, j int) bool {
+		var numI, numJ int
+		_, _ = fmt.Sscanf(ids[i], "%d", &numI)
+		_, _ = fmt.Sscanf(ids[j], "%d", &numJ)
+		return numI < numJ
+	})
 }
 
 // LoadAllTutorials loads and parses all tutorials (both formats)
@@ -281,10 +277,10 @@ func (p *TutorialParser) LoadAllTutorials() ([]*models.Tutorial, error) {
 
 	var tutorials []*models.Tutorial
 	for _, id := range tutorialIDs {
-		tutorial, err := p.GetTutorial(id, false)
-		if err != nil {
+		tutorial, loadErr := p.GetTutorial(id, false)
+		if loadErr != nil {
 			// Log error but continue
-			fmt.Fprintf(os.Stderr, "Error loading tutorial %s: %v\n", id, err)
+			fmt.Fprintf(os.Stderr, "Error loading tutorial %s: %v\n", id, loadErr)
 			continue
 		}
 		tutorials = append(tutorials, tutorial)
@@ -302,9 +298,9 @@ func (p *TutorialParser) LoadAllTutorialsMetadata() ([]*models.TutorialMetadata,
 
 	var metadata []*models.TutorialMetadata
 	for _, id := range tutorialIDs {
-		meta, err := p.GetTutorialMetadata(id)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error loading metadata for tutorial %s: %v\n", id, err)
+		meta, loadErr := p.GetTutorialMetadata(id)
+		if loadErr != nil {
+			fmt.Fprintf(os.Stderr, "Error loading metadata for tutorial %s: %v\n", id, loadErr)
 			continue
 		}
 		metadata = append(metadata, meta)
