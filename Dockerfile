@@ -26,21 +26,24 @@ FROM alpine:latest AS final
 # Install runtime dependencies
 RUN apk --no-cache add ca-certificates tzdata
 
-# Create non-root user
-ARG UID=10001
-RUN adduser \
+# Create non-root user with host UID/GID
+ARG UID=1000
+ARG GID=1000
+RUN addgroup -g "${GID}" appgroup && \
+    adduser \
     --disabled-password \
     --gecos "" \
     --home "/app" \
     --shell "/sbin/nologin" \
     --uid "${UID}" \
+    --ingroup appgroup \
     appuser
 
 # Set working directory
 WORKDIR /app
 
 # Create data directory with correct ownership
-RUN mkdir -p /app/data /app/tutorials && chown -R appuser:appuser /app
+RUN mkdir -p /app/data /app/tutorials && chown -R appuser:appgroup /app
 
 # Copy the executable
 COPY --from=build /bin/server /app/server
