@@ -77,6 +77,7 @@ docker compose up
 │   └── storage/         # Progress tracking
 ├── frontend/            # Vue.js frontend
 ├── tutorials/           # Tutorial content (markdown)
+├── exercises/           # Hands-on practice exercises
 └── cheatsheets/         # Quick reference guides
 ```
 
