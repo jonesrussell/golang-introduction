@@ -3,9 +3,9 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- Embedding multiple structs
-- Field/method name conflicts
-- Resolution order
+- Embedding [multiple structs](https://go.dev/ref/spec#Struct_types)
+- Field/method [name conflicts](https://go.dev/ref/spec#Selectors)
+- [Resolution order](https://go.dev/ref/spec#Selectors)
 - Explicitly accessing embedded types
 
 ## Code Examples
@@ -127,9 +127,9 @@ fmt.Println(d.B.Name)  // B's name (still accessible)
 ```
 
 ## Key teaching points:
-- Can embed multiple structs
-- All fields/methods from all embedded types are promoted
-- Name conflicts cause compile errors (not runtime!)
-- Must explicitly specify which embedded type when ambiguous
-- Outer struct fields shadow embedded fields with same name
+- Can embed [multiple structs](https://go.dev/ref/spec#Struct_types)
+- All fields/methods from all embedded types are [promoted](https://go.dev/ref/spec#Selectors)
+- [Name conflicts](https://go.dev/ref/spec#Selectors) cause compile errors (not runtime!)
+- Must explicitly specify which embedded type when [ambiguous](https://go.dev/ref/spec#Selectors)
+- Outer struct fields [shadow](https://go.dev/ref/spec#Selectors) embedded fields with same name
 - This is safer than inheritance (explicit is better than implicit)

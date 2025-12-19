@@ -3,9 +3,9 @@
 **Duration:** 7-8 minutes
 
 ## Topics to cover:
-- Embedding syntax (anonymous fields)
-- Field promotion
-- Method promotion
+- [Embedding syntax](https://go.dev/ref/spec#Struct_types) (anonymous fields)
+- [Field promotion](https://go.dev/ref/spec#Selectors)
+- [Method promotion](https://go.dev/ref/spec#Selectors)
 - Difference between embedding and composition
 
 ## Code Examples
@@ -93,9 +93,9 @@ fmt.Println(customer.GetTier())  // Customer's own method
 ```
 
 ## Key teaching points:
-- Embedding = anonymous field (type without name)
-- Embedded fields are "promoted" to outer struct
-- Can access embedded fields/methods directly
-- Can still access through type name if needed
-- Looks like inheritance but it's composition
+- [Embedding](https://go.dev/ref/spec#Struct_types) = anonymous field (type without name)
+- Embedded fields are ["promoted"](https://go.dev/ref/spec#Selectors) to outer struct
+- Can access embedded fields/methods [directly](https://go.dev/ref/spec#Selectors)
+- Can still access through [type name](https://go.dev/ref/spec#Selectors) if needed
+- Looks like inheritance but it's [composition](https://go.dev/doc/faq#inheritance)
 - The embedded struct doesn't know it's embedded

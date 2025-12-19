@@ -3,10 +3,10 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- `error` is just an interface
-- The `Error()` method
-- Creating errors with `errors.New` and `fmt.Errorf`
-- Zero value of error is `nil`
+- [`error`](https://pkg.go.dev/builtin#error) is just an interface
+- The [`Error()`](https://pkg.go.dev/builtin#error) method
+- Creating errors with [`errors.New`](https://pkg.go.dev/errors#New) and [`fmt.Errorf`](https://pkg.go.dev/fmt#Errorf)
+- [Zero value](https://go.dev/ref/spec#The_zero_value) of error is `nil`
 
 ## Code Examples
 
@@ -58,8 +58,8 @@ func divide(a, b int) (int, error) {
 ```
 
 ## Key teaching points:
-- `error` is an interface with single `Error() string` method
-- Any type with `Error() string` is an error
-- `errors.New()` creates simple errors
-- `fmt.Errorf()` creates formatted errors
-- `nil` means no error
+- [`error`](https://pkg.go.dev/builtin#error) is an interface with single [`Error() string`](https://pkg.go.dev/builtin#error) method
+- Any type with [`Error() string`](https://pkg.go.dev/builtin#error) is an error
+- [`errors.New()`](https://pkg.go.dev/errors#New) creates simple errors
+- [`fmt.Errorf()`](https://pkg.go.dev/fmt#Errorf) creates formatted errors
+- [`nil`](https://go.dev/ref/spec#The_zero_value) means no error

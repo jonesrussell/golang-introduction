@@ -120,8 +120,8 @@ func process(h *HugeStruct) {  // Just copies pointer
 ```
 
 ## Key teaching points:
-- Always validate in constructors
-- Be consistent with receiver types
-- Use named field initialization
-- Export only what's necessary
-- Design for useful zero values
+- Always validate in [constructors](https://go.dev/doc/effective_go#composite_literals)
+- Be consistent with [receiver types](https://go.dev/doc/effective_go#pointers_vs_values)
+- Use [named field initialization](https://go.dev/doc/effective_go#composite_literals)
+- [Export only what's necessary](https://go.dev/ref/spec#Exported_identifiers)
+- Design for [useful zero values](https://go.dev/ref/spec#The_zero_value)

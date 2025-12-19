@@ -3,12 +3,12 @@
 **Duration:** 7-8 minutes
 
 ## Topics to cover:
-- Zero value initialization
-- Struct literals
+- [Zero value](https://go.dev/ref/spec#The_zero_value) initialization
+- [Struct literals](https://go.dev/ref/spec#Composite_literals)
 - Named field initialization
 - Positional initialization (avoid)
-- Pointer to struct with `&`
-- Constructor functions (idiomatic pattern)
+- [Pointer to struct](https://go.dev/ref/spec#Address_operators) with `&`
+- [Constructor functions](https://go.dev/doc/effective_go#composite_literals) (idiomatic pattern)
 
 ## Code Examples
 
@@ -67,7 +67,7 @@ p7 := NewPerson("David", "Brown", 35)
 ## Key teaching points:
 - Named field initialization is most readable and maintainable
 - Trailing comma is required on multi-line initialization
-- Zero values make structs safe to use even when empty
-- Pointer initialization with `&` avoids copying large structs
-- Constructor functions allow validation and default values
+- [Zero values](https://go.dev/ref/spec#The_zero_value) make structs safe to use even when empty
+- [Pointer initialization](https://go.dev/ref/spec#Address_operators) with `&` avoids copying large structs
+- [Constructor functions](https://go.dev/doc/effective_go#composite_literals) allow validation and default values
 - Convention: `New` prefix for constructors (NewUser, NewProduct, etc.)

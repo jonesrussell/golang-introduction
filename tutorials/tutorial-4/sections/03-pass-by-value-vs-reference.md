@@ -3,7 +3,7 @@
 **Duration:** 7-8 minutes
 
 ## Topics to cover:
-- Go is always pass by value
+- [Go is always pass by value](https://go.dev/doc/faq#pass_by_value)
 - What "value" means for different types
 - Simulating pass by reference with pointers
 - When copies happen
@@ -74,8 +74,8 @@ func main() {
 ```
 
 ## Key teaching points:
-- Go ALWAYS passes by value (copies the argument)
-- Passing a pointer copies the address, not the data
+- Go [ALWAYS passes by value](https://go.dev/doc/faq#pass_by_value) (copies the argument)
+- Passing a [pointer](https://go.dev/ref/spec#Pointer_types) copies the address, not the data
 - Both caller and function can access same memory
 - Value semantics prevent accidental mutation
 - Choose based on whether mutation is needed

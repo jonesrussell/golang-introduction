@@ -68,6 +68,6 @@ func (e *MyError) Unwrap() error {
 ## Key teaching points:
 - Check every error
 - Add context when wrapping
-- Use Is/As for type-safe checks
+- Use [`Is`](https://pkg.go.dev/errors#Is)/[`As`](https://pkg.go.dev/errors#As) for type-safe checks
 - Document errors in API
 - Return early to reduce nesting

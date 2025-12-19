@@ -4,9 +4,9 @@
 
 ## Topics to cover:
 - When to create custom error types
-- Implementing the error interface
+- Implementing the [error interface](https://pkg.go.dev/builtin#error)
 - Adding fields for context
-- Implementing `Unwrap()` for wrapping
+- Implementing [`Unwrap()`](https://pkg.go.dev/errors#Unwrap) for wrapping
 
 ## Code Examples
 
@@ -138,7 +138,7 @@ func handleRequest() error {
 
 ## Key teaching points:
 - Custom types add structured error data
-- Implement `Error() string` to satisfy interface
-- Implement `Unwrap() error` to support chain operations
+- Implement [`Error() string`](https://pkg.go.dev/builtin#error) to satisfy interface
+- Implement [`Unwrap() error`](https://pkg.go.dev/errors#Unwrap) to support chain operations
 - Use pointer receiver for error methods
 - Custom errors enable programmatic error handling

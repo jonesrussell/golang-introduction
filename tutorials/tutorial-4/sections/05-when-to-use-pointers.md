@@ -6,7 +6,7 @@
 - Performance considerations
 - Mutation requirements
 - API design choices
-- Nil as meaningful value
+- [Nil as meaningful value](https://go.dev/ref/spec#The_zero_value)
 
 ## Code Examples
 
@@ -98,7 +98,7 @@ Is the struct large (>= 3-4 fields or contains large arrays)?
 ## Key teaching points:
 - Pointers for mutation
 - Pointers for large structs (performance)
-- Pointers when nil is meaningful
+- Pointers when [nil is meaningful](https://go.dev/ref/spec#The_zero_value)
 - Values for small, immutable data
 - Be consistent within a type
-- Slices, maps, channels are already "reference-like"
+- [Slices, maps, channels](https://go.dev/ref/spec#Slice_types) are already "reference-like"

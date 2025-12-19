@@ -5,7 +5,7 @@
 ## Topics to cover:
 - Traditional OOP inheritance (what Go doesn't have)
 - The diamond problem and why inheritance is complex
-- Go's alternative: composition and embedding
+- Go's alternative: [composition and embedding](https://go.dev/ref/spec#Struct_types)
 
 ## Code Example - The Problem
 
@@ -40,8 +40,8 @@ type Customer struct {
 ```
 
 ## Key teaching points:
-- Go has no class inheritance
+- Go has [no class inheritance](https://go.dev/doc/faq#inheritance)
 - Go has no extends or super keywords
-- This is intentional - inheritance creates tight coupling
-- Go provides composition instead
-- Embedding is Go's answer to code reuse
+- This is intentional - [inheritance creates tight coupling](https://go.dev/doc/faq#inheritance)
+- Go provides [composition](https://go.dev/ref/spec#Struct_types) instead
+- [Embedding](https://go.dev/ref/spec#Struct_types) is Go's answer to code reuse

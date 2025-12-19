@@ -4,10 +4,10 @@
 
 ## Topics to cover:
 - Why wrap errors? (context!)
-- `fmt.Errorf` with `%w` verb
-- `errors.Unwrap`
-- `errors.Is` for comparison
-- `errors.As` for type assertion
+- [`fmt.Errorf`](https://pkg.go.dev/fmt#Errorf) with [`%w` verb](https://pkg.go.dev/fmt#Errorf)
+- [`errors.Unwrap`](https://pkg.go.dev/errors#Unwrap)
+- [`errors.Is`](https://pkg.go.dev/errors#Is) for comparison
+- [`errors.As`](https://pkg.go.dev/errors#As) for type assertion
 
 ## Code Examples
 
@@ -113,9 +113,9 @@ func main() {
 ```
 
 ## Key teaching points:
-- `%w` wraps error, preserving the chain
-- `%v` formats error but breaks the chain
-- `errors.Is()` checks entire chain for match
-- `errors.As()` extracts typed error from chain
+- [`%w`](https://pkg.go.dev/fmt#Errorf) wraps error, preserving the chain
+- [`%v`](https://pkg.go.dev/fmt#Errorf) formats error but breaks the chain
+- [`errors.Is()`](https://pkg.go.dev/errors#Is) checks entire chain for match
+- [`errors.As()`](https://pkg.go.dev/errors#As) extracts typed error from chain
 - Add context at each layer for debugging
 - Error messages should flow: "outer: middle: inner: root"

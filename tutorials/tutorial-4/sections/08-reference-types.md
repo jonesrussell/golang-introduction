@@ -3,7 +3,7 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- Slices, maps, channels are "reference types"
+- [Slices, maps, channels](https://go.dev/ref/spec#Slice_types) are "reference types"
 - What that actually means
 - When you still need pointers with these types
 
@@ -62,7 +62,7 @@ func main() {
 ```
 
 ## Key teaching points:
-- Slices/maps/channels have internal pointers
+- [Slices/maps/channels](https://go.dev/ref/spec#Slice_types) have internal pointers
 - Modifying contents works without `*`
 - Replacing the whole thing needs `*` or return value
 - Return value pattern is often cleaner than `*[]Type`

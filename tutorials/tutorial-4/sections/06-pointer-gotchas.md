@@ -3,8 +3,8 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Nil pointer dereference
-- Escaping to heap
+- [Nil pointer dereference](https://go.dev/ref/spec#Address_operators)
+- [Escaping to heap](https://go.dev/doc/faq#stack_or_heap)
 - Returning pointers to local variables
 - Pointer comparison
 
@@ -104,8 +104,8 @@ func GetUser(id int) *User {
 ```
 
 ## Key teaching points:
-- Always check for nil before dereferencing
+- Always check for [nil](https://go.dev/ref/spec#The_zero_value) before dereferencing
 - Loop variable address gotcha (shadowing fix)
-- Go's escape analysis makes returning local pointers safe
+- Go's [escape analysis](https://go.dev/doc/faq#stack_or_heap) makes returning local pointers safe
 - Document when nil is a valid return value
 - Initialize struct pointer fields

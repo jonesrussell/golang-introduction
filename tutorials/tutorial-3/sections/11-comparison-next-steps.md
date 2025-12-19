@@ -62,29 +62,29 @@ class Dog extends Animal {  // Inheritance
 ```
 
 ## Key Differences:
-- Go: No inheritance keyword, no `extends`, no `super`
-- Go: Composition is explicit and visible
+- Go: [No inheritance keyword](https://go.dev/doc/faq#inheritance), no `extends`, no `super`
+- Go: [Composition is explicit](https://go.dev/ref/spec#Struct_types) and visible
 - Go: No virtual methods - method resolution is simple
 - Go: Can't accidentally break parent class
-- Go: Interface satisfaction is implicit
+- Go: [Interface satisfaction](https://go.dev/ref/spec#Interface_types) is implicit
 - Go: Simpler mental model - just nested structs
 
 ## Recap What Was Covered:
-- Basic composition with named fields
-- Struct embedding (anonymous fields)
-- Field and method promotion
+- Basic [composition](https://go.dev/ref/spec#Struct_types) with named fields
+- [Struct embedding](https://go.dev/ref/spec#Struct_types) (anonymous fields)
+- [Field and method promotion](https://go.dev/ref/spec#Selectors)
 - Multiple embedding and conflicts
-- Embedding with interfaces
+- Embedding with [interfaces](https://go.dev/ref/spec#Interface_types)
 - Practical patterns (mixins, decorators, base entities)
 - When to use embedding vs composition
 - Common pitfalls to avoid
 
 ## Preview Next Topics:
-- Interfaces in depth
-- Polymorphism in Go
+- [Interfaces](https://go.dev/ref/spec#Interface_types) in depth
+- [Polymorphism](https://go.dev/doc/faq#polymorphism) in Go
 - Type assertions and type switches
-- Interface composition
-- Error handling patterns
+- [Interface composition](https://go.dev/ref/spec#Interface_types)
+- [Error handling](https://go.dev/doc/effective_go#errors) patterns
 
 ## Practice Suggestions:
 1. **Easy:** Create a Shape hierarchy (Shape → Rectangle, Circle) using embedding
@@ -93,5 +93,6 @@ class Dog extends Animal {  // Inheritance
 4. **Advanced:** Implement a middleware chain using embedding
 
 ## Resources:
-- Effective Go on Embedding: golang.org/doc/effective_go#embedding
-- Go blog on embedding: blog.golang.org/json-and-go
+- [Effective Go on Embedding](https://go.dev/doc/effective_go#embedding): go.dev/doc/effective_go#embedding
+- [Go Tour - Struct Embedding](https://go.dev/tour/moretypes/10): go.dev/tour/moretypes/10
+- [Go FAQ - Why no inheritance?](https://go.dev/doc/faq#inheritance): go.dev/doc/faq#inheritance

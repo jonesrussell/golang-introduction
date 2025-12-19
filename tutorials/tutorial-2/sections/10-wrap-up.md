@@ -34,10 +34,10 @@ type Stringer interface {
 ```
 
 ## Recap What Was Covered:
-- Defining structs
-- Initialization patterns (literals, constructors)
-- Value vs pointer receivers
-- Methods and when to use each
+- [Defining structs](https://go.dev/ref/spec#Struct_types)
+- [Initialization patterns](https://go.dev/ref/spec#Composite_literals) (literals, constructors)
+- [Value vs pointer receivers](https://go.dev/doc/effective_go#pointers_vs_values)
+- [Methods](https://go.dev/ref/spec#Method_declarations) and when to use each
 - Best practices and common mistakes
 
 ## Practice Suggestions:
@@ -46,11 +46,12 @@ type Stringer interface {
 3. **Challenge:** Create a BankAccount system with Account and Transaction structs
 
 ## Resources:
-- Effective Go: golang.org/doc/effective_go
-- Go by Example: gobyexample.com/structs
+- [Effective Go](https://go.dev/doc/effective_go): go.dev/doc/effective_go
+- [Go by Example](https://gobyexample.com/structs): gobyexample.com/structs
+- [Go Tour - Structs](https://go.dev/tour/moretypes/2): go.dev/tour/moretypes/2
 
 ## Key teaching points:
-- Structs are fundamental to Go programming
-- Master value vs pointer semantics
-- Constructor pattern ensures valid state
-- Composition enables code reuse
+- [Structs](https://go.dev/ref/spec#Struct_types) are fundamental to Go programming
+- Master [value vs pointer semantics](https://go.dev/doc/effective_go#pointers_vs_values)
+- [Constructor pattern](https://go.dev/doc/effective_go#composite_literals) ensures valid state
+- [Composition](https://go.dev/doc/faq#inheritance) enables code reuse

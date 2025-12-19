@@ -3,10 +3,10 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- Creating pointers to structs
-- Automatic dereferencing with `.` notation
+- Creating [pointers to structs](https://go.dev/ref/spec#Pointer_types)
+- [Automatic dereferencing](https://go.dev/ref/spec#Selectors) with `.` notation
 - Go's simplified syntax
-- The `new()` function
+- The [`new()` function](https://go.dev/ref/spec#Allocation)
 - When to use `&Struct{}` vs `new()`
 
 ## Code Examples
@@ -72,8 +72,8 @@ user := &User{}
 ```
 
 ## Key teaching points:
-- `&Struct{}` is idiomatic for struct pointers with values
-- `new()` returns pointer with zero values
-- Go auto-dereferences struct pointers (no `->` needed)
+- [`&Struct{}`](https://go.dev/ref/spec#Address_operators) is idiomatic for struct pointers with values
+- [`new()`](https://go.dev/ref/spec#Allocation) returns pointer with zero values
+- Go [auto-dereferences](https://go.dev/ref/spec#Selectors) struct pointers (no `->` needed)
 - Pointer fields accessed same as value fields
 - Constructor functions typically return `*Type`

@@ -3,9 +3,9 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Composition via explicit fields
+- Composition via [explicit fields](https://go.dev/ref/spec#Struct_types)
 - Has-a relationships
-- Accessing nested fields
+- [Accessing nested fields](https://go.dev/ref/spec#Selectors)
 - When explicit composition is appropriate
 
 ## Code Examples
@@ -77,8 +77,8 @@ fmt.Printf("%s %s has %d HP\n",
 ```
 
 ## Key teaching points:
-- Regular composition uses named fields
+- Regular composition uses [named fields](https://go.dev/ref/spec#Struct_types)
 - Represents clear "has-a" relationships
-- Must explicitly reference the field name
+- Must explicitly reference the [field name](https://go.dev/ref/spec#Selectors)
 - Good when the relationship is explicit (Car has Engine)
-- Fields and methods are accessed through the field name
+- Fields and methods are accessed through the [field name](https://go.dev/ref/spec#Selectors)

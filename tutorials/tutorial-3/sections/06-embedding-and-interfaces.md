@@ -3,8 +3,8 @@
 **Duration:** 7-8 minutes
 
 ## Topics to cover:
-- How embedded structs satisfy interfaces
-- Interface composition via embedding
+- How embedded structs [satisfy interfaces](https://go.dev/ref/spec#Interface_types)
+- [Interface composition](https://go.dev/ref/spec#Interface_types) via embedding
 - Wrapper pattern with embedding
 - Overriding embedded methods
 
@@ -130,9 +130,9 @@ var rwc ReadWriteCloser = &File{name: "test.txt"}
 ```
 
 ## Key teaching points:
-- Embedded struct methods count toward interface satisfaction
+- Embedded struct methods count toward [interface satisfaction](https://go.dev/ref/spec#Interface_types)
 - Can override embedded methods by defining same method on outer struct
 - Can still call original embedded method explicitly
-- Interface embedding creates composite interfaces
-- This is how standard library composes interfaces (io.Reader, io.Writer, etc.)
+- [Interface embedding](https://go.dev/ref/spec#Interface_types) creates composite interfaces
+- This is how [standard library composes interfaces](https://pkg.go.dev/io#ReadWriteCloser) (io.Reader, io.Writer, etc.)
 - Embedding provides delegation pattern

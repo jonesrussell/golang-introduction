@@ -3,9 +3,9 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- `interface{}` and `any` (Go 1.18+)
+- [`interface{}`](https://go.dev/ref/spec#Interface_types) and [`any`](https://go.dev/ref/spec#Predeclared_identifiers) (Go 1.18+)
 - Why it accepts any type
-- Type assertions
+- [Type assertions](https://go.dev/ref/spec#Type_assertions)
 - When to use (and not use) empty interface
 
 ## Code Examples
@@ -97,9 +97,9 @@ func First[T any](items []T) T {
 ```
 
 ## Key teaching points:
-- `interface{}` / `any` accepts any type
-- Use type assertions to get concrete type back
+- [`interface{}`](https://go.dev/ref/spec#Interface_types) / [`any`](https://go.dev/ref/spec#Predeclared_identifiers) accepts any type
+- Use [type assertions](https://go.dev/ref/spec#Type_assertions) to get concrete type back
 - Comma-ok pattern prevents panics
-- Type switch for multiple type handling
+- [Type switch](https://go.dev/ref/spec#Type_switches) for multiple type handling
 - Prefer specific interfaces over `interface{}`
-- Go 1.18 generics often better than `interface{}`
+- Go 1.18 [generics](https://go.dev/doc/tutorial/generics) often better than `interface{}`

@@ -105,5 +105,5 @@ func ProcessData() error {
 - Always check returned errors
 - Use early returns to reduce nesting
 - `_` to ignore is almost always wrong
-- Defer ensures cleanup even on error
+- [Defer](https://go.dev/ref/spec#Defer_statements) ensures cleanup even on error
 - Log non-critical errors, return critical ones

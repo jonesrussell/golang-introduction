@@ -4,8 +4,8 @@
 
 ## Topics to cover:
 - Welcome and what viewers will learn
-- Go's philosophy: errors are values
-- No exceptions in Go (and why that's good)
+- Go's philosophy: [errors are values](https://go.dev/blog/errors-are-values)
+- [No exceptions](https://go.dev/doc/faq#exceptions) in Go (and why that's good)
 - Preview: Building robust error handling
 - Show the final example: File processor with comprehensive error handling
 

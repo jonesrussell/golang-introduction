@@ -3,9 +3,9 @@
 **Duration:** 8-10 minutes
 
 ## Topics to cover:
-- Method definition syntax
-- Value receivers vs pointer receivers
-- When to use each receiver type
+- [Method definition](https://go.dev/ref/spec#Method_declarations) syntax
+- [Value receivers](https://go.dev/ref/spec#Method_declarations) vs [pointer receivers](https://go.dev/ref/spec#Method_declarations)
+- [When to use each receiver type](https://go.dev/doc/effective_go#pointers_vs_values)
 - Method chaining
 - Methods vs functions
 
@@ -108,9 +108,9 @@ fmt.Println(account)  // Alice's account: $1300.00
 ```
 
 ## Key teaching points:
-- Value receivers: `func (r Rectangle)` - gets a copy, cannot modify original
-- Pointer receivers: `func (r *Rectangle)` - gets pointer, can modify original
-- Go automatically converts between values and pointers for method calls
+- [Value receivers](https://go.dev/ref/spec#Method_declarations): `func (r Rectangle)` - gets a copy, cannot modify original
+- [Pointer receivers](https://go.dev/ref/spec#Method_declarations): `func (r *Rectangle)` - gets pointer, can modify original
+- Go [automatically converts](https://go.dev/ref/spec#Calls) between values and pointers for method calls
 - **When to use pointer receivers:**
   - Method needs to modify the receiver
   - Struct is large (avoid copying)

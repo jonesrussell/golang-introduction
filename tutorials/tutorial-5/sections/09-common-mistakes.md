@@ -115,7 +115,7 @@ type ReadWriter interface {
 ## Key teaching points:
 - Don't create interfaces for single implementations
 - Wait until you need the abstraction
-- Return concrete types, accept interfaces
+- [Return concrete types, accept interfaces](https://go.dev/doc/effective_go#interfaces_and_types)
 - Keep interfaces small
-- Avoid `interface{}` when you know the type
+- Avoid [`interface{}`](https://go.dev/ref/spec#Interface_types) when you know the type
 - Don't wrap every type in an interface

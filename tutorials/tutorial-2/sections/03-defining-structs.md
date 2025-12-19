@@ -3,11 +3,11 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Basic struct definition
-- Field naming conventions
-- Field tags (preview for JSON)
-- Nested structs
-- Anonymous fields
+- Basic [struct definition](https://go.dev/ref/spec#Struct_types)
+- [Field naming conventions](https://go.dev/doc/effective_go#names)
+- [Field tags](https://pkg.go.dev/encoding/json#Marshal) (preview for JSON)
+- [Nested structs](https://go.dev/ref/spec#Struct_types)
+- [Anonymous fields](https://go.dev/ref/spec#Struct_types)
 
 ## Code Examples
 
@@ -60,9 +60,9 @@ config := struct {
 ```
 
 ## Key teaching points:
-- Type definition creates a new type in your package
-- Fields are accessed with dot notation
-- Field tags are metadata (used by encoding/json, validation libraries)
+- [Type definition](https://go.dev/ref/spec#Type_declarations) creates a new type in your package
+- Fields are accessed with [dot notation](https://go.dev/ref/spec#Selectors)
+- [Field tags](https://pkg.go.dev/encoding/json#Marshal) are metadata (used by encoding/json, validation libraries)
 - Nested structs model "has-a" relationships
-- Anonymous structs are useful for one-off data structures
+- [Anonymous structs](https://go.dev/ref/spec#Struct_types) are useful for one-off data structures
 - Convention: one struct per logical concept

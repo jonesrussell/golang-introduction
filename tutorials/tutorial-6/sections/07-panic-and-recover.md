@@ -3,9 +3,9 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- What is panic?
+- What is [panic](https://go.dev/ref/spec#Handling_panics)?
 - When to use panic (almost never!)
-- Recover for graceful handling
+- [Recover](https://go.dev/ref/spec#Handling_panics) for graceful handling
 - Panic vs error
 
 ## Code Examples
@@ -157,9 +157,9 @@ func (s *Stack) Pop() interface{} {
 ```
 
 ## Key teaching points:
-- Panic should be rare in Go code
+- [Panic](https://go.dev/ref/spec#Handling_panics) should be rare in Go code
 - Return errors for expected failures
 - Panic for programmer errors/impossible states
-- Recover only works in deferred functions
+- [Recover](https://go.dev/ref/spec#Handling_panics) only works in deferred functions
 - Each goroutine must recover its own panics
 - Convention: `Must*` functions panic on error

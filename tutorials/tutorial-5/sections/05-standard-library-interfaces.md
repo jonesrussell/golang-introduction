@@ -3,9 +3,9 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- `io.Reader` and `io.Writer`
-- `fmt.Stringer`
-- `error` interface
+- [`io.Reader`](https://pkg.go.dev/io#Reader) and [`io.Writer`](https://pkg.go.dev/io#Writer)
+- [`fmt.Stringer`](https://pkg.go.dev/fmt#Stringer)
+- [`error` interface](https://pkg.go.dev/builtin#error)
 - Why small interfaces matter
 
 ## Code Examples
@@ -132,8 +132,8 @@ type ReadWriteCloser interface {
 ```
 
 ## Key teaching points:
-- Small interfaces are powerful (`Reader` has 1 method)
-- Composition creates larger interfaces
-- `fmt.Stringer` customizes print output
-- `error` is just an interface with one method
+- Small interfaces are powerful ([`Reader`](https://pkg.go.dev/io#Reader) has 1 method)
+- [Composition](https://go.dev/ref/spec#Interface_types) creates larger interfaces
+- [`fmt.Stringer`](https://pkg.go.dev/fmt#Stringer) customizes print output
+- [`error`](https://pkg.go.dev/builtin#error) is just an interface with one method
 - Standard library interfaces enable ecosystem interop

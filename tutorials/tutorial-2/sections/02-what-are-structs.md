@@ -3,9 +3,9 @@
 **Duration:** 3-4 minutes
 
 ## Topics to cover:
-- Structs as custom types
+- [Structs](https://go.dev/ref/spec#Struct_types) as custom types
 - Grouping related data together
-- Type definition syntax
+- [Type definition](https://go.dev/ref/spec#Type_declarations) syntax
 - When to use structs vs primitives
 
 ## Code Example
@@ -27,8 +27,8 @@ type User struct {
 ```
 
 ## Key teaching points:
-- Structs create custom types
+- Structs create [custom types](https://go.dev/ref/spec#Type_declarations)
 - Fields (properties) are declared with name and type
-- Exported fields start with capital letters (public)
-- Lowercase fields are package-private
-- Structs are value types (copied by default)
+- [Exported fields](https://go.dev/ref/spec#Exported_identifiers) start with capital letters (public)
+- Lowercase fields are [package-private](https://go.dev/ref/spec#Exported_identifiers)
+- Structs are [value types](https://go.dev/ref/spec#Types) (copied by default)

@@ -208,4 +208,4 @@ fmt.Printf("Post created at: %v\n", post.CreatedAt)
 - Decorator pattern: Add behavior by wrapping
 - Base entity: Share common behavior across related types
 - DRY: Don't repeat timestamp, audit, soft-delete logic
-- Embedding promotes code reuse without inheritance
+- [Embedding](https://go.dev/ref/spec#Struct_types) promotes code reuse without [inheritance](https://go.dev/doc/faq#inheritance)

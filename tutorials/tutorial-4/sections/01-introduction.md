@@ -10,7 +10,7 @@
 - Show the final example: Building a linked list
 
 ## Key teaching points:
-- Pointers enable indirect access to memory
+- [Pointers](https://go.dev/ref/spec#Pointer_types) enable indirect access to memory
 - Essential for modifying data and efficient large data handling
-- Go makes pointers safer than C/C++
+- Go makes pointers [safer than C/C++](https://go.dev/doc/faq#Pointers)
 - Understanding pointers is crucial for writing efficient Go code

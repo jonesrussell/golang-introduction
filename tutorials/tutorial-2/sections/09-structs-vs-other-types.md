@@ -40,13 +40,13 @@ func (db *Database) Query(sql string) (*Rows, error) {
 ```
 
 ## Guidelines:
-- **Struct:** Fixed schema, type safety, methods
+- **Struct:** Fixed schema, type safety, [methods](https://go.dev/ref/spec#Method_declarations)
 - **Map:** Dynamic keys, uniform value types
-- **Interface:** Define contracts, polymorphism
+- **Interface:** Define contracts, [polymorphism](https://go.dev/doc/faq#polymorphism)
 - **Slice:** Ordered collection of same type
 
 ## Key teaching points:
 - Choose based on whether structure is fixed or dynamic
-- Structs provide compile-time type safety
-- Maps provide runtime flexibility
-- Interfaces define behavior contracts
+- [Structs](https://go.dev/ref/spec#Struct_types) provide compile-time type safety
+- [Maps](https://go.dev/ref/spec#Map_types) provide runtime flexibility
+- [Interfaces](https://go.dev/ref/spec#Interface_types) define behavior contracts

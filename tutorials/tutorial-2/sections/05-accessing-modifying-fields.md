@@ -3,10 +3,10 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- Dot notation
-- Automatic pointer dereferencing
+- [Dot notation](https://go.dev/ref/spec#Selectors)
+- [Automatic pointer dereferencing](https://go.dev/ref/spec#Selectors)
 - Value vs pointer receivers (preview)
-- Comparing structs
+- [Comparing structs](https://go.dev/ref/spec#Comparison_operators)
 
 ## Code Examples
 
@@ -60,8 +60,8 @@ type Library struct {
 ```
 
 ## Key teaching points:
-- Dot notation works the same for values and pointers
-- Go's automatic dereferencing reduces pointer boilerplate
-- Struct comparison requires all fields to be comparable
-- Slices, maps, and functions make structs non-comparable
-- Use reflect.DeepEqual() for complex comparisons
+- [Dot notation](https://go.dev/ref/spec#Selectors) works the same for values and pointers
+- Go's [automatic dereferencing](https://go.dev/ref/spec#Selectors) reduces pointer boilerplate
+- [Struct comparison](https://go.dev/ref/spec#Comparison_operators) requires all fields to be comparable
+- [Slices, maps, and functions](https://go.dev/ref/spec#Comparison_operators) make structs non-comparable
+- Use [reflect.DeepEqual()](https://pkg.go.dev/reflect#DeepEqual) for complex comparisons

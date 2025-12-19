@@ -3,17 +3,17 @@
 **Duration:** 2-3 minutes
 
 ## Recap What Was Covered:
-- Pointer basics (`&`, `*`, nil)
-- Pass by value vs pass by pointer
-- Pointers to structs
+- [Pointer basics](https://go.dev/ref/spec#Pointer_types) (`&`, `*`, nil)
+- [Pass by value](https://go.dev/doc/faq#pass_by_value) vs pass by pointer
+- [Pointers to structs](https://go.dev/ref/spec#Pointer_types)
 - When to use pointers
 - Common gotchas and safety
-- Reference types (slices, maps)
+- [Reference types](https://go.dev/ref/spec#Slice_types) (slices, maps)
 - Best practices
 
 ## Preview Next Topics:
-- Interfaces and polymorphism
-- Error handling
+- [Interfaces](https://go.dev/ref/spec#Interface_types) and [polymorphism](https://go.dev/doc/faq#polymorphism)
+- [Error handling](https://go.dev/doc/effective_go#errors)
 - Concurrency (pointers with goroutines)
 
 ## Practice Suggestions:
@@ -23,8 +23,9 @@
 4. **Advanced:** Build a memory pool using pointers
 
 ## Resources:
-- Effective Go on Pointers
-- Go FAQ on pass by value
+- [Effective Go on Pointers](https://go.dev/doc/effective_go#pointers): go.dev/doc/effective_go#pointers
+- [Go FAQ on pass by value](https://go.dev/doc/faq#pass_by_value): go.dev/doc/faq#pass_by_value
+- [Go Tour - Pointers](https://go.dev/tour/moretypes/1): go.dev/tour/moretypes/1
 
 ## Cheat Sheet
 
@@ -40,7 +41,7 @@ Pointer receiver: func (t *Type) Method()
 ```
 
 ## Key teaching points:
-- Pointers are essential for mutation and efficiency
-- Go makes pointers safer than C
+- [Pointers](https://go.dev/ref/spec#Pointer_types) are essential for mutation and efficiency
+- Go makes pointers [safer than C](https://go.dev/doc/faq#Pointers)
 - Know when to use value vs pointer semantics
-- Always check for nil when working with pointers
+- Always check for [nil](https://go.dev/ref/spec#The_zero_value) when working with pointers

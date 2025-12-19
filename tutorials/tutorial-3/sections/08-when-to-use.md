@@ -104,8 +104,8 @@ Does the outer type need ALL behaviors of the inner type?
 ```
 
 ## Key teaching points:
-- Embedding is powerful but can be overused
-- Prefer explicit composition for clarity
+- [Embedding](https://go.dev/ref/spec#Struct_types) is powerful but can be overused
+- Prefer explicit [composition](https://go.dev/ref/spec#Struct_types) for clarity
 - Use embedding for mixins and base patterns
 - Don't embed just to save typing
 - Think about the conceptual relationship

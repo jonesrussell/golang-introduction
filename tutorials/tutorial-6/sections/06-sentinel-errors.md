@@ -6,7 +6,7 @@
 - What are sentinel errors?
 - When to use them
 - Package-level error variables
-- Comparing with errors.Is
+- Comparing with [`errors.Is`](https://pkg.go.dev/errors#Is)
 
 ## Code Examples
 
@@ -136,7 +136,7 @@ if errors.Is(err, ErrNotFound) {  // Robust
 
 ## Key teaching points:
 - Sentinel errors are package-level variables
-- Use `errors.Is()` to compare, not `==` (for wrapped errors)
+- Use [`errors.Is()`](https://pkg.go.dev/errors#Is) to compare, not `==` (for wrapped errors)
 - Name convention: `ErrXxx`
 - Document sentinel errors as part of API
 - Choose sentinel vs custom type based on needs

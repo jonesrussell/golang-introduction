@@ -3,8 +3,8 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Method sets and receivers
-- Pointer vs value receiver implications
+- [Method sets](https://go.dev/ref/spec#Method_sets) and receivers
+- [Pointer vs value receiver](https://go.dev/ref/spec#Method_sets) implications
 - All methods must match exactly
 
 ## Code Examples
@@ -88,7 +88,7 @@ func main() {
 ```
 
 ## Key teaching points:
-- Value receiver: Type and *Type both satisfy
-- Pointer receiver: only *Type satisfies
+- [Value receiver](https://go.dev/ref/spec#Method_sets): Type and *Type both satisfy
+- [Pointer receiver](https://go.dev/ref/spec#Method_sets): only *Type satisfies
 - All methods must have exact matching signatures
 - Use compile-time check: `var _ Interface = Type{}`

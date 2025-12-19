@@ -4,10 +4,10 @@
 
 ## Topics to cover:
 - Memory addresses explained
-- Pointer declaration and syntax
-- The `&` operator (address-of)
-- The `*` operator (dereference)
-- Zero value of pointers (`nil`)
+- [Pointer declaration](https://go.dev/ref/spec#Pointer_types) and syntax
+- The [`&` operator](https://go.dev/ref/spec#Address_operators) (address-of)
+- The [`*` operator](https://go.dev/ref/spec#Pointer_types) (dereference)
+- [Zero value](https://go.dev/ref/spec#The_zero_value) of pointers (`nil`)
 
 ## Code Examples
 
@@ -51,8 +51,8 @@ func main() {
 ```
 
 ## Key teaching points:
-- `&` gives the address of a variable
-- `*` in type declaration creates a pointer type
-- `*` before pointer variable dereferences it
-- Nil is the zero value - always check before dereferencing
+- [`&`](https://go.dev/ref/spec#Address_operators) gives the address of a variable
+- [`*` in type declaration](https://go.dev/ref/spec#Pointer_types) creates a pointer type
+- [`*` before pointer variable](https://go.dev/ref/spec#Pointer_types) dereferences it
+- [Nil](https://go.dev/ref/spec#The_zero_value) is the zero value - always check before dereferencing
 - Pointers enable indirect modification

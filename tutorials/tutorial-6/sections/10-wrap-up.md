@@ -3,13 +3,13 @@
 **Duration:** 2-3 minutes
 
 ## Recap What Was Covered:
-- Error interface and creating errors
+- [Error interface](https://pkg.go.dev/builtin#error) and creating errors
 - Error handling patterns
-- Wrapping with %w
-- errors.Is and errors.As
+- Wrapping with [`%w`](https://pkg.go.dev/fmt#Errorf)
+- [`errors.Is`](https://pkg.go.dev/errors#Is) and [`errors.As`](https://pkg.go.dev/errors#As)
 - Custom error types
 - Sentinel errors
-- Panic and recover
+- [Panic and recover](https://go.dev/ref/spec#Handling_panics)
 - File processor example
 - Best practices
 
@@ -40,8 +40,9 @@ Custom error:
 ```
 
 ## Resources:
-- Go Blog: "Error handling in Go"
-- Go Blog: "Working with Errors in Go 1.13"
+- [Go Blog: "Error handling in Go"](https://go.dev/blog/error-handling-and-go): go.dev/blog/error-handling-and-go
+- [Go Blog: "Working with Errors in Go 1.13"](https://go.dev/blog/go1.13-errors): go.dev/blog/go1.13-errors
+- [Effective Go - Errors](https://go.dev/doc/effective_go#errors): go.dev/doc/effective_go#errors
 
 ## Key teaching points:
 - Go's error handling is explicit and predictable

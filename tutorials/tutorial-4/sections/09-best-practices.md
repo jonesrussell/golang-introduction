@@ -83,7 +83,7 @@ func NewUser(id int, name string) *User {
 ```
 
 ## Key teaching points:
-- Be consistent with receiver types
-- Document when nil is valid
-- Prefer `&Type{}` over `new(Type)`
+- Be consistent with [receiver types](https://go.dev/doc/effective_go#pointers_vs_values)
+- Document when [nil is valid](https://go.dev/ref/spec#The_zero_value)
+- Prefer [`&Type{}`](https://go.dev/ref/spec#Address_operators) over [`new(Type)`](https://go.dev/ref/spec#Allocation)
 - Use constructors for initialization with defaults

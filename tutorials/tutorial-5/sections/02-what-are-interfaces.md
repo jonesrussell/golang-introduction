@@ -3,9 +3,9 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Interfaces define behavior, not data
+- [Interfaces](https://go.dev/ref/spec#Interface_types) define behavior, not data
 - Method signatures only
-- Implicit implementation
+- [Implicit implementation](https://go.dev/ref/spec#Interface_types)
 - Any type that has the methods satisfies the interface
 
 ## Code Examples
@@ -71,8 +71,8 @@ func main() {
 ```
 
 ## Key teaching points:
-- Interface = set of method signatures
-- No `implements` keyword - implementation is implicit
-- If a type has the methods, it satisfies the interface
-- Enables polymorphism without inheritance
+- Interface = set of [method signatures](https://go.dev/ref/spec#Interface_types)
+- No `implements` keyword - [implementation is implicit](https://go.dev/ref/spec#Interface_types)
+- If a type has the methods, it [satisfies the interface](https://go.dev/ref/spec#Interface_types)
+- Enables [polymorphism](https://go.dev/doc/faq#polymorphism) without inheritance
 - Types don't need to know about interfaces they implement

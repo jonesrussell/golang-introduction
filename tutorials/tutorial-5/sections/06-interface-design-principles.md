@@ -4,7 +4,7 @@
 
 ## Topics to cover:
 - Keep interfaces small
-- Accept interfaces, return structs
+- ["Accept interfaces, return structs"](https://go.dev/doc/effective_go#interfaces_and_types)
 - Define interfaces at point of use
 - Interface segregation
 
@@ -132,4 +132,4 @@ func (d Duck) Fly() { /* ... */ }
 - Consumer defines the interface they need
 - Producer returns concrete types
 - Don't force types to implement unused methods
-- Implicit implementation enables decoupling
+- [Implicit implementation](https://go.dev/ref/spec#Interface_types) enables decoupling

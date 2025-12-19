@@ -135,8 +135,8 @@ type Product struct {
 ```
 
 ## Key teaching points:
-- Be intentional about why you're embedding
-- Composition is often clearer than embedding
-- Watch for name conflicts
+- Be intentional about why you're [embedding](https://go.dev/ref/spec#Struct_types)
+- [Composition](https://go.dev/ref/spec#Struct_types) is often clearer than embedding
+- Watch for [name conflicts](https://go.dev/ref/spec#Selectors)
 - Don't expose internal synchronization
 - Keep embedding shallow
