@@ -66,10 +66,6 @@ golang-introduction/
 │   ├── Tutorial-1-Go-Basics-for-Beginners.md
 │   ├── Tutorial-2-Go-Structs-Definition-Initialization-and-Methods.md
 │   └── ...
-├── examples/            # Code examples by tutorial
-│   ├── 01-basics/
-│   ├── 02-structs/
-│   └── ...
 ├── exercises/           # Practice exercises
 │   ├── 01-basics/
 │   ├── 02-structs/
