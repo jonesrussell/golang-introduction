@@ -1,5 +1,5 @@
 <template>
-  <div class="progress-tracker">
+  <div class="p-4 bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-800">
     <div v-if="tutorialProgress" class="space-y-4">
       <div>
         <div class="flex justify-between items-center mb-2">
@@ -71,12 +71,4 @@ const tutorialProgress = computed((): TutorialProgress | null => {
 });
 </script>
 
-<style scoped>
-.progress-tracker {
-  padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-</style>
 

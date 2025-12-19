@@ -1,43 +1,56 @@
 <template>
-  <div class="code-editor">
+  <div class="border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-neutral-900">
     <!-- Editor header -->
-    <div class="editor-header">
-      <div class="header-title">
-        <svg class="title-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="flex justify-between items-center gap-4 px-4 py-2.5 bg-neutral-800 border-b border-neutral-700">
+      <div class="flex items-center gap-2 text-sm font-semibold text-neutral-300">
+        <svg class="w-4.5 h-4.5 text-go-yellow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
         </svg>
         <span>Code Editor</span>
       </div>
-      <div class="header-actions">
-        <button @click="copyCode" class="action-button" title="Copy code">
-          <svg v-if="!copied" class="action-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="flex items-center gap-2">
+        <button
+          @click="copyCode"
+          class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-neutral-300 bg-neutral-700 border-none rounded-md transition-all duration-150 hover:bg-neutral-600 hover:text-white"
+          title="Copy code"
+        >
+          <svg v-if="!copied" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
           </svg>
-          <svg v-else class="action-icon action-icon-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg v-else class="w-3.5 h-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
           </svg>
-          <span class="action-text">{{ copied ? 'Copied!' : 'Copy' }}</span>
+          <span class="hidden sm:inline">{{ copied ? 'Copied!' : 'Copy' }}</span>
         </button>
-        <button @click="resetCode" class="action-button" title="Reset to original">
-          <svg class="action-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button
+          @click="resetCode"
+          class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-neutral-300 bg-neutral-700 border-none rounded-md transition-all duration-150 hover:bg-neutral-600 hover:text-white"
+          title="Reset to original"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
           </svg>
-          <span class="action-text">Reset</span>
+          <span class="hidden sm:inline">Reset</span>
         </button>
       </div>
     </div>
 
     <!-- Editor area -->
-    <div class="editor-container">
-      <div class="line-numbers">
-        <span v-for="line in lineCount" :key="line" class="line-number">{{ line }}</span>
+    <div class="flex min-h-64 max-h-96 overflow-auto">
+      <div class="flex flex-col py-5 px-3.5 bg-neutral-950 border-r border-neutral-800 select-none text-right min-w-14">
+        <span
+          v-for="line in lineCount"
+          :key="line"
+          class="font-mono text-sm leading-[1.7] text-neutral-600"
+        >{{ line }}</span>
       </div>
       <textarea
         ref="textareaRef"
         v-model="localCode"
         @input="handleInput"
         @keydown="handleKeydown"
-        class="editor-textarea"
+        class="flex-1 py-5 px-5 font-mono text-sm leading-[1.7] text-neutral-100 bg-transparent border-none outline-none resize-none whitespace-pre overflow-wrap-normal overflow-x-auto placeholder:text-neutral-600"
+        style="tab-size: 2;"
         :placeholder="placeholder"
         spellcheck="false"
         autocomplete="off"
@@ -47,14 +60,14 @@
     </div>
 
     <!-- Editor footer -->
-    <div class="editor-footer">
-      <span class="footer-hint">
-        <svg class="hint-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="flex justify-between items-center gap-4 px-4 py-2 bg-neutral-800 border-t border-neutral-700">
+      <span class="flex items-center gap-1.5 text-xs text-neutral-500">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         Edit the code and click "Run" to execute
       </span>
-      <span class="footer-stats">
+      <span class="text-xs font-mono text-neutral-500">
         {{ lineCount }} lines | {{ localCode.length }} chars
       </span>
     </div>
@@ -131,163 +144,3 @@ watch(() => props.modelValue, (newValue) => {
 });
 </script>
 
-<style scoped>
-.code-editor {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background-color: var(--color-neutral-900);
-}
-
-/* Header */
-.editor-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.625rem 1rem;
-  background-color: var(--color-neutral-800);
-  border-bottom: 1px solid var(--color-neutral-700);
-}
-
-.header-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-neutral-300);
-}
-
-.title-icon {
-  width: 1.125rem;
-  height: 1.125rem;
-  color: var(--color-go-yellow);
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.action-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-neutral-300);
-  background-color: var(--color-neutral-700);
-  border: none;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
-}
-
-.action-button:hover {
-  background-color: var(--color-neutral-600);
-  color: white;
-}
-
-.action-icon {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-.action-icon-success {
-  color: var(--color-success);
-}
-
-.action-text {
-  display: none;
-}
-
-/* Editor container */
-.editor-container {
-  display: flex;
-  min-height: 16rem;
-  max-height: 24rem;
-  overflow: auto;
-}
-
-.line-numbers {
-  display: flex;
-  flex-direction: column;
-  padding: 1.25rem 0.875rem;
-  background-color: var(--color-neutral-950);
-  border-right: 1px solid var(--color-neutral-800);
-  user-select: none;
-  text-align: right;
-  min-width: 3.5rem;
-}
-
-.line-number {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: 1.7;
-  color: var(--color-neutral-600);
-}
-
-.editor-textarea {
-  flex: 1;
-  padding: 1.25rem;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: 1.7;
-  color: var(--color-neutral-100);
-  background-color: transparent;
-  border: none;
-  outline: none;
-  resize: none;
-  tab-size: 2;
-  white-space: pre;
-  overflow-wrap: normal;
-  overflow-x: auto;
-}
-
-.editor-textarea::placeholder {
-  color: var(--color-neutral-600);
-}
-
-.editor-textarea:focus {
-  outline: none;
-}
-
-/* Footer */
-.editor-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--color-neutral-800);
-  border-top: 1px solid var(--color-neutral-700);
-}
-
-.footer-hint {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-size: var(--text-xs);
-  color: var(--color-neutral-500);
-}
-
-.hint-icon {
-  width: 1rem;
-  height: 1rem;
-}
-
-.footer-stats {
-  font-size: var(--text-xs);
-  font-family: var(--font-mono);
-  color: var(--color-neutral-500);
-}
-
-/* Responsive */
-@media (min-width: 640px) {
-  .action-text {
-    display: inline;
-  }
-}
-</style>

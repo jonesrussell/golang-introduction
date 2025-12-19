@@ -1,5 +1,5 @@
 <template>
-  <div class="exercise-view">
+  <div class="p-8 max-w-5xl mx-auto">
     <div v-if="loading" class="text-center py-8">Loading exercises...</div>
     <div v-else-if="error" class="text-red-500 py-8">{{ error }}</div>
     <div v-else-if="exercises.length === 0" class="text-center py-8 text-gray-500">
@@ -31,7 +31,7 @@
         <div class="mb-4">
           <h4 class="font-semibold mb-2">Your Solution:</h4>
           <CodeEditor
-            v-model="solutions[exercise.id]"
+            v-model="solutions[exercise.id] || ''"
             :placeholder="exercise.starterCode || 'Write your solution here...'"
           />
         </div>
@@ -123,9 +123,7 @@ const loadExercises = async () => {
     exercises.value = await exerciseApi.getExercises(props.tutorialId);
     // Initialize solutions with starter code
     exercises.value.forEach((ex: Exercise) => {
-      if (ex.starterCode) {
-        solutions.value[ex.id] = ex.starterCode;
-      }
+      solutions.value[ex.id] = ex.starterCode || '';
     });
   } catch (err) {
     error.value = err instanceof Error ? err.message : 'Failed to load exercises';
@@ -182,11 +180,4 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.exercise-view {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-</style>
 

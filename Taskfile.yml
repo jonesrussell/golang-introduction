@@ -28,9 +28,6 @@ tasks:
     cmds:
       - npm run dev
     dir: '{{.FRONTEND_DIR}}'
-    preconditions:
-      - test -f {{.FRONTEND_DIR}}/package.json
-      - sh: command -v npm
 
   # Install dependencies
   install:
@@ -49,7 +46,7 @@ tasks:
       - npm install
     dir: '{{.FRONTEND_DIR}}'
     preconditions:
-      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: test -f {{.FRONTEND_DIR}}/package.json
       - sh: command -v npm
 
   # Build tasks
@@ -71,7 +68,7 @@ tasks:
       - npm run build
     dir: '{{.FRONTEND_DIR}}'
     preconditions:
-      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: test -f {{.FRONTEND_DIR}}/package.json
       - sh: command -v npm
 
   # Docker tasks
@@ -123,7 +120,7 @@ tasks:
       - npm run type-check
     dir: '{{.FRONTEND_DIR}}'
     preconditions:
-      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: test -f {{.FRONTEND_DIR}}/package.json
       - sh: command -v npm
 
   # Testing tasks
@@ -179,7 +176,7 @@ tasks:
       - npm update
     dir: '{{.FRONTEND_DIR}}'
     preconditions:
-      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: test -f {{.FRONTEND_DIR}}/package.json
       - sh: command -v npm
 
   # Verification tasks
