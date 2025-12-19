@@ -127,8 +127,21 @@ func (e *CodeExecutor) validateCode(code string) error {
 
 // Execute runs Go code and returns the result
 func (e *CodeExecutor) Execute(ctx context.Context, code string) (*ExecutionResult, error) {
-	// Validate code for security
-	if err := e.validateCode(code); err != nil {
+	return e.ExecuteWithOptions(ctx, code, false)
+}
+
+// ExecuteSnippet runs a code snippet, auto-wrapping it first
+func (e *CodeExecutor) ExecuteSnippet(ctx context.Context, code string) (*ExecutionResult, error) {
+	return e.ExecuteWithOptions(ctx, code, true)
+}
+
+// ExecuteWithOptions runs Go code with options for snippet handling
+func (e *CodeExecutor) ExecuteWithOptions(ctx context.Context, code string, isSnippet bool) (*ExecutionResult, error) {
+	// Prepare code for execution (wrap if needed)
+	executableCode := PrepareForExecution(code, isSnippet)
+
+	// Validate code for security (validate the wrapped code)
+	if err := e.validateCode(executableCode); err != nil {
 		return &ExecutionResult{
 			Output:   "",
 			Error:    err.Error(),
@@ -136,6 +149,9 @@ func (e *CodeExecutor) Execute(ctx context.Context, code string) (*ExecutionResu
 			Duration: "0s",
 		}, nil
 	}
+
+	// Use executableCode from here on
+	code = executableCode
 
 	// Create a context with timeout
 	execCtx, cancel := context.WithTimeout(ctx, e.timeout)

@@ -11,14 +11,69 @@ import (
 
 // TutorialParser handles parsing of tutorial markdown files
 type TutorialParser struct {
-	tutorialsDir string
+	tutorialsDir    string
+	directoryParser *DirectoryParser
 }
 
 // NewTutorialParser creates a new tutorial parser
 func NewTutorialParser(tutorialsDir string) *TutorialParser {
 	return &TutorialParser{
-		tutorialsDir: tutorialsDir,
+		tutorialsDir:    tutorialsDir,
+		directoryParser: NewDirectoryParser(tutorialsDir),
 	}
+}
+
+// GetTutorial returns a tutorial by ID, checking directory format first, then file format
+func (p *TutorialParser) GetTutorial(tutorialID string, includeInstructorNotes bool) (*models.Tutorial, error) {
+	// Check if tutorial exists as directory
+	if p.directoryParser.IsTutorialDirectory(tutorialID) {
+		return p.directoryParser.ParseTutorialFromDirectory(tutorialID, includeInstructorNotes)
+	}
+
+	// Fall back to file-based tutorial
+	filename := p.findTutorialFile(tutorialID)
+	if filename == "" {
+		return nil, fmt.Errorf("tutorial %s not found", tutorialID)
+	}
+
+	return p.ParseTutorial(filename)
+}
+
+// GetTutorialMetadata returns metadata for a tutorial
+func (p *TutorialParser) GetTutorialMetadata(tutorialID string) (*models.TutorialMetadata, error) {
+	// Check if tutorial exists as directory
+	if p.directoryParser.IsTutorialDirectory(tutorialID) {
+		return p.directoryParser.GetTutorialMetadataFromDirectory(tutorialID)
+	}
+
+	// Fall back to file-based tutorial
+	filename := p.findTutorialFile(tutorialID)
+	if filename == "" {
+		return nil, fmt.Errorf("tutorial %s not found", tutorialID)
+	}
+
+	return p.GetTutorialMetadataFromFile(filename)
+}
+
+// findTutorialFile finds the file for a tutorial ID
+func (p *TutorialParser) findTutorialFile(tutorialID string) string {
+	tutorials, err := p.ListTutorialFiles()
+	if err != nil {
+		return ""
+	}
+
+	for _, filename := range tutorials {
+		if ExtractTutorialID(filename) == tutorialID {
+			return filename
+		}
+	}
+
+	return ""
+}
+
+// ListTutorialFiles returns legacy .md tutorial files only
+func (p *TutorialParser) ListTutorialFiles() ([]string, error) {
+	return listLegacyTutorials(p.tutorialsDir)
 }
 
 // ExtractTutorialID extracts a tutorial ID from a filename
@@ -38,7 +93,7 @@ func ExtractTutorialID(filename string) string {
 func DetermineLevel(tutorialNum string) string {
 	num := 0
 	fmt.Sscanf(tutorialNum, "%d", &num)
-	
+
 	if num >= 1 && num <= 3 {
 		return "Beginner"
 	} else if num >= 4 && num <= 8 {
@@ -53,13 +108,13 @@ func DetermineLevel(tutorialNum string) string {
 func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) (*models.TutorialMetadata, error) {
 	id := ExtractTutorialID(filename)
 	level := DetermineLevel(id)
-	
+
 	metadata := &models.TutorialMetadata{
 		ID:            id,
 		Level:         level,
 		Prerequisites: []string{},
 	}
-	
+
 	// Extract title from first line or header
 	lines := strings.Split(content, "\n")
 	for _, line := range lines {
@@ -80,22 +135,22 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 			}
 		}
 	}
-	
+
 	// Parse metadata section
 	inMetadata := false
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		
+
 		if strings.Contains(line, "Video Metadata") {
 			inMetadata = true
 			continue
 		}
-		
+
 		if inMetadata {
 			if strings.HasPrefix(line, "###") || strings.HasPrefix(line, "##") {
 				break
 			}
-			
+
 			// Parse title
 			if strings.Contains(line, "Title:") {
 				parts := strings.Split(line, "Title:")
@@ -103,7 +158,7 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 					metadata.Title = strings.TrimSpace(strings.Trim(parts[1], "*"))
 				}
 			}
-			
+
 			// Parse duration - extract just the time range like "25-35 minutes"
 			// Line format: "- **Duration Target:** 25-35 minutes"
 			if strings.Contains(line, "Duration") {
@@ -113,7 +168,7 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 					metadata.Duration = matches[1]
 				}
 			}
-			
+
 			// Parse difficulty - extract just the level
 			// Line format: "- **Difficulty:** Beginner (no prior Go experience needed)"
 			if strings.Contains(line, "Difficulty:**") {
@@ -131,7 +186,7 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 					}
 				}
 			}
-			
+
 			// Parse prerequisites
 			// Line format: "- **Prerequisites:** Basic programming concepts helpful but not required"
 			if strings.Contains(line, "Prerequisites:**") {
@@ -143,20 +198,19 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 					}
 				}
 			}
-			
+
 			// Count sections for section count
 			if strings.HasPrefix(line, "###") {
 				metadata.SectionCount++
 			}
 		}
 	}
-	
+
 	// If title still empty, use filename
 	if metadata.Title == "" {
 		base := filepath.Base(filename)
 		metadata.Title = strings.TrimSuffix(base, filepath.Ext(base))
 	}
-	
+
 	return metadata, nil
 }
-
