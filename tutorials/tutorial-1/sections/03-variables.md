@@ -3,11 +3,11 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- Variable declaration with `var`
-- Type inference
-- Short declaration (`:=`)
-- Zero values
-- Constants with `const`
+- Variable declaration with [`var`](https://go.dev/ref/spec#Variable_declarations)
+- [Type inference](https://go.dev/tour/basics/14)
+- [Short declaration](https://go.dev/ref/spec#Short_variable_declarations) (`:=`)
+- [Zero values](https://go.dev/ref/spec#The_zero_value)
+- [Constants](https://go.dev/ref/spec#Constant_declarations) with `const`
 - Multiple variable declaration
 
 ## Code Examples
@@ -41,8 +41,8 @@ var (
 ```
 
 ## Key teaching points:
-- `:=` can only be used inside functions
-- Go is statically typed but has type inference
-- Unused variables are compilation errors (good for code quality!)
-- Zero values prevent uninitialized variable bugs
-- Constants must be compile-time values
+- [`:=` can only be used inside functions](https://go.dev/ref/spec#Short_variable_declarations)
+- Go is [statically typed](https://go.dev/doc/faq#Is_Go_an_object-oriented_language) but has [type inference](https://go.dev/tour/basics/14)
+- [Unused variables are compilation errors](https://go.dev/doc/faq#unused_variables_and_imports) (good for code quality!)
+- [Zero values](https://go.dev/ref/spec#The_zero_value) prevent uninitialized variable bugs
+- [Constants must be compile-time values](https://go.dev/ref/spec#Constants)

@@ -3,10 +3,10 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Numeric types: `int`, `int64`, `float64`
-- String type
-- Boolean type
-- Type conversion (explicit only)
+- Numeric types: [`int`](https://go.dev/ref/spec#Numeric_types), [`int64`](https://go.dev/ref/spec#Numeric_types), [`float64`](https://go.dev/ref/spec#Numeric_types)
+- [String type](https://go.dev/ref/spec#String_types)
+- [Boolean type](https://go.dev/ref/spec#Boolean_types)
+- [Type conversion](https://go.dev/ref/spec#Conversions) (explicit only)
 - String concatenation
 
 ## Code Examples
@@ -40,8 +40,8 @@ fmt.Printf("Name: %s, Length: %d\n", fullName, len(fullName))
 ```
 
 ## Key teaching points:
-- No implicit type conversion (prevents bugs)
-- `int` vs `int64` - platform-dependent vs explicit size
-- String concatenation with `+`
-- `fmt.Printf` for formatted output
-- Backticks for raw/multi-line strings
+- [No implicit type conversion](https://go.dev/ref/spec#Conversions) (prevents bugs)
+- [`int` vs `int64`](https://go.dev/ref/spec#Numeric_types) - platform-dependent vs explicit size
+- [String concatenation](https://go.dev/ref/spec#String_concatenation) with `+`
+- [`fmt.Printf`](https://pkg.go.dev/fmt#Printf) for formatted output
+- [Raw string literals](https://go.dev/ref/spec#String_literals) (backticks) for multi-line strings

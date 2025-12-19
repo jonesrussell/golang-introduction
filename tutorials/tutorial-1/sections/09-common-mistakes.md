@@ -38,7 +38,7 @@ var y float64 = x  // ERROR! Must use float64(x)
 ```
 
 ## Key teaching points:
-- Always use declared variables
-- Be careful with `:=` creating new variables in inner scopes
-- Shadowing can lead to subtle bugs
-- Go requires explicit type conversion
+- Always use declared variables ([compiler enforces this](https://go.dev/doc/faq#unused_variables_and_imports))
+- Be careful with [`:=` creating new variables](https://go.dev/doc/faq#shadowing) in inner scopes
+- [Shadowing](https://go.dev/doc/faq#shadowing) can lead to subtle bugs
+- Go requires [explicit type conversion](https://go.dev/ref/spec#Conversions)

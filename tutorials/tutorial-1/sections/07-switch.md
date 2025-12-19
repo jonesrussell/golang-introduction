@@ -3,10 +3,10 @@
 **Duration:** 3-4 minutes
 
 ## Topics to cover:
-- Basic switch
-- Multiple values in case
-- No fallthrough by default
-- Switch without expression (replaces if/else chains)
+- Basic [switch](https://go.dev/ref/spec#Switch_statements)
+- [Multiple values in case](https://go.dev/tour/flowcontrol/10)
+- [No fallthrough by default](https://go.dev/ref/spec#Switch_statements)
+- [Switch without expression](https://go.dev/tour/flowcontrol/11) (replaces if/else chains)
 
 ## Code Examples
 
@@ -39,7 +39,7 @@ default:
 ```
 
 ## Key teaching points:
-- No `break` needed (doesn't fall through by default)
-- Can have multiple values per case
-- Switch without expression acts like if/else chain
+- [No `break` needed](https://go.dev/ref/spec#Switch_statements) (doesn't fall through by default)
+- Can have [multiple values per case](https://go.dev/tour/flowcontrol/10)
+- [Switch without expression](https://go.dev/tour/flowcontrol/11) acts like if/else chain
 - Cleaner than long if/else chains

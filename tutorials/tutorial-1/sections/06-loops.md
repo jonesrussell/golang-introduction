@@ -3,11 +3,11 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- For loop (the only loop in Go!)
-- While-style loop
-- Infinite loop
-- Range over collections
-- Break and continue
+- [For loop](https://go.dev/ref/spec#For_statements) (the only loop in Go!)
+- [While-style loop](https://go.dev/tour/flowcontrol/3)
+- [Infinite loop](https://go.dev/tour/flowcontrol/4)
+- [Range over collections](https://go.dev/ref/spec#For_range)
+- [Break and continue](https://go.dev/ref/spec#Break_statements)
 
 ## Code Examples
 
@@ -50,8 +50,8 @@ for _, char := range name {
 ```
 
 ## Key teaching points:
-- Go only has `for` - no `while` or `do-while`
-- Different forms of `for` cover all loop needs
-- `range` is idiomatic for iterating
-- Use `_` to ignore values you don't need
-- `break` exits loop, `continue` skips to next iteration
+- Go [only has `for`](https://go.dev/ref/spec#For_statements) - no `while` or `do-while`
+- Different forms of [`for`](https://go.dev/tour/flowcontrol/1) cover all loop needs
+- [`range`](https://go.dev/ref/spec#For_range) is idiomatic for iterating
+- Use [blank identifier `_`](https://go.dev/ref/spec#Blank_identifier) to ignore values you don't need
+- [`break`](https://go.dev/ref/spec#Break_statements) exits loop, [`continue`](https://go.dev/ref/spec#Continue_statements) skips to next iteration

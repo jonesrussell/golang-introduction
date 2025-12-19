@@ -3,10 +3,10 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- Basic if/else
-- If with initialization statement
+- Basic [if/else](https://go.dev/ref/spec#If_statements)
+- [If with initialization statement](https://go.dev/tour/flowcontrol/6)
 - No parentheses needed (Go style)
-- Comparison operators
+- [Comparison operators](https://go.dev/ref/spec#Comparison_operators)
 
 ## Code Examples
 
@@ -40,7 +40,7 @@ if x != y {
 ```
 
 ## Key teaching points:
-- No parentheses around condition (Go enforces clean style)
-- Braces are mandatory (prevents bugs)
-- Init statement scope is limited to if/else block
-- Standard comparison operators: `==`, `!=`, `<`, `>`, `<=`, `>=`
+- [No parentheses around condition](https://go.dev/ref/spec#If_statements) (Go enforces clean style)
+- Braces are [mandatory](https://go.dev/ref/spec#Blocks) (prevents bugs)
+- [Init statement scope](https://go.dev/tour/flowcontrol/6) is limited to if/else block
+- Standard [comparison operators](https://go.dev/ref/spec#Comparison_operators): `==`, `!=`, `<`, `>`, `<=`, `>=`

@@ -35,7 +35,8 @@
             <svg class="w-4.5 h-4.5 text-[#00ADD8] flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
-            {{ topic }}
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="renderMarkdown(topic)"></span>
           </li>
         </ul>
       </div>
@@ -65,7 +66,8 @@
             <svg class="w-4.5 h-4.5 text-green-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
-            {{ point }}
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="renderMarkdown(point)"></span>
           </li>
         </ul>
       </div>
@@ -152,5 +154,24 @@ const isComplete = computed(() => {
 const handleComplete = () => {
   emit('complete');
 };
+
+// Convert markdown links and inline code to HTML
+function renderMarkdown(text: string): string {
+  let html = text;
+  
+  // Convert markdown links [text](url) to HTML anchors
+  html = html.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#00ADD8] hover:text-[#007D9C] underline underline-offset-2">$1</a>'
+  );
+  
+  // Convert inline code `code` to styled spans
+  html = html.replace(
+    /`([^`]+)`/g,
+    '<code class="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-[#00ADD8] rounded text-sm font-mono">$1</code>'
+  );
+  
+  return html;
+}
 </script>
 
