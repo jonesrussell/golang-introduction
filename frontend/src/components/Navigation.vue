@@ -72,7 +72,7 @@ const props = defineProps<{
   showBreadcrumbs?: boolean;
 }>();
 
-const emit = defineEmits<{
+defineEmits<{
   (e: 'next'): void;
   (e: 'previous'): void;
   (e: 'home'): void;

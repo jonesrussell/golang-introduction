@@ -32,7 +32,8 @@
         <div class="mb-4">
           <h4 class="font-semibold mb-2">Your Solution:</h4>
           <CodeEditor
-            v-model="solutions[exercise.id] || ''"
+            :model-value="solutions[exercise.id] || ''"
+            @update:model-value="(value: string) => { solutions[exercise.id] = value; }"
             :placeholder="exercise.starterCode || 'Write your solution here...'"
           />
         </div>

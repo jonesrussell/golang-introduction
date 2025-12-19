@@ -141,6 +141,7 @@ const props = defineProps<{
   instructorMode?: boolean;
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const emit = defineEmits<{
   (e: 'next'): void;
   (e: 'previous'): void;

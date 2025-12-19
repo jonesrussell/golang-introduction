@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import type { Tutorial, TutorialMetadata } from '../types/tutorial';
 
 // Simple in-memory cache for tutorials

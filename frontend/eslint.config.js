@@ -51,6 +51,8 @@ export default [
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
           caughtErrorsIgnorePattern: '^_',
+          // Ignore parameters in function type definitions (like emit definitions)
+          args: 'none',
         },
       ],
       '@typescript-eslint/explicit-function-return-type': 'off',

@@ -84,6 +84,7 @@ const props = defineProps<{
   placeholder?: string;
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
