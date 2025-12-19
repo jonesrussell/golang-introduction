@@ -154,14 +154,14 @@ watch(() => props.modelValue, (newValue) => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8125rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-neutral-300);
 }
 
 .title-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
   color: var(--color-go-yellow);
 }
 
@@ -175,8 +175,8 @@ watch(() => props.modelValue, (newValue) => {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.375rem 0.625rem;
-  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-neutral-300);
   background-color: var(--color-neutral-700);
@@ -214,27 +214,27 @@ watch(() => props.modelValue, (newValue) => {
 .line-numbers {
   display: flex;
   flex-direction: column;
-  padding: 1rem 0.75rem;
+  padding: 1.25rem 0.875rem;
   background-color: var(--color-neutral-950);
   border-right: 1px solid var(--color-neutral-800);
   user-select: none;
   text-align: right;
-  min-width: 3rem;
+  min-width: 3.5rem;
 }
 
 .line-number {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  font-size: var(--text-sm);
+  line-height: 1.7;
   color: var(--color-neutral-600);
 }
 
 .editor-textarea {
   flex: 1;
-  padding: 1rem;
+  padding: 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  font-size: var(--text-sm);
+  line-height: 1.7;
   color: var(--color-neutral-100);
   background-color: transparent;
   border: none;
@@ -269,17 +269,17 @@ watch(() => props.modelValue, (newValue) => {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.6875rem;
+  font-size: var(--text-xs);
   color: var(--color-neutral-500);
 }
 
 .hint-icon {
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .footer-stats {
-  font-size: 0.6875rem;
+  font-size: var(--text-xs);
   font-family: var(--font-mono);
   color: var(--color-neutral-500);
 }

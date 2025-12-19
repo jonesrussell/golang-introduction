@@ -176,7 +176,7 @@ const handleHome = () => {
 }
 
 .logo-text h1 {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
@@ -184,7 +184,7 @@ const handleHome = () => {
 }
 
 .logo-tagline {
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
   font-weight: 500;
 }
@@ -234,7 +234,7 @@ const handleHome = () => {
 }
 
 .welcome-title {
-  font-size: 2rem;
+  font-size: var(--text-4xl);
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 1rem;
@@ -242,7 +242,7 @@ const handleHome = () => {
 }
 
 .welcome-subtitle {
-  font-size: 1.125rem;
+  font-size: var(--text-lg);
   color: var(--color-text-muted);
   line-height: 1.7;
   margin: 0 0 2rem;
@@ -260,10 +260,11 @@ const handleHome = () => {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 1.5rem;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
+  font-size: var(--text-base);
   font-weight: 500;
   color: var(--color-text);
   transition: all var(--transition-fast);
@@ -275,13 +276,13 @@ const handleHome = () => {
 }
 
 .feature-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
   color: var(--color-primary);
 }
 
 .welcome-cta {
-  font-size: 0.875rem;
+  font-size: var(--text-base);
   color: var(--color-text-subtle);
 }
 

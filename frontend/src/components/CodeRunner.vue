@@ -202,14 +202,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.8125rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-neutral-300);
 }
 
 .title-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
   color: var(--color-go-blue-light);
 }
 
@@ -224,8 +224,8 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.375rem 0.625rem;
-  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm);
   font-weight: 500;
   color: var(--color-neutral-300);
   background-color: var(--color-neutral-700);
@@ -262,8 +262,8 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: white;
   background-color: var(--color-success);
@@ -311,10 +311,10 @@ onMounted(() => {
 }
 
 .code-content {
-  padding: 1rem;
+  padding: 1.25rem;
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  font-size: var(--text-sm);
+  line-height: 1.7;
 }
 
 .code-plain {
@@ -325,14 +325,14 @@ onMounted(() => {
 /* Deep styling for syntax highlighting */
 :deep(.shiki) {
   background-color: transparent !important;
-  padding: 1rem;
+  padding: 1.25rem;
   margin: 0;
 }
 
 :deep(.shiki code) {
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.6;
+  font-size: var(--text-sm);
+  line-height: 1.7;
 }
 
 /* Results */
@@ -354,22 +354,22 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
+  padding: 0.625rem 1rem;
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 .result-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .result-content {
   margin: 0;
-  padding: 0.75rem;
+  padding: 1rem;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -404,13 +404,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
   color: var(--color-text-subtle);
 }
 
 .time-icon {
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 /* Responsive */

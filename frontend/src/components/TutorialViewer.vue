@@ -220,7 +220,7 @@ onMounted(async () => {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  font-size: 0.875rem;
+  font-size: var(--text-sm);
   flex-wrap: wrap;
 }
 
@@ -267,7 +267,7 @@ onMounted(async () => {
 }
 
 .tutorial-title {
-  font-size: 1.875rem;
+  font-size: var(--text-3xl);
   font-weight: 700;
   color: var(--color-text);
   margin: 0 0 1rem;
@@ -285,13 +285,13 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.875rem;
+  font-size: var(--text-base);
   color: var(--color-text-muted);
 }
 
 .meta-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
   color: var(--color-text-subtle);
 }
 

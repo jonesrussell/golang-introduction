@@ -201,8 +201,8 @@ onMounted(async () => {
 .level-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
+  padding: 0.375rem 0.875rem;
+  font-size: var(--text-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -268,7 +268,7 @@ onMounted(async () => {
 }
 
 .card-title {
-  font-size: 0.9375rem;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--color-text);
   margin: 0;
@@ -280,8 +280,8 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.125rem 0.5rem;
-  font-size: 0.6875rem;
+  padding: 0.25rem 0.625rem;
+  font-size: var(--text-xs);
   font-weight: 600;
   border-radius: var(--radius-sm);
   white-space: nowrap;
@@ -314,13 +314,13 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  font-size: 0.75rem;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
 }
 
 .meta-icon {
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1rem;
+  height: 1rem;
   color: var(--color-text-subtle);
 }
 
@@ -348,7 +348,7 @@ onMounted(async () => {
 }
 
 .progress-text {
-  font-size: 0.6875rem;
+  font-size: var(--text-xs);
   color: var(--color-text-subtle);
   white-space: nowrap;
 }

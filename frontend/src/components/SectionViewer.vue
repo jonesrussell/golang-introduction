@@ -168,7 +168,7 @@ const handleComplete = () => {
 }
 
 .section-title {
-  font-size: 1.375rem;
+  font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
@@ -176,10 +176,10 @@ const handleComplete = () => {
 }
 
 .section-counter {
-  font-size: 0.8125rem;
+  font-size: var(--text-sm);
   color: var(--color-text-muted);
   white-space: nowrap;
-  padding: 0.25rem 0.75rem;
+  padding: 0.375rem 0.875rem;
   background-color: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -230,15 +230,15 @@ const handleComplete = () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1rem;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text);
   margin: 0 0 1rem;
 }
 
 .block-icon {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.375rem;
+  height: 1.375rem;
   color: var(--color-primary);
 }
 
@@ -255,15 +255,15 @@ const handleComplete = () => {
 .topic-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.625rem;
-  font-size: 0.9375rem;
+  gap: 0.75rem;
+  font-size: var(--text-base);
   color: var(--color-text);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .topic-bullet {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
   color: var(--color-primary);
   flex-shrink: 0;
   margin-top: 0.25rem;
@@ -294,11 +294,11 @@ const handleComplete = () => {
 .teaching-item {
   display: flex;
   align-items: flex-start;
-  gap: 0.625rem;
-  font-size: 0.9375rem;
+  gap: 0.75rem;
+  font-size: var(--text-base);
   color: var(--color-text);
-  line-height: 1.5;
-  padding: 0.75rem 1rem;
+  line-height: 1.6;
+  padding: 1rem 1.25rem;
   background-color: var(--color-success-light);
   border-radius: var(--radius-md);
 }
@@ -326,8 +326,8 @@ const handleComplete = () => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
+  padding: 0.75rem 1.25rem;
+  font-size: var(--text-base);
   font-weight: 500;
   border-radius: var(--radius-lg);
   border: none;
@@ -374,8 +374,8 @@ const handleComplete = () => {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
+  padding: 0.75rem 1.5rem;
+  font-size: var(--text-base);
   font-weight: 600;
   border-radius: var(--radius-lg);
   border: none;
