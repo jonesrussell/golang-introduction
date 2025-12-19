@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* Modern 2025 Design System */
-@theme {
+/* Modern 2025 Design System - CSS Custom Properties */
+:root {
   /* Go-inspired color palette */
   --color-go-blue: #00ADD8;
   --color-go-blue-dark: #007D9C;
