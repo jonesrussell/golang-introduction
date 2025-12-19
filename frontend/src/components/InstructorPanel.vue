@@ -31,6 +31,7 @@
       v-show="expanded"
       class="mt-2 p-6 bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl"
     >
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <div class="prose prose-amber dark:prose-invert max-w-none instructor-content" v-html="renderedNotes"></div>
     </div>
   </div>

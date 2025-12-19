@@ -50,7 +50,7 @@
         ref="textareaRef"
         v-model="localCode"
         class="flex-1 py-5 px-5 font-mono text-sm leading-[1.7] text-neutral-100 bg-transparent border-none outline-none resize-none whitespace-pre overflow-wrap-normal overflow-x-auto placeholder:text-neutral-600"
-        style="tab-size: 2;"
+        :style="{ tabSize: '2' }"
         :placeholder="placeholder"
         spellcheck="false"
         autocomplete="off"
@@ -84,10 +84,11 @@ const props = defineProps<{
   placeholder?: string;
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable no-unused-vars */
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
+/* eslint-enable no-unused-vars */
 
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 const localCode = ref(props.modelValue);

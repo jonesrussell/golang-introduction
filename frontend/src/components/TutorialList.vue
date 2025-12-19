@@ -16,7 +16,7 @@
 
     <!-- Tutorial list -->
     <div v-else class="flex flex-col gap-6">
-      <div v-for="(tutorials, level) in tutorialsByLevel" :key="level" class="flex flex-col gap-3">
+      <div v-for="(tutorialsInLevel, level) in tutorialsByLevel" :key="level" class="flex flex-col gap-3">
         <h3 class="m-0 px-1">
           <span
             class="inline-flex items-center px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide rounded-md" :class="[
@@ -32,7 +32,7 @@
         </h3>
         <div class="flex flex-col gap-2">
           <button
-            v-for="tutorial in tutorials"
+            v-for="tutorial in tutorialsInLevel"
             :key="tutorial.id"
             type="button"
             class="flex flex-col gap-2 w-full p-4 bg-white dark:bg-neutral-900 border rounded-xl text-left transition-all duration-150" :class="[

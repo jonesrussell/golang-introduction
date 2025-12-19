@@ -141,12 +141,13 @@ const props = defineProps<{
   instructorMode?: boolean;
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable no-unused-vars */
 const emit = defineEmits<{
   (e: 'next'): void;
   (e: 'previous'): void;
   (e: 'complete'): void;
 }>();
+/* eslint-enable no-unused-vars */
 
 const progressStore = useProgressStore();
 

@@ -72,11 +72,13 @@ const props = defineProps<{
   showBreadcrumbs?: boolean;
 }>();
 
+/* eslint-disable no-unused-vars */
 defineEmits<{
   (e: 'next'): void;
   (e: 'previous'): void;
   (e: 'home'): void;
 }>();
+/* eslint-enable no-unused-vars */
 
 const hasPrevious = computed(() => props.currentIndex > 0);
 const hasNext = computed(() => props.currentIndex < props.totalSections - 1);

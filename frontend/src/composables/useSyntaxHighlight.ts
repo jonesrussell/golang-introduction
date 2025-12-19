@@ -34,7 +34,8 @@ export function useSyntaxHighlight() {
     }
 
     try {
-      const lang = highlighter.getLoadedLanguages().includes(language as any)
+      const loadedLanguages = highlighter.getLoadedLanguages();
+      const lang = loadedLanguages.includes(language)
         ? language
         : 'go';
       return highlighter.codeToHtml(code, {

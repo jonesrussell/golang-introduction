@@ -33,8 +33,8 @@
           <h4 class="font-semibold mb-2">Your Solution:</h4>
           <CodeEditor
             :model-value="solutions[exercise.id] || ''"
-            @update:model-value="(value: string) => { solutions[exercise.id] = value; }"
             :placeholder="exercise.starterCode || 'Write your solution here...'"
+            @update:model-value="(value: string) => { solutions[exercise.id] = value; }"
           />
         </div>
 

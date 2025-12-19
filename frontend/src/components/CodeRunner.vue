@@ -71,6 +71,7 @@
 
     <!-- Syntax Highlighted Code Display -->
     <div v-else-if="highlightedCode" class="bg-neutral-900 overflow-x-auto">
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <div class="p-5 [&:deep(.shiki)]:bg-transparent [&:deep(.shiki)]:p-5 [&:deep(.shiki)]:m-0 [&:deep(.shiki_code)]:font-mono [&:deep(.shiki_code)]:text-sm [&:deep(.shiki_code)]:leading-[1.7]" v-html="highlightedCode"></div>
     </div>
 
