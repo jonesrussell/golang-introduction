@@ -107,15 +107,15 @@ tasks:
   lint:
     desc: Run all linting checks
     deps: [vet, lint:frontend]
+    cmds:
+      - golangci-lint run ./...
+    dir: '{{.ROOT_DIR}}'
 
   lint:frontend:
     desc: Type-check Vue frontend
     cmds:
       - npm run type-check
     dir: '{{.FRONTEND_DIR}}'
-    preconditions:
-      - sh: test -f {{.FRONTEND_DIR}}/package.json
-      - sh: command -v npm
 
   # Testing tasks
   test:
@@ -169,9 +169,6 @@ tasks:
     cmds:
       - npm update
     dir: '{{.FRONTEND_DIR}}'
-    preconditions:
-      - sh: test -f {{.FRONTEND_DIR}}/package.json
-      - sh: command -v npm
 
   # Verification tasks
   verify:
