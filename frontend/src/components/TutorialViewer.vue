@@ -127,22 +127,3 @@ onMounted(async () => {
 }
 </style>
 
-   }
-      }
-    }
-  }
-}, { immediate: true });
-
-onMounted(async () => {
-  await progressStore.loadFromLocalStorage();
-});
-</script>
-
-<style scoped>
-.tutorial-viewer {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-</style>
-

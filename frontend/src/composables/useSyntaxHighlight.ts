@@ -1,5 +1,5 @@
 import { ref, onMounted } from 'vue';
-import { getHighlighter, type Highlighter } from 'shiki';
+import { createHighlighter, type Highlighter } from 'shiki';
 
 let highlighterInstance: Highlighter | null = null;
 
@@ -14,7 +14,7 @@ export function useSyntaxHighlight() {
     }
 
     try {
-      highlighterInstance = await getHighlighter({
+      highlighterInstance = await createHighlighter({
         themes: ['github-dark'],
         langs: ['go', 'javascript', 'typescript', 'json', 'markdown'],
       });
