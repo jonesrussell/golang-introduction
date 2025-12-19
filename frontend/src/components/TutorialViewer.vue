@@ -91,14 +91,14 @@
       </header>
 
       <!-- Two-column layout: Main content and Instructor Panel -->
-      <div :class="[
-        'grid grid-cols-1 gap-6',
-        showInstructorPanel ? 'lg:grid-cols-3' : ''
-      ]">
+      <div
+        class="grid grid-cols-1 gap-6"
+        :class="showInstructorPanel ? 'lg:grid-cols-3' : ''"
+      >
         <!-- Main content column -->
-        <div :class="[
-          showInstructorPanel ? 'lg:col-span-2' : ''
-        ]">
+        <div
+          :class="showInstructorPanel ? 'lg:col-span-2' : ''"
+        >
           <SectionViewer
             v-if="currentSection"
             :section="currentSection"
@@ -123,7 +123,7 @@
         <!-- Instructor Panel column -->
         <div v-if="showInstructorPanel" class="lg:col-span-1">
           <div class="sticky top-6">
-            <InstructorPanel :notes="currentSection.instructorNotes" />
+            <InstructorPanel :notes="currentSection?.instructorNotes" />
           </div>
         </div>
       </div>

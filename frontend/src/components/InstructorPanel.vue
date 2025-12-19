@@ -41,7 +41,7 @@
 import { ref, computed } from 'vue';
 
 const props = defineProps<{
-  notes: string;
+  notes?: string;
 }>();
 
 const expanded = ref(true);
