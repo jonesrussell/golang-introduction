@@ -2,9 +2,15 @@
 
 Practice exercises to reinforce concepts from each tutorial.
 
-## Structure
+## Available Exercises
 
-Each tutorial has its own folder with multiple exercises:
+| Tutorial | Topic | Exercises |
+|----------|-------|-----------|
+| 1 | Go Basics | 6 exercises: variables, types, control flow |
+| 2 | Structs | 6 exercises: definition, methods, constructors |
+| 3 | Embedding & Composition | 5 exercises: composition, embedding, promotion |
+
+## Structure
 
 ```
 exercises/
@@ -15,7 +21,19 @@ exercises/
 │   ├── 04-conditionals/
 │   ├── 05-loops/
 │   └── 06-switch/
-└── ...
+├── tutorial-2/          # Structs
+│   ├── 01-defining-structs/
+│   ├── 02-initialization/
+│   ├── 03-nested-structs/
+│   ├── 04-value-receiver-methods/
+│   ├── 05-pointer-receiver-methods/
+│   └── 06-constructor-pattern/
+└── tutorial-3/          # Embedding & Composition
+    ├── 01-basic-composition/
+    ├── 02-struct-embedding/
+    ├── 03-method-promotion/
+    ├── 04-multiple-embedding/
+    └── 05-practical-patterns/
 ```
 
 ## How to Use
