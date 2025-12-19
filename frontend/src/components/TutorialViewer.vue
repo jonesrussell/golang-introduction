@@ -46,7 +46,26 @@
 
       <!-- Tutorial header -->
       <header class="mb-8 pb-6 border-b border-neutral-200 dark:border-neutral-800">
-        <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 m-0 mb-4 leading-tight sm:text-2xl">{{ tutorial.title }}</h1>
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 m-0 leading-tight sm:text-2xl">{{ tutorial.title }}</h1>
+          
+          <!-- Instructor Mode Toggle -->
+          <button
+            @click="toggleInstructorMode"
+            :class="[
+              'inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-150',
+              instructorMode
+                ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200'
+                : 'bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-amber-300 dark:hover:border-amber-700'
+            ]"
+            title="Toggle instructor mode"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span class="hidden sm:inline">{{ instructorMode ? 'Instructor Mode' : 'Instructor' }}</span>
+          </button>
+        </div>
         <div class="flex items-center flex-wrap gap-3">
           <span class="inline-flex items-center gap-1.5 text-base text-neutral-600 dark:text-neutral-400">
             <svg class="w-4.5 h-4.5 text-neutral-500 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,6 +97,7 @@
         :section-index="currentSectionIndex"
         :total-sections="tutorial.sections.length"
         :tutorial-id="tutorial.id"
+        :instructor-mode="instructorMode"
         @next="nextSection"
         @previous="previousSection"
         @complete="markComplete"
@@ -112,6 +132,19 @@ const { currentTutorial, loading, error, loadTutorial } = useTutorial();
 const progressStore = useProgressStore();
 
 const currentSectionIndex = ref(0);
+
+// Instructor mode state - persisted in localStorage
+const instructorMode = ref(localStorage.getItem('instructor-mode') === 'true');
+
+const toggleInstructorMode = async () => {
+  instructorMode.value = !instructorMode.value;
+  localStorage.setItem('instructor-mode', instructorMode.value.toString());
+  
+  // Reload tutorial with/without instructor notes
+  if (props.tutorialId) {
+    await loadTutorial(props.tutorialId, true, instructorMode.value);
+  }
+};
 
 const tutorial = computed(() => currentTutorial.value);
 
@@ -165,7 +198,7 @@ const markComplete = () => {
 // Watch for tutorial ID changes
 watch(() => props.tutorialId, async (newId) => {
   if (newId) {
-    await loadTutorial(newId);
+    await loadTutorial(newId, false, instructorMode.value);
     await progressStore.loadProgress();
     
     // Set section index from prop if provided, otherwise use saved progress or default to 0

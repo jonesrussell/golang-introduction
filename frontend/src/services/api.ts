@@ -17,9 +17,10 @@ export const tutorialApi = {
     return response.data;
   },
 
-  async getTutorial(id: string): Promise<Tutorial> {
-    // Use new path-based endpoint
-    const response = await api.get<Tutorial>(`/tutorials/${id}`);
+  async getTutorial(id: string, instructorMode: boolean = false): Promise<Tutorial> {
+    // Use new path-based endpoint with optional instructor mode
+    const params = instructorMode ? { instructor: 'true' } : {};
+    const response = await api.get<Tutorial>(`/tutorials/${id}`, { params });
     return response.data;
   },
 
@@ -31,8 +32,8 @@ export const tutorialApi = {
 };
 
 export const executionApi = {
-  async executeCode(code: string): Promise<ExecutionResult> {
-    const response = await api.post<ExecutionResult>('/execute', { code });
+  async executeCode(code: string, snippet: boolean = false): Promise<ExecutionResult> {
+    const response = await api.post<ExecutionResult>('/execute', { code, snippet });
     return response.data;
   },
 };

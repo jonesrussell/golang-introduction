@@ -42,14 +42,14 @@ export function useTutorial() {
     }
   };
 
-  const loadTutorial = async (id: string, forceRefresh = false) => {
-    // Check cache first
-    if (!forceRefresh) {
+  const loadTutorial = async (id: string, forceRefresh = false, instructorMode = false) => {
+    // Check cache first (but not for instructor mode - always fetch fresh)
+    if (!forceRefresh && !instructorMode) {
       const cached = cache.getCachedTutorial(id);
       if (cached) {
         currentTutorial.value = cached;
         // Load fresh data in background
-        loadTutorial(id, true).catch(() => {
+        loadTutorial(id, true, instructorMode).catch(() => {
           // Silently fail background refresh
         });
         return;
@@ -59,9 +59,12 @@ export function useTutorial() {
     loading.value = true;
     error.value = null;
     try {
-      const tutorial = await tutorialApi.getTutorial(id);
+      const tutorial = await tutorialApi.getTutorial(id, instructorMode);
       currentTutorial.value = tutorial;
-      cache.setCachedTutorial(id, tutorial);
+      // Only cache non-instructor mode tutorials
+      if (!instructorMode) {
+        cache.setCachedTutorial(id, tutorial);
+      }
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Failed to load tutorial';
       // Try to use cached data if available
