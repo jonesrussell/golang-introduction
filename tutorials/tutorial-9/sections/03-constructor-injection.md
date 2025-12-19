@@ -3,7 +3,7 @@
 **Duration:** 8-10 minutes
 
 ## Topics to cover:
-- Define interfaces for dependencies
+- Define [interfaces](https://go.dev/ref/spec#Interface_types) for dependencies
 - Accept interfaces in constructors
 - Store dependencies as fields
 
@@ -94,7 +94,7 @@ func main() {
 ```
 
 ## Key teaching points:
-- Define small interfaces
-- Accept interfaces, store interfaces
+- Define small [interfaces](https://go.dev/ref/spec#Interface_types)
+- ["Accept interfaces, return structs"](https://go.dev/doc/effective_go#interfaces_and_types)
 - Constructors wire dependencies
 - Easy to swap implementations

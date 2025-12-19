@@ -3,9 +3,9 @@
 **Duration:** 8-10 minutes
 
 ## Topics to cover:
-- Map creation and operations
-- Key requirements
-- Iteration order
+- [Map creation](https://go.dev/ref/spec#Map_types) and operations
+- [Key requirements](https://go.dev/ref/spec#Map_types)
+- [Iteration order](https://go.dev/ref/spec#For_statements)
 - nil maps vs empty maps
 - Concurrent access
 
@@ -149,6 +149,6 @@ usersPtr[1].Name = "Alicia"  // OK!
 ## Key teaching points:
 - Always initialize before writing
 - Use comma-ok for existence check
-- Iteration order is random
-- Only comparable types as keys
+- [Iteration order](https://go.dev/ref/spec#For_statements) is random
+- Only [comparable types](https://go.dev/ref/spec#Comparison_operators) as keys
 - Not safe for concurrent use

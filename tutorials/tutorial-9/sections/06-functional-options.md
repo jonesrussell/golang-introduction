@@ -5,7 +5,7 @@
 ## Topics to cover:
 - Optional dependencies
 - Configuration options
-- Self-documenting constructors
+- Self-documenting constructors using [functional options pattern](https://go.dev/doc/effective_go#composite_literals)
 
 ## Code Examples
 

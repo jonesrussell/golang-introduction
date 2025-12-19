@@ -29,3 +29,8 @@ func (s *UserService) GetUser(id int) (*User, error) {
 - Flaky tests (external dependencies)
 - Hidden dependencies
 - Can't swap implementations
+
+## Key teaching points:
+- Tight coupling makes code hard to test
+- Direct dependencies on concrete types reduce flexibility
+- [Dependency injection](https://go.dev/doc/effective_go#interfaces_and_types) solves these problems

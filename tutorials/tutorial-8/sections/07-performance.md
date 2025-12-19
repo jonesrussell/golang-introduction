@@ -3,10 +3,10 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- Pre-allocation
+- Pre-allocation with [`make`](https://pkg.go.dev/builtin#make)
 - Memory layout
 - Clearing collections
-- When to use arrays
+- When to use [arrays](https://go.dev/ref/spec#Array_types)
 
 ## Pre-allocation
 

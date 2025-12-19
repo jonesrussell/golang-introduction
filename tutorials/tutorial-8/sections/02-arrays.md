@@ -3,7 +3,7 @@
 **Duration:** 4-5 minutes
 
 ## Topics to cover:
-- Fixed size, value type
+- Fixed size, [value type](https://go.dev/ref/spec#Array_types)
 - Declaration and initialization
 - When to use arrays (rarely!)
 
@@ -48,7 +48,7 @@ type Point struct {
 ```
 
 ## Key teaching points:
-- Arrays have fixed size (part of type)
+- [Arrays](https://go.dev/ref/spec#Array_types) have fixed size (part of type)
 - Passed by value (copied)
 - Different sizes = different types
-- Use slices instead in most cases
+- Use [slices](https://go.dev/ref/spec#Slice_types) instead in most cases

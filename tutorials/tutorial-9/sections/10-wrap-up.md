@@ -4,9 +4,9 @@
 
 ## Recap:
 - Why DI matters
-- Constructor injection
+- [Constructor injection](https://go.dev/doc/effective_go#composite_literals)
 - Testing with mocks
-- Interface design
+- [Interface design](https://go.dev/ref/spec#Interface_types)
 - Functional options
 - Complete application example
 
@@ -33,3 +33,8 @@ Testing:
   Mock implements same interface
   Test success and error paths
 ```
+
+## Resources:
+- [Effective Go - Interfaces](https://go.dev/doc/effective_go#interfaces_and_types): go.dev/doc/effective_go#interfaces_and_types
+- [Go Blog: "Testable Examples in Go"](https://go.dev/blog/examples): go.dev/blog/examples
+- [Go Testing Package](https://pkg.go.dev/testing): pkg.go.dev/testing

@@ -3,10 +3,10 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- sync.WaitGroup
-- sync.Mutex
-- sync.RWMutex
-- sync.Once
+- [`sync.WaitGroup`](https://pkg.go.dev/sync#WaitGroup)
+- [`sync.Mutex`](https://pkg.go.dev/sync#Mutex)
+- [`sync.RWMutex`](https://pkg.go.dev/sync#RWMutex)
+- [`sync.Once`](https://pkg.go.dev/sync#Once)
 
 ## WaitGroup
 
@@ -119,8 +119,8 @@ func main() {
 ```
 
 ## Key teaching points:
-- WaitGroup for waiting on multiple goroutines
-- Mutex for protecting shared state
-- RWMutex when reads >> writes
-- Once for one-time initialization
+- [`WaitGroup`](https://pkg.go.dev/sync#WaitGroup) for waiting on multiple goroutines
+- [`Mutex`](https://pkg.go.dev/sync#Mutex) for protecting shared state
+- [`RWMutex`](https://pkg.go.dev/sync#RWMutex) when reads >> writes
+- [`Once`](https://pkg.go.dev/sync#Once) for one-time initialization
 - Always use defer with Lock/Unlock

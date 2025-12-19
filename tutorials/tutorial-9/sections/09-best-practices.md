@@ -37,3 +37,9 @@ func (s *Service) DoThing(ctx context.Context) error
 repo := &MockRepository{}
 service := NewService(repo)
 ```
+
+## Key teaching points:
+- ["Accept interfaces, return structs"](https://go.dev/doc/effective_go#interfaces_and_types)
+- Define [interfaces](https://go.dev/ref/spec#Interface_types) at point of use
+- Keep interfaces small and focused
+- Use [constructor injection](https://go.dev/doc/effective_go#composite_literals) for dependencies

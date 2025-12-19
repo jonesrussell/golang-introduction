@@ -3,10 +3,10 @@
 **Duration:** 8-10 minutes
 
 ## Topics to cover:
-- What are channels?
+- What are [channels](https://go.dev/ref/spec#Channel_types)?
 - Creating channels
 - Sending and receiving
-- Channel direction
+- [Channel direction](https://go.dev/ref/spec#Channel_types)
 - Buffered vs unbuffered
 
 ## Code Examples
@@ -110,9 +110,9 @@ func main() {
 ```
 
 ## Key teaching points:
-- Channels are typed conduits
+- [Channels](https://go.dev/ref/spec#Channel_types) are typed conduits
 - Unbuffered channels synchronize
 - Buffered channels can hold N values
-- Always close channels from sender side
-- `range` iterates until channel closes
+- Always [close channels](https://go.dev/ref/spec#Close) from sender side
+- [`range`](https://go.dev/ref/spec#For_statements) iterates until channel closes
 - Comma-ok checks if channel is open

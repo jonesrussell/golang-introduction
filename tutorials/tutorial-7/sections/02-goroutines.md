@@ -3,8 +3,8 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- What is a goroutine?
-- Creating goroutines with `go` keyword
+- What is a [goroutine](https://go.dev/ref/spec#Go_statements)?
+- Creating goroutines with [`go` keyword](https://go.dev/ref/spec#Go_statements)
 - Main goroutine behavior
 - Goroutine lifecycle
 
@@ -83,7 +83,7 @@ func goodExample() {
 ```
 
 ## Key teaching points:
-- `go` keyword starts a goroutine
+- [`go` keyword](https://go.dev/ref/spec#Go_statements) starts a goroutine
 - Goroutines are lightweight (~2KB stack)
 - Main exiting kills all goroutines
 - Don't use `time.Sleep` for synchronization

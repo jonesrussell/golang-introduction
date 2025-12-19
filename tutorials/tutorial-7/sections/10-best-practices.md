@@ -75,7 +75,7 @@ func (c *Cache) Get(key string) string {
 
 ## Key teaching points:
 - Design for cancellation from the start
-- Prefer channels over shared memory when possible
+- Prefer [channels](https://go.dev/ref/spec#Channel_types) over shared memory when possible
 - Always clean up goroutines
-- Use the race detector
+- Use the [race detector](https://go.dev/doc/articles/race_detector)
 - Keep critical sections small

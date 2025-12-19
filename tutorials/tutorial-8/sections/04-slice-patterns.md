@@ -6,7 +6,7 @@
 - Filtering
 - Removing elements
 - Insert at position
-- Stack/queue operations
+- Stack/queue operations using [slices](https://go.dev/ref/spec#Slice_types)
 
 ## Filter Patterns
 

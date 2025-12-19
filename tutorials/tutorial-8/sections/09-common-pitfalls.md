@@ -2,7 +2,7 @@
 
 **Duration:** 4-5 minutes
 
-## PITFALL 1: Modifying slice during iteration
+## PITFALL 1: Modifying [slice](https://go.dev/ref/spec#Slice_types) during iteration
 
 ```go
 s := []int{1, 2, 3, 4, 5}
@@ -37,7 +37,7 @@ fmt.Println(emptySlice == nil) // false
 // JSON: nil -> null, empty -> []
 ```
 
-## PITFALL 4: Map iteration during modification
+## PITFALL 4: [Map](https://go.dev/ref/spec#Map_types) iteration during modification
 
 ```go
 m := map[string]int{"a": 1, "b": 2, "c": 3}

@@ -6,7 +6,7 @@
 - Creating mock implementations
 - Testing success cases
 - Testing error cases
-- Table-driven tests
+- [Table-driven tests](https://go.dev/doc/effective_go#testing)
 
 ## Mock Implementation
 
@@ -194,7 +194,7 @@ func TestUserService_CreateUser(t *testing.T) {
 ```
 
 ## Key teaching points:
-- Mocks implement same interface
+- Mocks implement same [interface](https://go.dev/ref/spec#Interface_types)
 - Set up test scenarios with helper methods
 - Test both success and error paths
-- Table-driven tests for variations
+- [Table-driven tests](https://go.dev/doc/effective_go#testing) for variations

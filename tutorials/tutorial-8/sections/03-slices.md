@@ -3,11 +3,11 @@
 **Duration:** 10-12 minutes
 
 ## Topics to cover:
-- Slice header (pointer, length, capacity)
+- [Slice header](https://go.dev/ref/spec#Slice_types) (pointer, length, capacity)
 - Creating slices
-- Slicing operations
-- Append and growth
-- Copy
+- [Slicing operations](https://go.dev/ref/spec#Slice_expressions)
+- [`append`](https://pkg.go.dev/builtin#append) and growth
+- [`copy`](https://pkg.go.dev/builtin#copy)
 
 ## Code Examples
 
@@ -133,8 +133,8 @@ func main() {
 ```
 
 ## Key teaching points:
-- Slice is header pointing to array
-- Slicing creates new header, same array
-- Append may reallocate (assign result!)
-- Pre-allocate with make for known sizes
-- Copy for independent slice
+- [Slice](https://go.dev/ref/spec#Slice_types) is header pointing to array
+- [Slicing](https://go.dev/ref/spec#Slice_expressions) creates new header, same array
+- [`append`](https://pkg.go.dev/builtin#append) may reallocate (assign result!)
+- Pre-allocate with [`make`](https://pkg.go.dev/builtin#make) for known sizes
+- [`copy`](https://pkg.go.dev/builtin#copy) for independent slice

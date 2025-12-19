@@ -3,9 +3,9 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Cancellation propagation
-- Timeouts and deadlines
-- Passing request-scoped values
+- [Cancellation propagation](https://pkg.go.dev/context)
+- [Timeouts and deadlines](https://pkg.go.dev/context#WithTimeout)
+- [Passing request-scoped values](https://pkg.go.dev/context#WithValue)
 - Context best practices
 
 ## Cancellation
@@ -101,8 +101,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 ```
 
 ## Key teaching points:
-- Context propagates cancellation
+- [Context](https://pkg.go.dev/context) propagates cancellation
 - Always pass context as first parameter
-- Use WithCancel, WithTimeout, WithDeadline
-- Avoid context.WithValue for most data
-- Check ctx.Done() in long operations
+- Use [`WithCancel`](https://pkg.go.dev/context#WithCancel), [`WithTimeout`](https://pkg.go.dev/context#WithTimeout), [`WithDeadline`](https://pkg.go.dev/context#WithDeadline)
+- Avoid [`WithValue`](https://pkg.go.dev/context#WithValue) for most data
+- Check [`ctx.Done()`](https://pkg.go.dev/context#Context) in long operations

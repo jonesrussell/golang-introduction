@@ -3,11 +3,11 @@
 **Duration:** 2-3 minutes
 
 ## Recap What Was Covered:
-- Arrays (fixed, value type)
-- Slices (dynamic, reference semantics)
+- [Arrays](https://go.dev/ref/spec#Array_types) (fixed, value type)
+- [Slices](https://go.dev/ref/spec#Slice_types) (dynamic, reference semantics)
 - Slice internals (header, backing array)
 - Common slice patterns
-- Maps (key-value, hash table)
+- [Maps](https://go.dev/ref/spec#Map_types) (key-value, hash table)
 - Map patterns (sets, grouping)
 - Performance tips
 - In-memory database example
@@ -38,3 +38,8 @@ Map:
   delete(m, k)             Delete
   len(m)                   Size
 ```
+
+## Resources:
+- [Effective Go - Slices](https://go.dev/doc/effective_go#slices): go.dev/doc/effective_go#slices
+- [Go Blog: "Go Slices: usage and internals"](https://go.dev/blog/slices-intro): go.dev/blog/slices-intro
+- [Go Tour - Slices](https://go.dev/tour/moretypes/7): go.dev/tour/moretypes/7

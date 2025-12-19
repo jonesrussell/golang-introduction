@@ -3,7 +3,7 @@
 **Duration:** 5-6 minutes
 
 ## Topics to cover:
-- Sets using maps
+- Sets using [maps](https://go.dev/ref/spec#Map_types)
 - Counting/grouping
 - Cache patterns
 - Map of slices/maps

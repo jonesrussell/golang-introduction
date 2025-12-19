@@ -3,7 +3,7 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- Multiple channel operations
+- Multiple [channel operations](https://go.dev/ref/spec#Select_statements)
 - Non-blocking with default
 - Timeouts
 - First-response pattern
@@ -112,7 +112,7 @@ func main() {
 ```
 
 ## Key teaching points:
-- Select handles multiple channel operations
+- [Select](https://go.dev/ref/spec#Select_statements) handles multiple channel operations
 - First ready case wins (random if multiple ready)
 - Default makes operations non-blocking
 - time.After for timeouts

@@ -3,12 +3,12 @@
 **Duration:** 2-3 minutes
 
 ## Recap What Was Covered:
-- Goroutines and the `go` keyword
-- Channels for communication
-- Select for multiple channels
+- [Goroutines](https://go.dev/ref/spec#Go_statements) and the [`go` keyword](https://go.dev/ref/spec#Go_statements)
+- [Channels](https://go.dev/ref/spec#Channel_types) for communication
+- [Select](https://go.dev/ref/spec#Select_statements) for multiple channels
 - Concurrency patterns
-- sync package (WaitGroup, Mutex, Once)
-- Context for cancellation
+- [sync package](https://pkg.go.dev/sync) (WaitGroup, Mutex, Once)
+- [Context](https://pkg.go.dev/context) for cancellation
 - Web scraper example
 - Common pitfalls
 
@@ -41,11 +41,12 @@ Context:             ctx, cancel := context.WithCancel(ctx)
 ```
 
 ## Resources:
-- Go Blog: "Go Concurrency Patterns"
-- Go Blog: "Pipelines and cancellation"
+- [Go Blog: "Go Concurrency Patterns"](https://go.dev/blog/pipelines): go.dev/blog/pipelines
+- [Go Blog: "Pipelines and cancellation"](https://go.dev/blog/pipelines): go.dev/blog/pipelines
+- [Effective Go - Concurrency](https://go.dev/doc/effective_go#concurrency): go.dev/doc/effective_go#concurrency
 
 ## Key teaching points:
 - Go makes concurrency accessible
-- Channels provide safe communication
-- Context enables proper cancellation
-- Always test with the race detector
+- [Channels](https://go.dev/ref/spec#Channel_types) provide safe communication
+- [Context](https://pkg.go.dev/context) enables proper cancellation
+- Always test with the [race detector](https://go.dev/doc/articles/race_detector)

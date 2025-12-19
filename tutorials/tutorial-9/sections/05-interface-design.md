@@ -3,7 +3,7 @@
 **Duration:** 6-7 minutes
 
 ## Topics to cover:
-- Small, focused interfaces
+- Small, focused [interfaces](https://go.dev/ref/spec#Interface_types)
 - Consumer-defined interfaces
 - Interface segregation
 
@@ -112,7 +112,7 @@ type AdminService struct {
 ```
 
 ## Key teaching points:
-- Small interfaces = easier mocking
+- Small [interfaces](https://go.dev/ref/spec#Interface_types) = easier mocking
 - Consumer defines what it needs
 - One implementation can satisfy many interfaces
 - Don't export interfaces unnecessarily
