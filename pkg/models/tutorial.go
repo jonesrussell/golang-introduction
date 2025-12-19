@@ -24,23 +24,25 @@ type TutorialMetadata struct {
 
 // Section represents a single section within a tutorial
 type Section struct {
-	ID            string        `json:"id"`
-	Title         string        `json:"title"`
-	Topics        []string      `json:"topics"`
-	CodeExamples  []CodeExample `json:"codeExamples"`
-	TeachingPoints []string     `json:"teachingPoints"`
-	Order         int           `json:"order"`
-	Content       string        `json:"content"` // Markdown content for the section
+	ID              string        `json:"id"`
+	Title           string        `json:"title"`
+	Topics          []string      `json:"topics"`
+	CodeExamples    []CodeExample `json:"codeExamples"`
+	TeachingPoints  []string      `json:"teachingPoints"`
+	Order           int           `json:"order"`
+	Content         string        `json:"content"`                   // Markdown content for the section
+	InstructorNotes string        `json:"instructorNotes,omitempty"` // Instructor-only notes (when instructor mode enabled)
 }
 
 // CodeExample represents a code example within a section
 type CodeExample struct {
-	ID            string `json:"id"`
-	Code          string `json:"code"`
-	Language      string `json:"language"`
-	Runnable      bool   `json:"runnable"`
+	ID             string `json:"id"`
+	Code           string `json:"code"`
+	Language       string `json:"language"`
+	Runnable       bool   `json:"runnable"`
+	Snippet        bool   `json:"snippet,omitempty"` // If true, code needs wrapping before execution
 	ExpectedOutput string `json:"expectedOutput,omitempty"`
-	Description   string `json:"description,omitempty"`
+	Description    string `json:"description,omitempty"`
 }
 
 // Exercise represents a practice exercise
@@ -54,4 +56,3 @@ type Exercise struct {
 	Solution    string   `json:"solution,omitempty"`
 	StarterCode string   `json:"starterCode,omitempty"`
 }
-
