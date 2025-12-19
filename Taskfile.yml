@@ -45,9 +45,6 @@ tasks:
     cmds:
       - npm install
     dir: '{{.FRONTEND_DIR}}'
-    preconditions:
-      - sh: test -f {{.FRONTEND_DIR}}/package.json
-      - sh: command -v npm
 
   # Build tasks
   build:
@@ -67,9 +64,6 @@ tasks:
     cmds:
       - npm run build
     dir: '{{.FRONTEND_DIR}}'
-    preconditions:
-      - sh: test -f {{.FRONTEND_DIR}}/package.json
-      - sh: command -v npm
 
   # Docker tasks
   docker:up:
