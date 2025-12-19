@@ -2,6 +2,7 @@
   <div class="flex min-h-screen bg-neutral-50 dark:bg-neutral-950">
     <!-- Mobile menu toggle -->
     <button
+      type="button"
       @click="sidebarOpen = !sidebarOpen"
       class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-md text-neutral-900 dark:text-neutral-100 transition-all duration-150 hover:bg-primary-light hover:border-go-blue items-center justify-center"
       aria-label="Toggle navigation"

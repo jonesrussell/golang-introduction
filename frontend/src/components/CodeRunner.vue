@@ -10,6 +10,7 @@
       </div>
       <div class="flex items-center gap-2">
         <button
+          type="button"
           @click="copyCode"
           class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-neutral-300 bg-neutral-700 border-none rounded-md transition-all duration-150 hover:bg-neutral-600 hover:text-white"
           title="Copy code"
@@ -23,6 +24,7 @@
           <span class="hidden sm:inline">{{ copied ? 'Copied!' : 'Copy' }}</span>
         </button>
         <button
+          type="button"
           v-if="editable"
           @click="toggleEdit"
           :class="[
@@ -39,6 +41,7 @@
           <span class="hidden sm:inline">{{ editing ? 'View' : 'Edit' }}</span>
         </button>
         <button
+          type="button"
           @click="executeCode"
           :disabled="executing"
           :class="[

@@ -51,6 +51,7 @@
           
           <!-- Instructor Mode Toggle -->
           <button
+            type="button"
             @click="toggleInstructorMode"
             :class="[
               'inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-150',

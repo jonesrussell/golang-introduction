@@ -38,6 +38,7 @@
 
         <div class="flex gap-2">
           <button
+            type="button"
             @click="executeSolution(exercise.id)"
             :disabled="executing"
             :class="[
@@ -51,6 +52,7 @@
           </button>
           
           <button
+            type="button"
             @click="checkSolution(exercise.id)"
             class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
           >

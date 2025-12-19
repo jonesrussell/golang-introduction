@@ -33,6 +33,7 @@
         </h3>
         <div class="flex flex-col gap-2">
           <button
+            type="button"
             v-for="tutorial in tutorials"
             :key="tutorial.id"
             @click="selectTutorial(tutorial.id)"

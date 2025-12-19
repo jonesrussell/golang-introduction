@@ -2,6 +2,7 @@
   <div class="p-4 bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-neutral-200 dark:border-neutral-800">
     <div class="flex justify-between items-center">
       <button
+        type="button"
         @click="$emit('previous')"
         :disabled="!hasPrevious"
         :class="[
@@ -36,6 +37,7 @@
       </div>
 
       <button
+        type="button"
         @click="$emit('next')"
         :disabled="!hasNext"
         :class="[
