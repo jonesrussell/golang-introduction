@@ -11,6 +11,83 @@ import (
 	"github.com/jonesrussell/go-fundamentals-best-practices/pkg/models"
 )
 
+// splitLimit is used when splitting strings with a maximum number of parts.
+const splitLimit = 2
+
+// sectionHeaderPrefix is the markdown prefix for section headers.
+const sectionHeaderPrefix = "###"
+
+// isSectionHeader checks if a line is a valid section header.
+func isSectionHeader(trimmed string) bool {
+	return strings.HasPrefix(trimmed, sectionHeaderPrefix) && !strings.Contains(trimmed, "Video")
+}
+
+// extractTitleFromSectionHeader extracts and cleans the title from a section header line.
+func extractTitleFromSectionHeader(trimmed string) string {
+	title := strings.TrimPrefix(trimmed, sectionHeaderPrefix)
+	title = strings.TrimSpace(title)
+	// Remove markdown bold formatting
+	title = strings.TrimPrefix(title, "**")
+	title = strings.TrimSuffix(title, "**")
+	// Remove number prefix if present
+	title = regexp.MustCompile(`^\d+\.\s*`).ReplaceAllString(title, "")
+	return title
+}
+
+// createNewSection creates a new section with the given order and title.
+func createNewSection(order int, title string) models.Section {
+	return models.Section{
+		ID:             fmt.Sprintf("section-%d", order),
+		Title:          title,
+		Order:          order,
+		Topics:         []string{},
+		CodeExamples:   []models.CodeExample{},
+		TeachingPoints: []string{},
+		Content:        "",
+	}
+}
+
+// parseListItems extracts list items from lines starting at the given index.
+// It stops when encountering an empty line or a line starting with specific prefixes.
+func parseListItems(lines []string, startIndex int, stopPrefixes []string) []string {
+	var items []string
+	for j := startIndex; j < len(lines); j++ {
+		itemLine := strings.TrimSpace(lines[j])
+		if itemLine == "" || shouldStopParsing(itemLine, stopPrefixes) {
+			break
+		}
+		if strings.HasPrefix(itemLine, "-") {
+			item := strings.TrimPrefix(itemLine, "-")
+			item = strings.TrimSpace(item)
+			item = strings.Trim(item, "`")
+			if item != "" {
+				items = append(items, item)
+			}
+		}
+	}
+	return items
+}
+
+// shouldStopParsing checks if parsing should stop based on line prefixes.
+func shouldStopParsing(line string, stopPrefixes []string) bool {
+	for _, prefix := range stopPrefixes {
+		if strings.HasPrefix(line, prefix) {
+			return true
+		}
+	}
+	return false
+}
+
+// isTopicsLine checks if the line indicates a topics section.
+func isTopicsLine(trimmed string) bool {
+	return strings.Contains(trimmed, "Topics to cover:") || strings.Contains(trimmed, "Topics:")
+}
+
+// isTeachingPointsLine checks if the line indicates a teaching points section.
+func isTeachingPointsLine(trimmed string) bool {
+	return strings.Contains(trimmed, "Key teaching points:") || strings.Contains(trimmed, "Teaching points:")
+}
+
 // ParseTutorial parses a complete tutorial markdown file
 func (p *TutorialParser) ParseTutorial(filename string) (*models.Tutorial, error) {
 	filePath := filepath.Join(p.tutorialsDir, filename)
@@ -47,52 +124,21 @@ func (p *TutorialParser) ParseTutorial(filename string) (*models.Tutorial, error
 func (p *TutorialParser) parseSections(content string) []models.Section {
 	var sections []models.Section
 
-	// Split by section headers (###)
-	sectionRegex := regexp.MustCompile(`(?m)^###\s+\d+\.\s+(.+?)$`)
-	matches := sectionRegex.FindAllStringSubmatch(content, -1)
-
-	if len(matches) == 0 {
-		// Try alternative format without numbers
-		sectionRegex = regexp.MustCompile(`(?m)^###\s+(.+?)$`)
-		matches = sectionRegex.FindAllStringSubmatch(content, -1)
-	}
-
 	lines := strings.Split(content, "\n")
-	currentSection := models.Section{
-		Order: 0,
-	}
+	currentSection := models.Section{Order: 0}
 	sectionOrder := 0
 	inSection := false
+
+	topicStopPrefixes := []string{"**", sectionHeaderPrefix}
+	teachingStopPrefixes := []string{"**", sectionHeaderPrefix, "---"}
 
 	for i, line := range lines {
 		trimmed := strings.TrimSpace(line)
 
-		// Check if this is a section header
-		if strings.HasPrefix(trimmed, "###") && !strings.Contains(trimmed, "Video") {
-			// Save previous section if it exists
-			if inSection && currentSection.Title != "" {
-				sections = append(sections, currentSection)
-			}
-
-			// Start new section
-			sectionOrder++
-			title := strings.TrimPrefix(trimmed, "###")
-			title = strings.TrimSpace(title)
-			// Remove markdown formatting
-			title = strings.Trim(title, "**")
-			// Remove number prefix if present
-			title = regexp.MustCompile(`^\d+\.\s*`).ReplaceAllString(title, "")
-
-			currentSection = models.Section{
-				ID:             fmt.Sprintf("section-%d", sectionOrder),
-				Title:          title,
-				Order:          sectionOrder,
-				Topics:         []string{},
-				CodeExamples:   []models.CodeExample{},
-				TeachingPoints: []string{},
-				Content:        "",
-			}
-			inSection = true
+		if isSectionHeader(trimmed) {
+			sections, currentSection, sectionOrder, inSection = p.handleSectionHeader(
+				sections, currentSection, sectionOrder, inSection, trimmed,
+			)
 			continue
 		}
 
@@ -100,53 +146,8 @@ func (p *TutorialParser) parseSections(content string) []models.Section {
 			continue
 		}
 
-		// Accumulate content
 		currentSection.Content += line + "\n"
-
-		// Parse topics
-		if strings.Contains(trimmed, "Topics to cover:") || strings.Contains(trimmed, "Topics:") {
-			// Collect topics from following lines
-			for j := i + 1; j < len(lines); j++ {
-				topicLine := strings.TrimSpace(lines[j])
-				if topicLine == "" || strings.HasPrefix(topicLine, "**") || strings.HasPrefix(topicLine, "###") {
-					break
-				}
-				if strings.HasPrefix(topicLine, "-") {
-					topic := strings.TrimPrefix(topicLine, "-")
-					topic = strings.TrimSpace(topic)
-					topic = strings.Trim(topic, "`")
-					if topic != "" {
-						currentSection.Topics = append(currentSection.Topics, topic)
-					}
-				}
-			}
-		}
-
-		// Parse code examples
-		if strings.HasPrefix(trimmed, "```") {
-			codeExample := p.parseCodeBlock(lines, i)
-			if codeExample != nil {
-				currentSection.CodeExamples = append(currentSection.CodeExamples, *codeExample)
-			}
-		}
-
-		// Parse teaching points
-		if strings.Contains(trimmed, "Key teaching points:") || strings.Contains(trimmed, "Teaching points:") {
-			for j := i + 1; j < len(lines); j++ {
-				pointLine := strings.TrimSpace(lines[j])
-				if pointLine == "" || strings.HasPrefix(pointLine, "**") || strings.HasPrefix(pointLine, "###") || strings.HasPrefix(pointLine, "---") {
-					break
-				}
-				if strings.HasPrefix(pointLine, "-") {
-					point := strings.TrimPrefix(pointLine, "-")
-					point = strings.TrimSpace(point)
-					point = strings.Trim(point, "`")
-					if point != "" {
-						currentSection.TeachingPoints = append(currentSection.TeachingPoints, point)
-					}
-				}
-			}
-		}
+		p.parseSectionContent(&currentSection, lines, i, trimmed, topicStopPrefixes, teachingStopPrefixes)
 	}
 
 	// Add last section
@@ -155,6 +156,52 @@ func (p *TutorialParser) parseSections(content string) []models.Section {
 	}
 
 	return sections
+}
+
+// handleSectionHeader processes a section header line and returns updated state.
+func (p *TutorialParser) handleSectionHeader(
+	sections []models.Section,
+	currentSection models.Section,
+	sectionOrder int,
+	inSection bool,
+	trimmed string,
+) (updatedSections []models.Section, newSection models.Section, newOrder int, nowInSection bool) {
+	// Save previous section if it exists
+	if inSection && currentSection.Title != "" {
+		sections = append(sections, currentSection)
+	}
+
+	// Start new section
+	sectionOrder++
+	title := extractTitleFromSectionHeader(trimmed)
+	newSection = createNewSection(sectionOrder, title)
+
+	return sections, newSection, sectionOrder, true
+}
+
+// parseSectionContent parses content within a section (topics, code, teaching points).
+func (p *TutorialParser) parseSectionContent(
+	section *models.Section,
+	lines []string,
+	lineIndex int,
+	trimmed string,
+	topicStopPrefixes, teachingStopPrefixes []string,
+) {
+	if isTopicsLine(trimmed) {
+		topics := parseListItems(lines, lineIndex+1, topicStopPrefixes)
+		section.Topics = append(section.Topics, topics...)
+	}
+
+	if strings.HasPrefix(trimmed, "```") {
+		if codeExample := p.parseCodeBlock(lines, lineIndex); codeExample != nil {
+			section.CodeExamples = append(section.CodeExamples, *codeExample)
+		}
+	}
+
+	if isTeachingPointsLine(trimmed) {
+		points := parseListItems(lines, lineIndex+1, teachingStopPrefixes)
+		section.TeachingPoints = append(section.TeachingPoints, points...)
+	}
 }
 
 // parseCodeBlock extracts a code block from markdown
@@ -329,10 +376,89 @@ func (p *TutorialParser) GetTutorialMetadataFromFile(filename string) (*models.T
 	return metadata, nil
 }
 
-// ParseExercises extracts exercises from tutorial content
-func (p *TutorialParser) ParseExercises(tutorialID string, content string) []models.Exercise {
-	var exercises []models.Exercise
+// isExerciseSectionStart checks if the line starts an exercise section.
+func isExerciseSectionStart(trimmed string) bool {
+	return strings.Contains(trimmed, "Practice Exercises:") ||
+		strings.Contains(trimmed, "Homework/Practice suggestions:") ||
+		strings.Contains(trimmed, "Practice suggestions:")
+}
 
+// extractDifficultyAndCleanText extracts difficulty level and cleans the exercise text.
+func extractDifficultyAndCleanText(text string) (difficulty, cleanedText string) {
+	difficulty = "Easy"
+
+	if strings.Contains(text, "Challenge:") || strings.Contains(text, "Challenge") {
+		difficulty = "Challenge"
+		text = strings.ReplaceAll(text, "Challenge:", "")
+		text = strings.ReplaceAll(text, "Challenge", "")
+	} else if strings.Contains(text, "Medium:") || strings.Contains(text, "Medium") {
+		difficulty = "Medium"
+		text = strings.ReplaceAll(text, "Medium:", "")
+		text = strings.ReplaceAll(text, "Medium", "")
+	} else if strings.Contains(text, "Easy:") || strings.Contains(text, "Easy") {
+		text = strings.ReplaceAll(text, "Easy:", "")
+		text = strings.ReplaceAll(text, "Easy", "")
+	}
+
+	return difficulty, strings.TrimSpace(text)
+}
+
+// createExercise creates a new exercise with the given parameters.
+func createExercise(id int, tutorialID, text, difficulty string) models.Exercise {
+	return models.Exercise{
+		ID:          fmt.Sprintf("exercise-%d", id),
+		TutorialID:  tutorialID,
+		Title:       text,
+		Description: text,
+		Difficulty:  difficulty,
+	}
+}
+
+// isBulletPoint checks if the line is a bullet point.
+func isBulletPoint(trimmed string) bool {
+	return strings.HasPrefix(trimmed, "-") || strings.HasPrefix(trimmed, "*")
+}
+
+// parseBulletExercise parses an exercise from a bullet point line.
+func parseBulletExercise(trimmed string) (difficulty, text string) {
+	text = strings.TrimPrefix(trimmed, "-")
+	text = strings.TrimPrefix(text, "*")
+	text = strings.TrimSpace(text)
+	return extractDifficultyAndCleanText(text)
+}
+
+// isNumberedLine checks if the line starts with a number followed by a period.
+func isNumberedLine(trimmed string) bool {
+	matched, _ := regexp.MatchString(`^\d+\.`, trimmed)
+	return matched
+}
+
+// difficultyCleanupRegex is a compiled regex for cleaning difficulty markers.
+var difficultyCleanupRegex = regexp.MustCompile(`(?i)(Easy|Medium|Challenge):?\s*`)
+
+// parseNumberedExercise parses an exercise from a numbered line.
+func parseNumberedExercise(trimmed string) (difficulty, text string) {
+	parts := strings.SplitN(trimmed, ".", splitLimit)
+	if len(parts) != splitLimit {
+		return "", ""
+	}
+
+	text = strings.TrimSpace(parts[1])
+	difficulty = "Easy"
+
+	if strings.Contains(text, "Challenge") {
+		difficulty = "Challenge"
+	} else if strings.Contains(text, "Medium") {
+		difficulty = "Medium"
+	}
+
+	text = difficultyCleanupRegex.ReplaceAllString(text, "")
+	return difficulty, strings.TrimSpace(text)
+}
+
+// ParseExercises extracts exercises from tutorial content
+func (p *TutorialParser) ParseExercises(tutorialID, content string) []models.Exercise {
+	var exercises []models.Exercise
 	lines := strings.Split(content, "\n")
 	inExerciseSection := false
 	exerciseID := 0
@@ -340,15 +466,11 @@ func (p *TutorialParser) ParseExercises(tutorialID string, content string) []mod
 	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
 
-		// Look for exercise/practice sections
-		if strings.Contains(trimmed, "Practice Exercises:") ||
-			strings.Contains(trimmed, "Homework/Practice suggestions:") ||
-			strings.Contains(trimmed, "Practice suggestions:") {
+		if isExerciseSectionStart(trimmed) {
 			inExerciseSection = true
 			continue
 		}
 
-		// Stop at next major section
 		if inExerciseSection && strings.HasPrefix(trimmed, "##") {
 			break
 		}
@@ -357,79 +479,34 @@ func (p *TutorialParser) ParseExercises(tutorialID string, content string) []mod
 			continue
 		}
 
-		// Parse exercise items (usually bullet points)
-		if strings.HasPrefix(trimmed, "-") || strings.HasPrefix(trimmed, "*") {
-			exerciseText := strings.TrimPrefix(trimmed, "-")
-			exerciseText = strings.TrimPrefix(exerciseText, "*")
-			exerciseText = strings.TrimSpace(exerciseText)
-
-			// Check for difficulty markers
-			difficulty := "Easy"
-			if strings.Contains(exerciseText, "Challenge:") || strings.Contains(exerciseText, "Challenge") {
-				difficulty = "Challenge"
-				exerciseText = strings.ReplaceAll(exerciseText, "Challenge:", "")
-				exerciseText = strings.ReplaceAll(exerciseText, "Challenge", "")
-			} else if strings.Contains(exerciseText, "Medium:") || strings.Contains(exerciseText, "Medium") {
-				difficulty = "Medium"
-				exerciseText = strings.ReplaceAll(exerciseText, "Medium:", "")
-				exerciseText = strings.ReplaceAll(exerciseText, "Medium", "")
-			} else if strings.Contains(exerciseText, "Easy:") || strings.Contains(exerciseText, "Easy") {
-				exerciseText = strings.ReplaceAll(exerciseText, "Easy:", "")
-				exerciseText = strings.ReplaceAll(exerciseText, "Easy", "")
-			}
-
-			exerciseText = strings.TrimSpace(exerciseText)
-
-			if exerciseText != "" {
-				exerciseID++
-				exercise := models.Exercise{
-					ID:          fmt.Sprintf("exercise-%d", exerciseID),
-					TutorialID:  tutorialID,
-					Title:       exerciseText,
-					Description: exerciseText,
-					Difficulty:  difficulty,
-				}
-				exercises = append(exercises, exercise)
-			}
-		}
-
-		// Look for numbered exercises (e.g., "1. Easy: ...")
-		if matched, _ := regexp.MatchString(`^\d+\.`, trimmed); matched {
-			parts := strings.SplitN(trimmed, ".", 2)
-			if len(parts) == 2 {
-				exerciseText := strings.TrimSpace(parts[1])
-
-				difficulty := "Easy"
-				if strings.Contains(exerciseText, "Challenge") {
-					difficulty = "Challenge"
-				} else if strings.Contains(exerciseText, "Medium") {
-					difficulty = "Medium"
-				}
-
-				// Clean up difficulty markers
-				exerciseText = regexp.MustCompile(`(?i)(Easy|Medium|Challenge):?\s*`).ReplaceAllString(exerciseText, "")
-				exerciseText = strings.TrimSpace(exerciseText)
-
-				if exerciseText != "" {
-					exerciseID++
-					exercise := models.Exercise{
-						ID:          fmt.Sprintf("exercise-%d", exerciseID),
-						TutorialID:  tutorialID,
-						Title:       exerciseText,
-						Description: exerciseText,
-						Difficulty:  difficulty,
-					}
-					exercises = append(exercises, exercise)
-				}
-			}
+		if exercise, ok := p.tryParseExercise(trimmed, tutorialID, &exerciseID); ok {
+			exercises = append(exercises, exercise)
 		}
 	}
 
 	return exercises
 }
 
+// tryParseExercise attempts to parse an exercise from a line.
+func (p *TutorialParser) tryParseExercise(trimmed, tutorialID string, exerciseID *int) (models.Exercise, bool) {
+	var difficulty, text string
+
+	if isBulletPoint(trimmed) {
+		difficulty, text = parseBulletExercise(trimmed)
+	} else if isNumberedLine(trimmed) {
+		difficulty, text = parseNumberedExercise(trimmed)
+	}
+
+	if text == "" {
+		return models.Exercise{}, false
+	}
+
+	*exerciseID++
+	return createExercise(*exerciseID, tutorialID, text, difficulty), true
+}
+
 // ParseExercisesFromFile reads a tutorial file and extracts exercises
-func (p *TutorialParser) ParseExercisesFromFile(tutorialID string, filename string) []models.Exercise {
+func (p *TutorialParser) ParseExercisesFromFile(tutorialID, filename string) []models.Exercise {
 	filePath := filepath.Join(p.tutorialsDir, filename)
 	content, err := os.ReadFile(filePath)
 	if err != nil {

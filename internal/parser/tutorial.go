@@ -9,6 +9,14 @@ import (
 	"github.com/jonesrussell/go-fundamentals-best-practices/pkg/models"
 )
 
+// Level threshold constants for determining tutorial difficulty.
+const (
+	beginnerMaxTutorial     = 3
+	intermediateMinTutorial = 4
+	intermediateMaxTutorial = 8
+	advancedMinTutorial     = 9
+)
+
 // TutorialParser handles parsing of tutorial markdown files
 type TutorialParser struct {
 	tutorialsDir    string
@@ -94,50 +102,98 @@ func DetermineLevel(tutorialNum string) string {
 	num := 0
 	_, _ = fmt.Sscanf(tutorialNum, "%d", &num)
 
-	if num >= 1 && num <= 3 {
+	if num >= 1 && num <= beginnerMaxTutorial {
 		return "Beginner"
-	} else if num >= 4 && num <= 8 {
+	} else if num >= intermediateMinTutorial && num <= intermediateMaxTutorial {
 		return "Intermediate"
-	} else if num >= 9 {
+	} else if num >= advancedMinTutorial {
 		return "Advanced"
 	}
 	return "Beginner"
 }
 
-// ParseTutorialMetadata extracts basic metadata from a tutorial file
-func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) (*models.TutorialMetadata, error) {
-	id := ExtractTutorialID(filename)
-	level := DetermineLevel(id)
+// durationRegex matches time ranges like "25-35 minutes".
+var durationRegex = regexp.MustCompile(`(\d+-\d+\s*(?:minutes?|min))`)
 
-	metadata := &models.TutorialMetadata{
-		ID:            id,
-		Level:         level,
-		Prerequisites: []string{},
-	}
+// extractTitleFromHeader extracts title from a header line.
+func extractTitleFromHeader(line string) string {
+	title := strings.TrimSpace(strings.TrimPrefix(line, "##"))
+	title = strings.TrimPrefix(title, "**")
+	title = strings.TrimSuffix(title, "**")
+	return title
+}
 
-	// Extract title from first line or header
-	lines := strings.Split(content, "\n")
+// extractInitialTitle extracts the title from the content before the metadata section.
+func extractInitialTitle(lines []string) string {
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, "##") && strings.Contains(line, "Video Tutorial Plan") {
-			// Extract title from next non-empty line or from the line itself
 			continue
 		}
 		if strings.HasPrefix(line, "### **Video Metadata**") {
-			// Next section, start parsing metadata
 			break
 		}
-		if line != "" && metadata.Title == "" {
-			// Try to extract title
-			if strings.HasPrefix(line, "##") {
-				metadata.Title = strings.TrimSpace(strings.TrimPrefix(line, "##"))
-				metadata.Title = strings.Trim(metadata.Title, "**")
-			}
+		if line != "" && strings.HasPrefix(line, "##") {
+			return extractTitleFromHeader(line)
 		}
 	}
+	return ""
+}
 
-	// Parse metadata section
+// parseMetadataTitle parses the title from a metadata line.
+func parseMetadataTitle(line string) string {
+	parts := strings.Split(line, "Title:")
+	if len(parts) > 1 {
+		return strings.TrimSpace(strings.Trim(parts[1], "*"))
+	}
+	return ""
+}
+
+// parseMetadataDuration parses the duration from a metadata line.
+func parseMetadataDuration(line string) string {
+	matches := durationRegex.FindStringSubmatch(line)
+	if len(matches) > 1 {
+		return matches[1]
+	}
+	return ""
+}
+
+// parseMetadataDifficulty parses the difficulty from a metadata line.
+func parseMetadataDifficulty(line string) string {
+	parts := strings.Split(line, "Difficulty:**")
+	if len(parts) <= 1 {
+		return ""
+	}
+
+	diff := strings.TrimSpace(parts[1])
+	// Extract just the first word before any parenthesis
+	if idx := strings.Index(diff, "("); idx > 0 {
+		diff = strings.TrimSpace(diff[:idx])
+	}
+	// Take first word if multiple words
+	words := strings.Fields(diff)
+	if len(words) > 0 {
+		return words[0]
+	}
+	return ""
+}
+
+// parseMetadataPrerequisites parses the prerequisites from a metadata line.
+func parseMetadataPrerequisites(line string) []string {
+	parts := strings.Split(line, "Prerequisites:**")
+	if len(parts) > 1 {
+		prereqs := strings.TrimSpace(parts[1])
+		if prereqs != "" {
+			return []string{prereqs}
+		}
+	}
+	return nil
+}
+
+// parseMetadataSection parses the metadata section and updates the metadata struct.
+func parseMetadataSection(lines []string, metadata *models.TutorialMetadata) {
 	inMetadata := false
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 
@@ -146,67 +202,64 @@ func (p *TutorialParser) ParseTutorialMetadata(filename string, content string) 
 			continue
 		}
 
-		if inMetadata {
-			if strings.HasPrefix(line, "###") || strings.HasPrefix(line, "##") {
-				break
-			}
+		if !inMetadata {
+			continue
+		}
 
-			// Parse title
-			if strings.Contains(line, "Title:") {
-				parts := strings.Split(line, "Title:")
-				if len(parts) > 1 {
-					metadata.Title = strings.TrimSpace(strings.Trim(parts[1], "*"))
-				}
-			}
+		if strings.HasPrefix(line, "###") || strings.HasPrefix(line, "##") {
+			break
+		}
 
-			// Parse duration - extract just the time range like "25-35 minutes"
-			// Line format: "- **Duration Target:** 25-35 minutes"
-			if strings.Contains(line, "Duration") {
-				re := regexp.MustCompile(`(\d+-\d+\s*(?:minutes?|min))`)
-				matches := re.FindStringSubmatch(line)
-				if len(matches) > 1 {
-					metadata.Duration = matches[1]
-				}
-			}
+		updateMetadataFromLine(line, metadata)
+	}
+}
 
-			// Parse difficulty - extract just the level
-			// Line format: "- **Difficulty:** Beginner (no prior Go experience needed)"
-			if strings.Contains(line, "Difficulty:**") {
-				parts := strings.Split(line, "Difficulty:**")
-				if len(parts) > 1 {
-					diff := strings.TrimSpace(parts[1])
-					// Extract just the first word before any parenthesis
-					if idx := strings.Index(diff, "("); idx > 0 {
-						diff = strings.TrimSpace(diff[:idx])
-					}
-					// Take first word if multiple words
-					words := strings.Fields(diff)
-					if len(words) > 0 {
-						metadata.Difficulty = words[0]
-					}
-				}
-			}
-
-			// Parse prerequisites
-			// Line format: "- **Prerequisites:** Basic programming concepts helpful but not required"
-			if strings.Contains(line, "Prerequisites:**") {
-				parts := strings.Split(line, "Prerequisites:**")
-				if len(parts) > 1 {
-					prereqs := strings.TrimSpace(parts[1])
-					if prereqs != "" {
-						metadata.Prerequisites = []string{prereqs}
-					}
-				}
-			}
-
-			// Count sections for section count
-			if strings.HasPrefix(line, "###") {
-				metadata.SectionCount++
-			}
+// updateMetadataFromLine updates metadata fields based on a single line.
+func updateMetadataFromLine(line string, metadata *models.TutorialMetadata) {
+	if strings.Contains(line, "Title:") {
+		if title := parseMetadataTitle(line); title != "" {
+			metadata.Title = title
 		}
 	}
 
-	// If title still empty, use filename
+	if strings.Contains(line, "Duration") {
+		if duration := parseMetadataDuration(line); duration != "" {
+			metadata.Duration = duration
+		}
+	}
+
+	if strings.Contains(line, "Difficulty:**") {
+		if difficulty := parseMetadataDifficulty(line); difficulty != "" {
+			metadata.Difficulty = difficulty
+		}
+	}
+
+	if strings.Contains(line, "Prerequisites:**") {
+		if prereqs := parseMetadataPrerequisites(line); prereqs != nil {
+			metadata.Prerequisites = prereqs
+		}
+	}
+}
+
+// ParseTutorialMetadata extracts basic metadata from a tutorial file
+func (p *TutorialParser) ParseTutorialMetadata(filename, content string) (*models.TutorialMetadata, error) {
+	id := ExtractTutorialID(filename)
+
+	metadata := &models.TutorialMetadata{
+		ID:            id,
+		Level:         DetermineLevel(id),
+		Prerequisites: []string{},
+	}
+
+	lines := strings.Split(content, "\n")
+
+	// Extract initial title from content
+	metadata.Title = extractInitialTitle(lines)
+
+	// Parse metadata section
+	parseMetadataSection(lines, metadata)
+
+	// Fallback to filename if no title found
 	if metadata.Title == "" {
 		base := filepath.Base(filename)
 		metadata.Title = strings.TrimSuffix(base, filepath.Ext(base))

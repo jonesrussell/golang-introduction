@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/jonesrussell/go-fundamentals-best-practices/internal/executor"
 	"github.com/jonesrussell/go-fundamentals-best-practices/internal/parser"
@@ -22,17 +21,21 @@ type Handlers struct {
 }
 
 // NewHandlers creates a new handlers instance
-func NewHandlers(parser *parser.TutorialParser, executor *executor.CodeExecutor, storage *storage.ProgressStorage) (*Handlers, error) {
+func NewHandlers(
+	tutorialParser *parser.TutorialParser,
+	codeExecutor *executor.CodeExecutor,
+	progressStorage *storage.ProgressStorage,
+) (*Handlers, error) {
 	// Load all tutorials
-	tutorials, err := parser.LoadAllTutorials()
+	tutorials, err := tutorialParser.LoadAllTutorials()
 	if err != nil {
 		return nil, fmt.Errorf("failed to load tutorials: %w", err)
 	}
 
 	return &Handlers{
-		parser:    parser,
-		executor:  executor,
-		storage:   storage,
+		parser:    tutorialParser,
+		executor:  codeExecutor,
+		storage:   progressStorage,
 		tutorials: tutorials,
 	}, nil
 }
@@ -53,7 +56,7 @@ func (h *Handlers) ListTutorials(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	respondJSON(w, http.StatusOK, metadata)
+	respondJSON(w, metadata)
 }
 
 // GetTutorialByID returns a full tutorial by ID (path parameter version)
@@ -68,14 +71,14 @@ func (h *Handlers) GetTutorialByID(w http.ResponseWriter, r *http.Request, tutor
 			http.Error(w, "tutorial not found", http.StatusNotFound)
 			return
 		}
-		respondJSON(w, http.StatusOK, tutorial)
+		respondJSON(w, tutorial)
 		return
 	}
 
 	// Otherwise use cached tutorials
 	for _, tutorial := range h.tutorials {
 		if tutorial.ID == tutorialID {
-			respondJSON(w, http.StatusOK, tutorial)
+			respondJSON(w, tutorial)
 			return
 		}
 	}
@@ -97,7 +100,7 @@ func (h *Handlers) GetTutorial(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetTutorialSectionsByID(w http.ResponseWriter, r *http.Request, tutorialID string) {
 	for _, tutorial := range h.tutorials {
 		if tutorial.ID == tutorialID {
-			respondJSON(w, http.StatusOK, tutorial.Sections)
+			respondJSON(w, tutorial.Sections)
 			return
 		}
 	}
@@ -137,7 +140,7 @@ func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(r.Context(), ExecuteTimeout)
 	defer cancel()
 
 	// Use appropriate execution method based on snippet flag
@@ -154,18 +157,18 @@ func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondJSON(w, http.StatusOK, result)
+	respondJSON(w, result)
 }
 
 // GetProgress returns user progress
 func (h *Handlers) GetProgress(w http.ResponseWriter, r *http.Request) {
 	userID := r.URL.Query().Get("userId")
 	if userID == "" {
-		userID = "default" // Default user for now
+		userID = DefaultUserID
 	}
 
 	progress := h.storage.GetProgress(userID)
-	respondJSON(w, http.StatusOK, progress)
+	respondJSON(w, progress)
 }
 
 // UpdateProgress updates user progress
@@ -183,7 +186,7 @@ func (h *Handlers) UpdateProgress(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.URL.Query().Get("userId")
 	if userID == "" {
-		userID = "default"
+		userID = DefaultUserID
 	}
 
 	if err := h.storage.UpdateProgress(userID, &progress); err != nil {
@@ -191,7 +194,7 @@ func (h *Handlers) UpdateProgress(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondJSON(w, http.StatusOK, map[string]string{"status": "success"})
+	respondJSON(w, map[string]string{"status": "success"})
 }
 
 // MarkSectionComplete marks a section as completed
@@ -213,7 +216,7 @@ func (h *Handlers) MarkSectionComplete(w http.ResponseWriter, r *http.Request) {
 
 	userID := r.URL.Query().Get("userId")
 	if userID == "" {
-		userID = "default"
+		userID = DefaultUserID
 	}
 
 	if err := h.storage.MarkSectionComplete(userID, req.TutorialID, req.SectionID); err != nil {
@@ -221,7 +224,7 @@ func (h *Handlers) MarkSectionComplete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respondJSON(w, http.StatusOK, map[string]string{"status": "success"})
+	respondJSON(w, map[string]string{"status": "success"})
 }
 
 // GetExercisesByTutorialID returns exercises for a tutorial (path parameter version)
@@ -243,7 +246,7 @@ func (h *Handlers) GetExercisesByTutorialID(w http.ResponseWriter, r *http.Reque
 	// Find the matching file and parse exercises from it
 	tutorialFiles, err := h.parser.ListTutorials()
 	if err != nil {
-		respondJSON(w, http.StatusOK, []models.Exercise{})
+		respondJSON(w, []models.Exercise{})
 		return
 	}
 
@@ -254,7 +257,7 @@ func (h *Handlers) GetExercisesByTutorialID(w http.ResponseWriter, r *http.Reque
 			break
 		}
 	}
-	respondJSON(w, http.StatusOK, exercises)
+	respondJSON(w, exercises)
 }
 
 // GetExercises returns exercises for a tutorial (query parameter version - for backward compatibility)
@@ -267,9 +270,9 @@ func (h *Handlers) GetExercises(w http.ResponseWriter, r *http.Request) {
 	h.GetExercisesByTutorialID(w, r, tutorialID)
 }
 
-// respondJSON sends a JSON response
-func respondJSON(w http.ResponseWriter, status int, data any) {
+// respondJSON sends a JSON response with 200 OK status
+func respondJSON(w http.ResponseWriter, data any) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
+	w.WriteHeader(http.StatusOK)
 	_ = json.NewEncoder(w).Encode(data)
 }

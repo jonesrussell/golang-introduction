@@ -28,8 +28,8 @@ func NewProgressStorage(dataDir string) (*ProgressStorage, error) {
 
 	// Load existing progress if file exists
 	if _, err := os.Stat(filePath); err == nil {
-		if err := storage.load(); err != nil {
-			return nil, fmt.Errorf("failed to load progress: %w", err)
+		if loadErr := storage.load(); loadErr != nil {
+			return nil, fmt.Errorf("failed to load progress: %w", loadErr)
 		}
 	}
 
@@ -146,9 +146,9 @@ func (s *ProgressStorage) save() error {
 	}
 
 	// Ensure directory exists
-	if err := os.MkdirAll(filepath.Dir(s.filePath), 0755); err != nil {
-		return err
+	if mkdirErr := os.MkdirAll(filepath.Dir(s.filePath), 0755); mkdirErr != nil {
+		return mkdirErr
 	}
 
-	return os.WriteFile(s.filePath, data, 0644)
+	return os.WriteFile(s.filePath, data, 0600)
 }

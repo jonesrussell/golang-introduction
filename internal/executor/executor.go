@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+// Default executor configuration values.
+const (
+	defaultTimeout       = 10 * time.Second
+	defaultMaxOutput     = 10000 // 10KB
+	defaultMaxMemoryMB   = 128
+	defaultMaxCPUPercent = 50
+)
+
 // ExecutionResult represents the result of code execution.
 type ExecutionResult struct {
 	Output   string `json:"output"`
@@ -39,12 +47,12 @@ func NewCodeExecutor(opts ...ExecutorOption) (*CodeExecutor, error) {
 
 	executor := &CodeExecutor{
 		tempDir:       tempDir,
-		timeout:       10 * time.Second,
-		maxOutput:     10000, // 10KB
+		timeout:       defaultTimeout,
+		maxOutput:     defaultMaxOutput,
 		allowNetwork:  false,
 		allowFileIO:   false,
-		maxMemoryMB:   128,
-		maxCPUPercent: 50,
+		maxMemoryMB:   defaultMaxMemoryMB,
+		maxCPUPercent: defaultMaxCPUPercent,
 		logger:        slog.Default(),
 	}
 
@@ -116,7 +124,7 @@ func (e *CodeExecutor) ExecuteWithOptions(ctx context.Context, code string, isSn
 
 	result.Duration = time.Since(startTime).String()
 
-	e.logger.Debug("code execution completed",
+	e.logger.DebugContext(ctx, "code execution completed",
 		"duration", result.Duration,
 		"exit_code", result.ExitCode,
 		"output_length", len(result.Output),
@@ -139,22 +147,25 @@ func (e *CodeExecutor) Cleanup() error {
 	return nil
 }
 
-// Deprecated setter methods - kept for backward compatibility
-// Consider using functional options in NewCodeExecutor instead
+// Deprecated setter methods - kept for backward compatibility.
+// Consider using functional options in NewCodeExecutor instead.
 
 // SetTimeout sets the execution timeout.
+//
 // Deprecated: Use WithTimeout option in NewCodeExecutor.
 func (e *CodeExecutor) SetTimeout(timeout time.Duration) {
 	e.timeout = timeout
 }
 
 // SetMaxOutput sets the maximum output size in bytes.
+//
 // Deprecated: Use WithMaxOutput option in NewCodeExecutor.
 func (e *CodeExecutor) SetMaxOutput(maxBytes int) {
 	e.maxOutput = maxBytes
 }
 
 // SetAllowNetwork enables or disables network access.
+//
 // Deprecated: Use WithNetworkAccess option in NewCodeExecutor.
 func (e *CodeExecutor) SetAllowNetwork(allow bool) {
 	e.allowNetwork = allow
@@ -163,6 +174,7 @@ func (e *CodeExecutor) SetAllowNetwork(allow bool) {
 }
 
 // SetAllowFileIO enables or disables file I/O (with restrictions).
+//
 // Deprecated: Use WithFileIO option in NewCodeExecutor.
 func (e *CodeExecutor) SetAllowFileIO(allow bool) {
 	e.allowFileIO = allow
@@ -171,12 +183,14 @@ func (e *CodeExecutor) SetAllowFileIO(allow bool) {
 }
 
 // SetMaxMemory sets the maximum memory limit in MB (requires platform support).
+//
 // Deprecated: Not currently implemented.
 func (e *CodeExecutor) SetMaxMemory(mb int) {
 	e.maxMemoryMB = mb
 }
 
 // SetMaxCPU sets the maximum CPU percentage (requires platform support).
+//
 // Deprecated: Not currently implemented.
 func (e *CodeExecutor) SetMaxCPU(percent int) {
 	e.maxCPUPercent = percent

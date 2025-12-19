@@ -36,10 +36,10 @@ func (ie *isolatedExecutor) execute(ctx context.Context, code string) (*Executio
 		return nil, fmt.Errorf("create exec directory: %w", err)
 	}
 	defer func() {
-		if err := os.RemoveAll(execDir); err != nil {
+		if cleanupErr := os.RemoveAll(execDir); cleanupErr != nil {
 			ie.logger.Error("failed to cleanup exec directory",
 				"dir", execDir,
-				"error", err)
+				"error", cleanupErr)
 		}
 	}()
 
@@ -51,12 +51,12 @@ func (ie *isolatedExecutor) execute(ctx context.Context, code string) (*Executio
 	tmpFileName := tmpFile.Name()
 
 	// Write and close file
-	if err := writeCodeToFile(tmpFile, code); err != nil {
-		return nil, fmt.Errorf("write code to file: %w", err)
+	if writeErr := writeCodeToFile(tmpFile, code); writeErr != nil {
+		return nil, fmt.Errorf("write code to file: %w", writeErr)
 	}
 
 	// Execute the code
-	return ie.runGoCode(ctx, execDir, tmpFileName)
+	return ie.runGoCode(ctx, execDir, tmpFileName), nil
 }
 
 // writeCodeToFile writes code to a file and closes it.
@@ -71,7 +71,7 @@ func writeCodeToFile(file *os.File, code string) error {
 }
 
 // runGoCode executes Go code using go run.
-func (ie *isolatedExecutor) runGoCode(ctx context.Context, workDir, filename string) (*ExecutionResult, error) {
+func (ie *isolatedExecutor) runGoCode(ctx context.Context, workDir, filename string) *ExecutionResult {
 	cmd := exec.CommandContext(ctx, "go", "run", filename)
 	cmd.Dir = workDir
 
@@ -97,7 +97,7 @@ func (ie *isolatedExecutor) runGoCode(ctx context.Context, workDir, filename str
 		result.Error = ie.buildErrorMessage(ctx, stderr.String(), err)
 	}
 
-	return result, nil
+	return result
 }
 
 // buildSecureEnvironment creates a minimal environment for code execution.

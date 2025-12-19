@@ -18,11 +18,12 @@ func (h *Handlers) SetupRoutes() *http.ServeMux {
 
 	// Progress tracking
 	mux.HandleFunc("/api/progress", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet {
+		switch r.Method {
+		case http.MethodGet:
 			h.GetProgress(w, r)
-		} else if r.Method == http.MethodPost {
+		case http.MethodPost:
 			h.UpdateProgress(w, r)
-		} else {
+		default:
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		}
 	})

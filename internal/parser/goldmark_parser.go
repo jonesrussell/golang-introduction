@@ -11,6 +11,9 @@ import (
 	"github.com/yuin/goldmark/text"
 )
 
+// sectionHeadingLevel is the markdown heading level for sections (###).
+const sectionHeadingLevel = 3
+
 // GoldmarkParser uses goldmark for more robust markdown parsing
 type GoldmarkParser struct {
 	md goldmark.Markdown
@@ -43,7 +46,7 @@ func (gp *GoldmarkParser) ParseWithGoldmark(content string) (*models.Tutorial, e
 		case *ast.Heading:
 			// Extract heading text
 			headingText := extractText(v)
-			if v.Level == 3 {
+			if v.Level == sectionHeadingLevel {
 				// This is a section (###)
 				section := models.Section{
 					Title:          headingText,
@@ -73,7 +76,7 @@ func (gp *GoldmarkParser) ParseWithGoldmark(content string) (*models.Tutorial, e
 			}
 		case *ast.List:
 			// Extract lists (topics, teaching points, exercises)
-			items := extractListItems(v, []byte(content))
+			items := extractListItems(v)
 			if len(tutorial.Sections) > 0 {
 				lastSection := &tutorial.Sections[len(tutorial.Sections)-1]
 				// Determine if this is topics, teaching points, or exercises based on context
@@ -107,7 +110,7 @@ func extractText(n ast.Node) string {
 func extractCodeBlock(n *ast.FencedCodeBlock, source []byte) string {
 	var buf bytes.Buffer
 	lines := n.Lines()
-	for i := 0; i < lines.Len(); i++ {
+	for i := range lines.Len() {
 		line := lines.At(i)
 		buf.Write(line.Value(source))
 	}
@@ -115,13 +118,13 @@ func extractCodeBlock(n *ast.FencedCodeBlock, source []byte) string {
 }
 
 // extractListItems extracts items from a list
-func extractListItems(n *ast.List, source []byte) []string {
+func extractListItems(n *ast.List) []string {
 	var items []string
 	for child := n.FirstChild(); child != nil; child = child.NextSibling() {
 		if item, ok := child.(*ast.ListItem); ok {
-			text := extractText(item)
-			if text != "" {
-				items = append(items, text)
+			itemText := extractText(item)
+			if itemText != "" {
+				items = append(items, itemText)
 			}
 		}
 	}
