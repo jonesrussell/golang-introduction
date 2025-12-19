@@ -21,9 +21,9 @@ export interface TutorialMetadata {
 export interface Section {
   id: string;
   title: string;
-  topics: string[];
-  codeExamples: CodeExample[];
-  teachingPoints: string[];
+  topics: string[] | null;
+  codeExamples: CodeExample[] | null;
+  teachingPoints: string[] | null;
   order: number;
   content: string;
   instructorNotes?: string;
