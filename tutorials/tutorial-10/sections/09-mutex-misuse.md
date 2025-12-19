@@ -83,3 +83,10 @@ func (c *Cache) Set(key, value string) {
     c.data[key] = value
 }
 ```
+
+## Key teaching points:
+- Never copy [mutexes](https://pkg.go.dev/sync#Mutex) (use pointer receivers)
+- Keep [lock scope](https://pkg.go.dev/sync#Mutex) minimal
+- Use [`RWMutex`](https://pkg.go.dev/sync#RWMutex) for read-heavy workloads
+- Avoid nested locks to prevent deadlocks
+- Always use [`defer`](https://go.dev/ref/spec#Defer_statements) with Lock/Unlock

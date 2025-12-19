@@ -46,3 +46,9 @@ func main() {
 - Register drivers: `sql.Register`, `http.Handle`
 - Compile regexes
 - Set package-level computed constants
+
+## Key teaching points:
+- Avoid complex logic in [`init()`](https://go.dev/ref/spec#Package_initialization)
+- Initialize explicitly in [`main()`](https://go.dev/ref/spec#Program_initialization_and_execution)
+- Use [`init()`](https://go.dev/ref/spec#Package_initialization) only for simple, error-free setup
+- Prefer explicit initialization for better error handling

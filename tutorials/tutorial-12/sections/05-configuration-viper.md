@@ -67,3 +67,9 @@ debug: true
 ```bash
 MYAPP_DATABASE_URL=postgres://...
 ```
+
+## Key teaching points:
+- [Viper](https://pkg.go.dev/github.com/spf13/viper) provides configuration management
+- Priority: flags > environment variables > config file > defaults
+- Use [`BindPFlag()`](https://pkg.go.dev/github.com/spf13/viper#BindPFlag) to bind flags to viper
+- Supports multiple config formats (YAML, JSON, TOML)

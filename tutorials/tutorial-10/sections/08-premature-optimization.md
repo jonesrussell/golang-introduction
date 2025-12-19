@@ -58,5 +58,11 @@ go tool pprof cpu.out
 
 ## Acceptable Early Optimizations:
 - Pre-allocate when size is known
-- Use `strings.Builder` for concatenation
+- Use [`strings.Builder`](https://pkg.go.dev/strings#Builder) for concatenation
 - Choose appropriate data structure
+
+## Key teaching points:
+- Write clear code first
+- [Profile before optimizing](https://go.dev/doc/diagnostics#profiling)
+- Optimize only hot paths identified by profiling
+- Use [`strings.Builder`](https://pkg.go.dev/strings#Builder) for string concatenation

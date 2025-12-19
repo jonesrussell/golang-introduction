@@ -67,3 +67,9 @@ userLogger.Info("password changed")
 ```json
 {"level":"info","ts":1702900000,"caller":"main.go:15","msg":"user logged in","userID":123,"ip":"192.168.1.1"}
 ```
+
+## Key teaching points:
+- [zap.Logger](https://pkg.go.dev/go.uber.org/zap#Logger) is type-safe and fastest
+- [zap.SugaredLogger](https://pkg.go.dev/go.uber.org/zap#SugaredLogger) is more convenient but slower
+- Use [child loggers](https://pkg.go.dev/go.uber.org/zap#Logger.With) for contextual logging
+- Always call [`Sync()`](https://pkg.go.dev/go.uber.org/zap#Logger.Sync) before program exit

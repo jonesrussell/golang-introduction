@@ -59,3 +59,9 @@ type Client struct {
     baseURL string
 }
 ```
+
+## Key teaching points:
+- [`cmd/`](https://github.com/golang-standards/project-layout) contains main applications
+- [`internal/`](https://go.dev/doc/go1.4#internalpackages) packages are private to the module
+- [`pkg/`](https://github.com/golang-standards/project-layout) contains public library code
+- Follow [standard project layout](https://github.com/golang-standards/project-layout) conventions

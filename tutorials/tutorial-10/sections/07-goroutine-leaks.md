@@ -91,3 +91,10 @@ func processAll(items []Item) {
     wg.Wait()  // Ensure all goroutines complete
 }
 ```
+
+## Key teaching points:
+- Always provide exit paths for [goroutines](https://go.dev/ref/spec#Go_statements)
+- Use [context](https://pkg.go.dev/context) for cancellation
+- Use [buffered channels](https://go.dev/ref/spec#Channel_types) for fire-and-forget patterns
+- Use [WaitGroup](https://pkg.go.dev/sync#WaitGroup) to wait for goroutines to complete
+- Leaked goroutines cause memory leaks

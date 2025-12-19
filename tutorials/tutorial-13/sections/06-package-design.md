@@ -50,3 +50,10 @@ func NewService(repo Repository) *Service {
     return &Service{repo: repo}
 }
 ```
+
+## Key teaching points:
+- Packages should have [single responsibility](https://go.dev/doc/effective_go#package-names)
+- Name packages by what they provide, not what they contain
+- Avoid [stutter](https://go.dev/doc/effective_go#package-names) in package names
+- Document packages with [package comments](https://go.dev/doc/effective_go#commentary)
+- Minimize [exported surface](https://go.dev/ref/spec#Exported_identifiers)

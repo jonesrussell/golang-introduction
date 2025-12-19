@@ -3,7 +3,7 @@
 **Duration:** 5-6 minutes
 
 ## Topics:
-- Cobra features
+- [Cobra](https://pkg.go.dev/github.com/spf13/cobra) features
 - Command structure
 - Installation and setup
 
@@ -54,3 +54,9 @@ func init() {
     rootCmd.Flags().StringVarP(&config, "config", "c", "", "config file path")
 }
 ```
+
+## Key teaching points:
+- [Cobra](https://pkg.go.dev/github.com/spf13/cobra) provides subcommands, flags, and help generation
+- [Persistent flags](https://pkg.go.dev/github.com/spf13/cobra#Command.PersistentFlags) are inherited by subcommands
+- [Local flags](https://pkg.go.dev/github.com/spf13/cobra#Command.Flags) are command-specific
+- Use [`VarP`](https://pkg.go.dev/github.com/spf13/cobra#Command.Flags) for flags with short and long forms

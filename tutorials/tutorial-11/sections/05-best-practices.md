@@ -101,3 +101,9 @@ func LoggingMiddleware(logger *zap.Logger) func(http.Handler) http.Handler {
     }
 }
 ```
+
+## Key teaching points:
+- Use structured fields instead of string formatting
+- Create [contextual loggers](https://pkg.go.dev/go.uber.org/zap#Logger.With) with common fields
+- Log errors with full context using [`zap.Error()`](https://pkg.go.dev/go.uber.org/zap#Error)
+- Use middleware for consistent request logging

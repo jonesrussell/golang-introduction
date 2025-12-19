@@ -93,3 +93,9 @@ fileutil list -a /home/user
 fileutil copy src.txt dst.txt -f
 fileutil search "*.go" ./src -r
 ```
+
+## Key teaching points:
+- Use [`AddCommand()`](https://pkg.go.dev/github.com/spf13/cobra#Command.AddCommand) to add subcommands
+- Use [`Args`](https://pkg.go.dev/github.com/spf13/cobra#Command.Args) validators for argument validation
+- [`RunE`](https://pkg.go.dev/github.com/spf13/cobra#Command.RunE) returns errors for better error handling
+- Subcommands organize complex CLIs

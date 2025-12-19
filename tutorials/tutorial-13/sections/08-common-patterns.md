@@ -2,7 +2,7 @@
 
 **Duration:** 4-5 minutes
 
-## 1. Option Pattern for Configuration
+## 1. [Option Pattern](https://go.dev/doc/effective_go#composite_literals) for Configuration
 
 ```go
 type ServerOption func(*Server)
@@ -36,7 +36,7 @@ func Get(name string) Plugin {
 }
 ```
 
-## 3. Package-Level Errors
+## 3. Package-Level [Sentinel Errors](https://pkg.go.dev/errors#New)
 
 ```go
 package user
@@ -47,7 +47,7 @@ var (
 )
 ```
 
-## 4. Package Initialization Order
+## 4. [Package Initialization Order](https://go.dev/ref/spec#Package_initialization)
 
 ```go
 // a.go: var A = initA()   // Called first (alphabetically)

@@ -72,3 +72,9 @@ const requestIDKey contextKey = "requestID"
 - Dependencies (database, logger)
 - Configuration
 - Business logic data
+
+## Key teaching points:
+- [Context.Value](https://pkg.go.dev/context#WithValue) should be used sparingly
+- Prefer explicit parameters for dependencies
+- Use [typed keys](https://pkg.go.dev/context#WithValue) when using context values
+- [Context](https://pkg.go.dev/context) is for cancellation and request-scoped data

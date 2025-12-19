@@ -4,6 +4,11 @@
 
 ## Progress Indicators
 
+## Key teaching points:
+- Provide feedback for long-running operations
+- Use confirmation prompts for destructive actions
+- Color output improves readability (use libraries like [fatih/color](https://github.com/fatih/color))
+
 ```go
 func copyWithProgress(src, dst string, size int64) error {
     srcFile, _ := os.Open(src)

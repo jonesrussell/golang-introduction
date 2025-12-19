@@ -71,3 +71,9 @@ func init() {
 - No subcommands
 - No short flags (-v)
 - Basic type support
+
+## Key teaching points:
+- [`flag` package](https://pkg.go.dev/flag) is simple and sufficient for basic CLIs
+- Use [`flag.Parse()`](https://pkg.go.dev/flag#Parse) to parse command-line arguments
+- Access non-flag arguments with [`flag.Args()`](https://pkg.go.dev/flag#Args)
+- For complex CLIs, use [Cobra](https://pkg.go.dev/github.com/spf13/cobra)

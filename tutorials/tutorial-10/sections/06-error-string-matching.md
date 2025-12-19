@@ -63,3 +63,10 @@ func HandleError(err error) {
     }
 }
 ```
+
+## Key teaching points:
+- Never match error strings
+- Use [sentinel errors](https://pkg.go.dev/errors#New) for specific error conditions
+- Use [`errors.Is()`](https://pkg.go.dev/errors#Is) to check for sentinel errors
+- Use [`errors.As()`](https://pkg.go.dev/errors#As) for custom error types
+- Works with [wrapped errors](https://pkg.go.dev/fmt#Errorf)

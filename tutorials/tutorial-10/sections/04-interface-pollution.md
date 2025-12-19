@@ -60,3 +60,9 @@ func NewHandler(users userGetter) *Handler {
 - Multiple implementations exist
 - Testing requires mocking
 - Package boundary crossing
+
+## Key teaching points:
+- Don't create [interfaces](https://go.dev/ref/spec#Interface_types) for single implementations
+- ["Accept interfaces, return structs"](https://go.dev/doc/effective_go#interfaces_and_types)
+- Define [interfaces](https://go.dev/ref/spec#Interface_types) at point of use
+- Wait until you need the abstraction

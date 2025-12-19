@@ -2,6 +2,11 @@
 
 **Duration:** 3-4 minutes
 
+## Key teaching points:
+- Test CLI commands with [Cobra](https://pkg.go.dev/github.com/spf13/cobra) by setting output and args
+- Use [`t.TempDir()`](https://pkg.go.dev/testing#T.TempDir) for temporary test directories
+- Capture output with [`bytes.Buffer`](https://pkg.go.dev/bytes#Buffer) for assertions
+
 ```go
 func TestListCommand(t *testing.T) {
     // Create temp directory

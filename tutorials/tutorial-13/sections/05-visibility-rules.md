@@ -65,3 +65,9 @@ project/
 # Another project cannot import:
 # import "github.com/project/internal/secret"  // ERROR!
 ```
+
+## Key teaching points:
+- [Exported identifiers](https://go.dev/ref/spec#Exported_identifiers) start with capital letters
+- [Unexported identifiers](https://go.dev/ref/spec#Exported_identifiers) are package-private
+- [`internal/` directory](https://go.dev/doc/go1.4#internalpackages) restricts imports to same module
+- Use [visibility rules](https://go.dev/ref/spec#Exported_identifiers) to control API surface

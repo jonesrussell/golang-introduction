@@ -39,3 +39,8 @@ zap.Duration("key", time.Second)
 zap.Time("key", time.Now())
 zap.Any("key", obj)
 ```
+
+## Resources:
+- [zap Package Documentation](https://pkg.go.dev/go.uber.org/zap): pkg.go.dev/go.uber.org/zap
+- [log/slog Package](https://pkg.go.dev/log/slog) (Go 1.21+): pkg.go.dev/log/slog
+- [Effective Go - Logging](https://go.dev/doc/effective_go#logging): go.dev/doc/effective_go#logging

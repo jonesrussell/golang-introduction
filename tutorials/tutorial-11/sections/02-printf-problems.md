@@ -23,3 +23,9 @@ log.Printf("Request completed in %dms", elapsed)
 - Consistent format
 - Easy aggregation
 - Better performance
+
+## Key teaching points:
+- [`log.Printf`](https://pkg.go.dev/log#Printf) is unstructured and hard to parse
+- Structured logging uses [key-value pairs](https://pkg.go.dev/log/slog)
+- JSON format enables log aggregation tools
+- Use [log/slog](https://pkg.go.dev/log/slog) or structured logging libraries

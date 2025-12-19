@@ -66,5 +66,11 @@ func main() {
 
 ## Acceptable Globals:
 - Package-level errors: `var ErrNotFound = errors.New(...)`
-- `sync.Once` for lazy initialization
+- [`sync.Once`](https://pkg.go.dev/sync#Once) for lazy initialization
 - Compiled regexes
+
+## Key teaching points:
+- Avoid global mutable state
+- Use [dependency injection](https://go.dev/doc/effective_go#interfaces_and_types) for dependencies
+- Global constants and [sentinel errors](https://pkg.go.dev/errors#New) are acceptable
+- [sync.Once](https://pkg.go.dev/sync#Once) for thread-safe lazy initialization

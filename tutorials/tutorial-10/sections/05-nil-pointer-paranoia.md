@@ -81,3 +81,9 @@ func (c *Config) GetTimeout() time.Duration {
     return *c.Timeout
 }
 ```
+
+## Key teaching points:
+- Design types to avoid [nil](https://go.dev/ref/spec#The_zero_value) when possible
+- Use [value types](https://go.dev/ref/spec#Types) instead of pointers for required fields
+- Check at boundaries, trust internal code
+- Use pointers only when [nil is meaningful](https://go.dev/ref/spec#The_zero_value)
