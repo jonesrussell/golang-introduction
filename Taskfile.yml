@@ -115,6 +115,7 @@ tasks:
     desc: Type-check Vue frontend
     cmds:
       - npm run type-check
+      - npm run lint
     dir: '{{.FRONTEND_DIR}}'
 
   # Testing tasks
