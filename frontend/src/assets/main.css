@@ -88,7 +88,8 @@
 
   /* Button base styles */
   button {
-    @apply font-inherit cursor-pointer;
+    font-family: inherit;
+    @apply cursor-pointer;
   }
 
   button:disabled {
@@ -119,20 +120,20 @@
 
 @keyframes fadeIn {
   from {
-    @apply opacity-0;
+    opacity: 0;
   }
   to {
-    @apply opacity-100;
+    opacity: 1;
   }
 }
 
 @keyframes slideUp {
   from {
-    @apply opacity-0;
+    opacity: 0;
     transform: translateY(10px);
   }
   to {
-    @apply opacity-100;
+    opacity: 1;
     transform: translateY(0);
   }
 }
