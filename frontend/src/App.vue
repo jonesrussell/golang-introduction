@@ -22,7 +22,10 @@
       ]"
     >
       <div class="p-6 border-b border-neutral-200 dark:border-neutral-800 bg-gradient-to-br from-primary-light to-white dark:from-neutral-800 dark:to-neutral-900">
-        <div class="flex items-center gap-3">
+        <RouterLink
+          to="/"
+          class="flex items-center gap-3 cursor-pointer transition-opacity duration-150 hover:opacity-80"
+        >
           <svg class="w-10 h-10 text-go-blue" viewBox="0 0 24 24" fill="currentColor">
             <path d="M1.811 10.715c-.404.258-.378.746.086.911l5.753 2.145c.302.112.553-.038.672-.318l1.183-3.235c.124-.295.032-.583-.239-.69L3.513 7.383c-.453-.178-.882.031-1.14.333l-.562.999zM6.837 15.091c-.302-.112-.553.038-.672.318l-1.183 3.235c-.124.295-.032.583.239.69l5.753 2.145c.464.173.882-.112 1.086-.411l.562-.999c.404-.258.378-.746-.086-.911l-5.699-4.067zM22.189 10.715c.404.258.378.746-.086.911l-5.753 2.145c-.302.112-.553-.038-.672-.318l-1.183-3.235c-.124-.295-.032-.583.239-.69l5.753-2.145c.453-.178.882.031 1.14.333l.562.999zM17.163 15.091c.302-.112.553.038.672.318l1.183 3.235c.124.295.032.583-.239.69l-5.753 2.145c-.464.173-.882-.112-1.086-.411l-.562-.999c-.404-.258-.378-.746.086-.911l5.699-4.067z"/>
           </svg>
@@ -30,7 +33,7 @@
             <h1 class="text-xl font-bold text-neutral-900 dark:text-neutral-100 m-0 leading-tight">Go Tutorials</h1>
             <span class="text-sm text-neutral-600 dark:text-neutral-400 font-medium">Interactive Learning</span>
           </div>
-        </div>
+        </RouterLink>
       </div>
       <TutorialList :current-tutorial-id="currentTutorialId" />
     </aside>
@@ -51,7 +54,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { RouterView, useRoute } from 'vue-router';
+import { RouterView, RouterLink, useRoute } from 'vue-router';
 import TutorialList from './components/TutorialList.vue';
 
 const route = useRoute();

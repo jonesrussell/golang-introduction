@@ -49,8 +49,7 @@ internal/
 ├── parser/
 │   ├── markdown.go       # Legacy single-file parser
 │   ├── section.go        # New directory-based parser
-│   ├── tutorial.go       # Tutorial orchestrator
-│   └── goldmark_parser.go # AST-based markdown parsing
+│   └── tutorial.go       # Tutorial orchestrator
 └── storage/
     └── progress.go       # User progress persistence
 pkg/models/

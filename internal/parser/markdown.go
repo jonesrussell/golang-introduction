@@ -336,26 +336,6 @@ func (p *TutorialParser) LoadAllTutorials() ([]*models.Tutorial, error) {
 	return tutorials, nil
 }
 
-// LoadAllTutorialsMetadata returns metadata for all tutorials
-func (p *TutorialParser) LoadAllTutorialsMetadata() ([]*models.TutorialMetadata, error) {
-	tutorialIDs, err := p.ListTutorials()
-	if err != nil {
-		return nil, err
-	}
-
-	var metadata []*models.TutorialMetadata
-	for _, id := range tutorialIDs {
-		meta, loadErr := p.GetTutorialMetadata(id)
-		if loadErr != nil {
-			fmt.Fprintf(os.Stderr, "Error loading metadata for tutorial %s: %v\n", id, loadErr)
-			continue
-		}
-		metadata = append(metadata, meta)
-	}
-
-	return metadata, nil
-}
-
 // GetTutorialMetadataFromFile gets metadata from a legacy file
 func (p *TutorialParser) GetTutorialMetadataFromFile(filename string) (*models.TutorialMetadata, error) {
 	filePath := filepath.Join(p.tutorialsDir, filename)

@@ -5,8 +5,7 @@ This document tracks the completion status of each development phase.
 ## Phase 1: Core Backend ✅ COMPLETE
 
 ### Markdown Parser for Tutorials
-- ✅ Basic regex-based parser (`internal/parser/markdown.go`)
-- ✅ Goldmark AST parser (`internal/parser/goldmark_parser.go`)
+- ✅ Regex-based parser (`internal/parser/markdown.go`)
 - ✅ Metadata extraction (title, duration, difficulty, prerequisites)
 - ✅ Section parsing (### headers)
 - ✅ Code block extraction (```go)

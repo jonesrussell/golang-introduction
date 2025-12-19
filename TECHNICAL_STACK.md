@@ -17,11 +17,9 @@ This document details the complete technical stack used in the Go Tutorials plat
   - Alternative option available: `github.com/gorilla/mux` (not currently used, but compatible)
 
 ### Markdown Parsing
-- **github.com/yuin/goldmark** ✅
-  - Version: `v1.7.13`
-  - AST-based markdown parsing
-  - Located in: `internal/parser/goldmark_parser.go`
-  - Also includes regex-based parser for compatibility
+- **Regex-based parser** ✅
+  - Custom regex-based markdown parsing
+  - Located in: `internal/parser/markdown.go`
 
 ### Code Execution
 - **os/exec** ✅
