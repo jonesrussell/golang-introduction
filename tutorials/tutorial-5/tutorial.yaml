@@ -1,0 +1,10 @@
+id: "5"
+title: "Understanding Go Interfaces: From Theory to Real-World Usage"
+duration: "40-50 minutes"
+difficulty: "Intermediate"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"
+  - "Structs"
+  - "Methods"
+  - "Pointers"

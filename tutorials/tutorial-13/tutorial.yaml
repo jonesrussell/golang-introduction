@@ -1,0 +1,7 @@
+id: "13"
+title: "Go Packages and Modules: Organization and Visibility"
+duration: "35-45 minutes"
+difficulty: "Intermediate"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"

@@ -1,0 +1,9 @@
+id: "11"
+title: "Structured Logging with Zap: Production-Ready Logging Practices"
+duration: "30-40 minutes"
+difficulty: "Intermediate to Advanced"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"
+  - "Interfaces"
+  - "Error Handling"

@@ -1,0 +1,9 @@
+id: "7"
+title: "Go Concurrency Explained: Goroutines and Channels"
+duration: "45-55 minutes"
+difficulty: "Intermediate"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"
+  - "Functions"
+  - "Error Handling"

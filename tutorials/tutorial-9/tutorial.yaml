@@ -1,0 +1,9 @@
+id: "9"
+title: "Dependency Injection in Go: Writing Testable, Maintainable Code"
+duration: "40-50 minutes"
+difficulty: "Advanced"
+level: "Advanced"
+prerequisites:
+  - "Interfaces"
+  - "Structs"
+  - "Error Handling"

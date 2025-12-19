@@ -1,0 +1,7 @@
+id: "2"
+title: "Go Structs: Definition, Initialization, and Methods"
+duration: "30-40 minutes"
+difficulty: "Beginner to Intermediate"
+level: "Beginner"
+prerequisites:
+  - "Go Basics (variables, types, functions)"

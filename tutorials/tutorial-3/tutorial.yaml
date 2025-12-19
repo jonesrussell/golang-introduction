@@ -1,0 +1,7 @@
+id: "3"
+title: "Struct Embedding and Composition in Go"
+duration: "35-45 minutes"
+difficulty: "Intermediate"
+level: "Beginner"
+prerequisites:
+  - "Go Structs (definition, initialization, methods)"

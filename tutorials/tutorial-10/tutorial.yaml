@@ -1,0 +1,7 @@
+id: "10"
+title: "Avoiding Common Go Anti-Patterns"
+duration: "35-45 minutes"
+difficulty: "Advanced"
+level: "Advanced"
+prerequisites:
+  - "Go Basics through Concurrency"

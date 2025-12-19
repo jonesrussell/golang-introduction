@@ -1,0 +1,9 @@
+id: "12"
+title: "Building CLI Tools in Go: Cobra and Flag Packages"
+duration: "40-50 minutes"
+difficulty: "Intermediate"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"
+  - "Structs"
+  - "Interfaces"

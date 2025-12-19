@@ -1,0 +1,9 @@
+id: "4"
+title: "Pointers in Go: When to Use *Type vs Type"
+duration: "30-40 minutes"
+difficulty: "Intermediate"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"
+  - "Structs"
+  - "Methods"

@@ -1,0 +1,8 @@
+id: "6"
+title: "Error Handling in Go: Patterns, Wrapping, and Custom Errors"
+duration: "35-45 minutes"
+difficulty: "Intermediate"
+level: "Intermediate"
+prerequisites:
+  - "Go Basics"
+  - "Interfaces"
