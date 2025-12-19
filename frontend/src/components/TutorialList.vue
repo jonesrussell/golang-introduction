@@ -98,6 +98,7 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useTutorial } from '../composables/useTutorial';
 import { useProgressStore } from '../stores/progress';
 
@@ -105,15 +106,12 @@ defineProps<{
   currentTutorialId?: string;
 }>();
 
-const emit = defineEmits<{
-  (e: 'select', tutorialId: string): void;
-}>();
-
+const router = useRouter();
 const { tutorials, tutorialsByLevel, loading, error, loadTutorials } = useTutorial();
 const progressStore = useProgressStore();
 
 const selectTutorial = (tutorialId: string) => {
-  emit('select', tutorialId);
+  router.push({ name: 'tutorial', params: { id: tutorialId } });
 };
 
 const getTutorialProgress = (tutorialId: string) => {
