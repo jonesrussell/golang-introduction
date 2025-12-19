@@ -49,8 +49,7 @@
       <textarea
         ref="textareaRef"
         v-model="localCode"
-        class="flex-1 py-5 px-5 font-mono text-sm leading-[1.7] text-neutral-100 bg-transparent border-none outline-none resize-none whitespace-pre overflow-wrap-normal overflow-x-auto placeholder:text-neutral-600"
-        :style="{ tabSize: '2' }"
+        class="flex-1 py-5 px-5 font-mono text-sm leading-[1.7] text-neutral-100 bg-transparent border-none outline-none resize-none whitespace-pre overflow-wrap-normal overflow-x-auto placeholder:text-neutral-600 code-editor-textarea"
         :placeholder="placeholder"
         spellcheck="false"
         autocomplete="off"
@@ -147,4 +146,10 @@ watch(() => props.modelValue, (newValue) => {
   }
 });
 </script>
+
+<style scoped>
+.code-editor-textarea {
+  tab-size: 2;
+}
+</style>
 
