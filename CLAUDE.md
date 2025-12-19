@@ -260,8 +260,187 @@ Uses `golangci-lint` with strict configuration (`.golangci.yml`). Key linters:
 - `gocognit` - Cognitive complexity (max 20)
 - `funlen` - Function length (max 100 lines)
 - `gosec` - Security checks
+- `lll` - Line length (max 150 characters)
+- `mnd` - Magic number detection
 
 Frontend uses `vue-tsc` for TypeScript checking.
+
+## Go Code Style Guidelines
+
+Follow these patterns to avoid common linting issues:
+
+### Magic Numbers
+Always use named constants instead of magic numbers:
+```go
+// BAD
+timeout := 10 * time.Second
+if num >= 9 { ... }
+
+// GOOD
+const defaultTimeout = 10 * time.Second
+const advancedLevelThreshold = 9
+timeout := defaultTimeout
+if num >= advancedLevelThreshold { ... }
+```
+
+### Variable Shadowing
+Avoid reusing `err` in nested scopes. Use descriptive names:
+```go
+// BAD
+if err := doSomething(); err != nil {
+    if err := cleanup(); err != nil { // shadows outer err
+        log.Error(err)
+    }
+}
+
+// GOOD
+if err := doSomething(); err != nil {
+    if cleanupErr := cleanup(); cleanupErr != nil {
+        log.Error(cleanupErr)
+    }
+}
+```
+
+### Import/Parameter Shadowing
+Don't name parameters the same as imported packages:
+```go
+// BAD
+func NewHandlers(parser *parser.Parser, executor *executor.Executor)
+
+// GOOD
+func NewHandlers(tutorialParser *parser.Parser, codeExecutor *executor.Executor)
+```
+
+### Cognitive Complexity
+Keep functions simple (max complexity 20). Extract helper functions:
+```go
+// BAD - one giant function with nested loops and conditions
+
+// GOOD - extract logical pieces
+func processItems(items []Item) {
+    for _, item := range items {
+        processItem(item)
+    }
+}
+func processItem(item Item) { ... }
+```
+
+### Line Length
+Max 150 characters. Break long function signatures:
+```go
+// BAD
+func NewHandlers(parser *parser.TutorialParser, executor *executor.CodeExecutor, storage *storage.ProgressStorage) (*Handlers, error) {
+
+// GOOD
+func NewHandlers(
+    parser *parser.TutorialParser,
+    executor *executor.CodeExecutor,
+    storage *storage.ProgressStorage,
+) (*Handlers, error) {
+```
+
+### Named Return Values
+When using named returns, use `=` not `:=`:
+```go
+// BAD
+func parse(s string) (result string, err error) {
+    result := strings.TrimSpace(s) // creates new variable, shadows return
+    return result, nil
+}
+
+// GOOD
+func parse(s string) (result string, err error) {
+    result = strings.TrimSpace(s) // assigns to return variable
+    return result, nil
+}
+```
+
+### Parameter Type Combining
+Combine consecutive parameters of the same type:
+```go
+// BAD
+func process(tutorialID string, filename string) { ... }
+
+// GOOD
+func process(tutorialID, filename string) { ... }
+```
+
+### String Trimming
+Use `TrimPrefix`/`TrimSuffix` instead of `Trim` with repeated characters:
+```go
+// BAD - Trim treats "**" as set of chars {'*'}, not a string
+title = strings.Trim(title, "**")
+
+// GOOD
+title = strings.TrimPrefix(title, "**")
+title = strings.TrimSuffix(title, "**")
+```
+
+### File Permissions
+Use restrictive permissions for sensitive files:
+```go
+// BAD
+os.WriteFile(path, data, 0644)
+
+// GOOD
+os.WriteFile(path, data, 0600)
+```
+
+### Logger Usage
+Use instance loggers instead of global `slog`:
+```go
+// BAD
+func run() error {
+    slog.Info("starting")
+}
+
+// GOOD
+func run(logger *slog.Logger) error {
+    logger.Info("starting")
+}
+```
+
+### Deprecated Comments
+Add a blank line before `Deprecated:`:
+```go
+// BAD
+// SetTimeout sets the timeout.
+// Deprecated: Use WithTimeout option instead.
+
+// GOOD
+// SetTimeout sets the timeout.
+//
+// Deprecated: Use WithTimeout option instead.
+```
+
+### Switch vs If-Else
+Use switch for multiple conditions on the same variable:
+```go
+// BAD
+if r.Method == http.MethodGet {
+    handleGet(w, r)
+} else if r.Method == http.MethodPost {
+    handlePost(w, r)
+}
+
+// GOOD
+switch r.Method {
+case http.MethodGet:
+    handleGet(w, r)
+case http.MethodPost:
+    handlePost(w, r)
+}
+```
+
+### Integer Range Loops (Go 1.22+)
+Use range over integers:
+```go
+// BAD
+for i := 0; i < n; i++ { ... }
+
+// GOOD
+for i := range n { ... }
+```
 
 ## Common Tasks
 
