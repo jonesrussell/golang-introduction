@@ -46,5 +46,6 @@ export interface Exercise {
   hints?: string[];
   solution?: string;
   starterCode?: string;
+  expectedOutput?: string;
 }
 

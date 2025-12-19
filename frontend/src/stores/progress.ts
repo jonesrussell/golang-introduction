@@ -46,28 +46,31 @@ export const useProgressStore = defineStore('progress', () => {
     // Optimistic update - update UI immediately
     if (!progress.value) {
       progress.value = {
-        UserID: userId,
-        CompletedSections: {},
-        CompletedExercises: {},
-        LastAccessed: new Date().toISOString(),
+        userId: userId,
+        completedSections: {},
+        completedExercises: {},
+        lastAccessed: new Date().toISOString(),
       };
     }
     
-    if (!progress.value.completedSections[tutorialId]) {
-      progress.value.completedSections[tutorialId] = [];
+    // TypeScript now knows progress.value is not null after the check above
+    const currentProgress = progress.value;
+    
+    if (!currentProgress.completedSections[tutorialId]) {
+      currentProgress.completedSections[tutorialId] = [];
     }
     
     // Only add if not already completed (idempotent)
-    if (!progress.value.completedSections[tutorialId].includes(sectionId)) {
-      progress.value.completedSections[tutorialId].push(sectionId);
+    if (!currentProgress.completedSections[tutorialId].includes(sectionId)) {
+      currentProgress.completedSections[tutorialId].push(sectionId);
     }
     
-    progress.value.currentTutorial = tutorialId;
-    progress.value.currentSection = sectionId;
-    progress.value.LastAccessed = new Date().toISOString();
+    currentProgress.currentTutorial = tutorialId;
+    currentProgress.currentSection = sectionId;
+    currentProgress.lastAccessed = new Date().toISOString();
     
     // Save to localStorage immediately
-    localStorage.setItem('tutorial-progress', JSON.stringify(progress.value));
+    localStorage.setItem('tutorial-progress', JSON.stringify(currentProgress));
     
     // Then sync with server (non-blocking)
     try {
