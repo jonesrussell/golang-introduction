@@ -1,0 +1,193 @@
+version: '3'
+
+vars:
+  FRONTEND_DIR: frontend
+  BACKEND_PORT: 8080
+  FRONTEND_PORT: 5173
+  DOCKER_COMPOSE_FILE: docker-compose.yml
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  # Development tasks
+  dev:
+    desc: Start both backend and frontend in development mode
+    deps: [dev:backend, dev:frontend]
+
+  dev:backend:
+    desc: Start the Go backend server
+    cmds:
+      - go run cmd/server/main.go
+    dir: '{{.ROOT_DIR}}'
+
+  dev:frontend:
+    desc: Start the Vue frontend development server
+    cmds:
+      - npm run dev
+    dir: '{{.FRONTEND_DIR}}'
+    preconditions:
+      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: command -v npm
+
+  # Install dependencies
+  install:
+    desc: Install all dependencies (backend and frontend)
+    deps: [install:backend, install:frontend]
+
+  install:backend:
+    desc: Download Go module dependencies
+    cmds:
+      - go mod download
+      - go mod tidy
+
+  install:frontend:
+    desc: Install npm dependencies
+    cmds:
+      - npm install
+    dir: '{{.FRONTEND_DIR}}'
+    preconditions:
+      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: command -v npm
+
+  # Build tasks
+  build:
+    desc: Build both backend and frontend
+    deps: [build:backend, build:frontend]
+
+  build:backend:
+    desc: Build the Go backend binary
+    cmds:
+      - go build -o bin/server ./cmd/server
+    dir: '{{.ROOT_DIR}}'
+    generates:
+      - bin/server
+
+  build:frontend:
+    desc: Build the Vue frontend for production
+    cmds:
+      - npm run build
+    dir: '{{.FRONTEND_DIR}}'
+    preconditions:
+      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: command -v npm
+
+  # Docker tasks
+  docker:up:
+    desc: Start all services with Docker Compose
+    cmds:
+      - docker compose -f {{.DOCKER_COMPOSE_FILE}} up
+
+  docker:build:
+    desc: Build Docker images
+    cmds:
+      - docker compose -f {{.DOCKER_COMPOSE_FILE}} build
+
+  docker:down:
+    desc: Stop all Docker Compose services
+    cmds:
+      - docker compose -f {{.DOCKER_COMPOSE_FILE}} down
+
+  docker:logs:
+    desc: Show Docker Compose logs
+    cmds:
+      - docker compose -f {{.DOCKER_COMPOSE_FILE}} logs -f
+
+  docker:clean:
+    desc: Stop and remove containers, networks, and volumes
+    cmds:
+      - docker compose -f {{.DOCKER_COMPOSE_FILE}} down -v --remove-orphans
+
+  # Code quality tasks
+  fmt:
+    desc: Format Go code
+    cmds:
+      - go fmt ./...
+    dir: '{{.ROOT_DIR}}'
+
+  vet:
+    desc: Run go vet on all packages
+    cmds:
+      - go vet ./...
+    dir: '{{.ROOT_DIR}}'
+
+  lint:
+    desc: Run all linting checks
+    deps: [vet, lint:frontend]
+
+  lint:frontend:
+    desc: Type-check Vue frontend
+    cmds:
+      - npm run type-check
+    dir: '{{.FRONTEND_DIR}}'
+    preconditions:
+      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: command -v npm
+
+  # Testing tasks
+  test:
+    desc: Run all tests
+    cmds:
+      - go test -v ./...
+    dir: '{{.ROOT_DIR}}'
+
+  test:coverage:
+    desc: Run tests with coverage
+    cmds:
+      - go test -v -coverprofile=coverage.out ./...
+      - go tool cover -html=coverage.out -o coverage.html
+    dir: '{{.ROOT_DIR}}'
+    generates:
+      - coverage.out
+      - coverage.html
+
+  # Cleanup tasks
+  clean:
+    desc: Clean build artifacts and dependencies
+    deps: [clean:backend, clean:frontend]
+
+  clean:backend:
+    desc: Remove Go build artifacts
+    cmds:
+      - rm -rf bin/
+      - rm -f coverage.out coverage.html
+      - go clean -cache -modcache -testcache
+
+  clean:frontend:
+    desc: Remove frontend build artifacts and node_modules
+    cmds:
+      - rm -rf {{.FRONTEND_DIR}}/dist
+      - rm -rf {{.FRONTEND_DIR}}/node_modules
+    dir: '{{.ROOT_DIR}}'
+
+  # Utility tasks
+  deps:
+    desc: Check and update dependencies
+    deps: [deps:backend, deps:frontend]
+
+  deps:backend:
+    desc: Update Go dependencies
+    cmds:
+      - go get -u ./...
+      - go mod tidy
+
+  deps:frontend:
+    desc: Update npm dependencies
+    cmds:
+      - npm update
+    dir: '{{.FRONTEND_DIR}}'
+    preconditions:
+      - test -f {{.FRONTEND_DIR}}/package.json
+      - sh: command -v npm
+
+  # Verification tasks
+  verify:
+    desc: Run all verification checks (format, vet, lint, test)
+    deps: [fmt, vet, lint, test]
+
+  # Quick start for new developers
+  setup:
+    desc: Initial project setup (install dependencies)
+    deps: [install]
