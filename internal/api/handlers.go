@@ -58,6 +58,21 @@ func (h *Handlers) ListTutorials(w http.ResponseWriter, r *http.Request) {
 
 // GetTutorialByID returns a full tutorial by ID (path parameter version)
 func (h *Handlers) GetTutorialByID(w http.ResponseWriter, r *http.Request, tutorialID string) {
+	// Check if instructor mode is requested
+	instructorMode := r.URL.Query().Get("instructor") == "true"
+
+	// If instructor mode, load fresh with instructor notes
+	if instructorMode {
+		tutorial, err := h.parser.GetTutorial(tutorialID, true)
+		if err != nil {
+			http.Error(w, "tutorial not found", http.StatusNotFound)
+			return
+		}
+		respondJSON(w, http.StatusOK, tutorial)
+		return
+	}
+
+	// Otherwise use cached tutorials
 	for _, tutorial := range h.tutorials {
 		if tutorial.ID == tutorialID {
 			respondJSON(w, http.StatusOK, tutorial)
@@ -108,7 +123,8 @@ func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req struct {
-		Code string `json:"code"`
+		Code    string `json:"code"`
+		Snippet bool   `json:"snippet,omitempty"` // If true, code will be auto-wrapped
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -124,7 +140,15 @@ func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 15*time.Second)
 	defer cancel()
 
-	result, err := h.executor.Execute(ctx, req.Code)
+	// Use appropriate execution method based on snippet flag
+	var result *executor.ExecutionResult
+	var err error
+	if req.Snippet {
+		result, err = h.executor.ExecuteSnippet(ctx, req.Code)
+	} else {
+		result, err = h.executor.Execute(ctx, req.Code)
+	}
+
 	if err != nil {
 		http.Error(w, fmt.Sprintf("execution error: %v", err), http.StatusInternalServerError)
 		return
@@ -244,8 +268,8 @@ func (h *Handlers) GetExercises(w http.ResponseWriter, r *http.Request) {
 }
 
 // respondJSON sends a JSON response
-func respondJSON(w http.ResponseWriter, status int, data interface{}) {
+func respondJSON(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
+	_ = json.NewEncoder(w).Encode(data)
 }

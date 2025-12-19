@@ -26,6 +26,7 @@ export interface Section {
   teachingPoints: string[];
   order: number;
   content: string;
+  instructorNotes?: string;
 }
 
 export interface CodeExample {
@@ -33,6 +34,7 @@ export interface CodeExample {
   code: string;
   language: string;
   runnable: boolean;
+  snippet?: boolean;
   expectedOutput?: string;
   description?: string;
 }

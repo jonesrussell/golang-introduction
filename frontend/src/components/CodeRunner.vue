@@ -134,6 +134,7 @@ const props = defineProps<{
   code: string;
   language?: string;
   editable?: boolean;
+  snippet?: boolean;
 }>();
 
 const { executing, result, error: executionError, executeCode: execCode, clearResult } = useCodeExecution();
@@ -169,7 +170,7 @@ const toggleEdit = () => {
 const executeCode = async () => {
   clearResult();
   const codeToExecute = editing.value && props.editable ? editableCode.value : props.code;
-  await execCode(codeToExecute);
+  await execCode(codeToExecute, props.snippet || false);
 };
 
 const copyCode = async () => {

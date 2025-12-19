@@ -7,13 +7,13 @@ export function useCodeExecution() {
   const result = ref<ExecutionResult | null>(null);
   const error = ref<string | null>(null);
 
-  const executeCode = async (code: string) => {
+  const executeCode = async (code: string, snippet: boolean = false) => {
     executing.value = true;
     error.value = null;
     result.value = null;
 
     try {
-      result.value = await executionApi.executeCode(code);
+      result.value = await executionApi.executeCode(code, snippet);
       if (result.value.error) {
         error.value = result.value.error;
       }
