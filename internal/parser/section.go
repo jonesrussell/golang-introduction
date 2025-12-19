@@ -14,12 +14,13 @@ import (
 
 // TutorialConfig represents the tutorial.yaml configuration
 type TutorialConfig struct {
-	ID            string   `yaml:"id"`
-	Title         string   `yaml:"title"`
-	Duration      string   `yaml:"duration"`
-	Difficulty    string   `yaml:"difficulty"`
-	Level         string   `yaml:"level"`
-	Prerequisites []string `yaml:"prerequisites"`
+	ID              string   `yaml:"id"`
+	Title           string   `yaml:"title"`
+	Duration        string   `yaml:"duration"`
+	Difficulty      string   `yaml:"difficulty"`
+	Level           string   `yaml:"level"`
+	Prerequisites   []string `yaml:"prerequisites"`
+	TableOfContents string   `yaml:"tableOfContents"`
 }
 
 // DirectoryParser handles parsing of directory-based tutorials
@@ -161,13 +162,14 @@ func (p *DirectoryParser) ParseTutorialFromDirectory(tutorialID string, includeI
 	}
 
 	tutorial := &models.Tutorial{
-		ID:            config.ID,
-		Title:         config.Title,
-		Duration:      config.Duration,
-		Difficulty:    config.Difficulty,
-		Level:         config.Level,
-		Prerequisites: config.Prerequisites,
-		Sections:      []models.Section{},
+		ID:              config.ID,
+		Title:           config.Title,
+		Duration:        config.Duration,
+		Difficulty:      config.Difficulty,
+		Level:           config.Level,
+		Prerequisites:   config.Prerequisites,
+		TableOfContents: config.TableOfContents,
+		Sections:        []models.Section{},
 	}
 
 	// If level is empty, determine from ID

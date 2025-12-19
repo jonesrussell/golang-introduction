@@ -2,13 +2,14 @@ package models
 
 // Tutorial represents a complete tutorial with all its sections
 type Tutorial struct {
-	ID            string    `json:"id"`
-	Title         string    `json:"title"`
-	Duration      string    `json:"duration"`
-	Difficulty    string    `json:"difficulty"`
-	Prerequisites []string  `json:"prerequisites"`
-	Sections      []Section `json:"sections"`
-	Level         string    `json:"level"` // Beginner, Intermediate, Advanced
+	ID              string    `json:"id"`
+	Title           string    `json:"title"`
+	Duration        string    `json:"duration"`
+	Difficulty      string    `json:"difficulty"`
+	Prerequisites   []string  `json:"prerequisites"`
+	Sections        []Section `json:"sections"`
+	Level           string    `json:"level"` // Beginner, Intermediate, Advanced
+	TableOfContents string    `json:"tableOfContents,omitempty"`
 }
 
 // TutorialMetadata represents basic tutorial information without full content

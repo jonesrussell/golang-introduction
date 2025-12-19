@@ -106,6 +106,7 @@
             :total-sections="tutorial.sections.length"
             :tutorial-id="tutorial.id"
             :instructor-mode="instructorMode"
+            :table-of-contents="tutorial.tableOfContents"
             @next="nextSection"
             @previous="previousSection"
             @complete="markComplete"

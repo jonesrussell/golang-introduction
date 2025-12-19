@@ -6,6 +6,7 @@ export interface Tutorial {
   prerequisites: string[];
   sections: Section[];
   level: string;
+  tableOfContents?: string;
 }
 
 export interface TutorialMetadata {

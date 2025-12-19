@@ -140,6 +140,7 @@ const props = defineProps<{
   totalSections: number;
   tutorialId?: string;
   instructorMode?: boolean;
+  tableOfContents?: string;
 }>();
 
 /* eslint-disable no-unused-vars */
@@ -161,22 +162,14 @@ const handleComplete = () => {
   emit('complete');
 };
 
-// Extract table of contents from section content
+// Render table of contents from tutorial
 const tableOfContents = computed(() => {
-  if (!props.section.content) return null;
+  if (!props.tableOfContents) return null;
   
-  const content = props.section.content;
-  const tocStart = content.indexOf('## Table of Contents');
-  if (tocStart === -1) return null;
-  
-  // Find the end of the TOC section (next ## header that's not part of TOC)
-  const afterToc = content.slice(tocStart);
-  // Look for next section header after the TOC
-  const nextSectionMatch = afterToc.match(/\n## (?!Table of Contents)/);
-  const tocEnd = nextSectionMatch ? tocStart + nextSectionMatch.index : content.length;
-  
-  const tocContent = content.slice(tocStart, tocEnd).trim();
-  if (!tocContent) return null;
+  // Add a header to the TOC if it doesn't already have one
+  const content = props.tableOfContents.trim();
+  const hasHeader = content.startsWith('#');
+  const tocContent = hasHeader ? content : `## Table of Contents\n\n${content}`;
   
   return renderMarkdownContent(tocContent);
 });
