@@ -91,9 +91,14 @@
       </header>
 
       <!-- Two-column layout: Main content and Instructor Panel -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div :class="[
+        'grid grid-cols-1 gap-6',
+        showInstructorPanel ? 'lg:grid-cols-3' : ''
+      ]">
         <!-- Main content column -->
-        <div class="lg:col-span-2">
+        <div :class="[
+          showInstructorPanel ? 'lg:col-span-2' : ''
+        ]">
           <SectionViewer
             v-if="currentSection"
             :section="currentSection"
@@ -116,7 +121,7 @@
         </div>
 
         <!-- Instructor Panel column -->
-        <div v-if="instructorMode && currentSection?.instructorNotes" class="lg:col-span-1">
+        <div v-if="showInstructorPanel" class="lg:col-span-1">
           <div class="sticky top-6">
             <InstructorPanel :notes="currentSection.instructorNotes" />
           </div>
@@ -166,6 +171,10 @@ const currentSection = computed((): Section | null => {
     return null;
   }
   return tutorial.value.sections[currentSectionIndex.value] || null;
+});
+
+const showInstructorPanel = computed(() => {
+  return instructorMode.value && currentSection.value?.instructorNotes !== undefined && currentSection.value.instructorNotes !== '';
 });
 
 const navigateToSection = (index: number) => {
