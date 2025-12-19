@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto animate-fade-in sm:p-4">
+  <div class="p-6 max-w-7xl mx-auto animate-fade-in sm:p-4">
     <!-- Loading state -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-16 px-8 text-neutral-600 dark:text-neutral-400">
       <div class="w-10 h-10 border-[3px] border-neutral-200 dark:border-neutral-800 border-t-[#00ADD8] rounded-full animate-spin mb-4"></div>
@@ -90,25 +90,37 @@
         </div>
       </header>
 
-      <!-- Section content -->
-      <SectionViewer
-        v-if="currentSection"
-        :section="currentSection"
-        :section-index="currentSectionIndex"
-        :total-sections="tutorial.sections.length"
-        :tutorial-id="tutorial.id"
-        :instructor-mode="instructorMode"
-        @next="nextSection"
-        @previous="previousSection"
-        @complete="markComplete"
-      />
+      <!-- Two-column layout: Main content and Instructor Panel -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main content column -->
+        <div class="lg:col-span-2">
+          <SectionViewer
+            v-if="currentSection"
+            :section="currentSection"
+            :section-index="currentSectionIndex"
+            :total-sections="tutorial.sections.length"
+            :tutorial-id="tutorial.id"
+            :instructor-mode="instructorMode"
+            @next="nextSection"
+            @previous="previousSection"
+            @complete="markComplete"
+          />
 
-      <!-- Empty state -->
-      <div v-else class="flex flex-col items-center py-16 px-8 text-neutral-600 dark:text-neutral-400 text-center">
-        <svg class="w-12 h-12 mb-4 text-neutral-500 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        <p>No sections available for this tutorial</p>
+          <!-- Empty state -->
+          <div v-else class="flex flex-col items-center py-16 px-8 text-neutral-600 dark:text-neutral-400 text-center">
+            <svg class="w-12 h-12 mb-4 text-neutral-500 dark:text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <p>No sections available for this tutorial</p>
+          </div>
+        </div>
+
+        <!-- Instructor Panel column -->
+        <div v-if="instructorMode && currentSection?.instructorNotes" class="lg:col-span-1">
+          <div class="sticky top-6">
+            <InstructorPanel :notes="currentSection.instructorNotes" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -120,6 +132,7 @@ import { useRouter } from 'vue-router';
 import { useTutorial } from '../composables/useTutorial';
 import { useProgressStore } from '../stores/progress';
 import SectionViewer from './SectionViewer.vue';
+import InstructorPanel from './InstructorPanel.vue';
 import type { Section } from '../types/tutorial';
 
 const props = defineProps<{

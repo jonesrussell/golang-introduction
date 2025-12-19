@@ -22,12 +22,6 @@
 
     <!-- Section content -->
     <div class="p-6 flex flex-col gap-8 sm:p-5 sm:gap-6">
-      <!-- Instructor Notes Panel -->
-      <InstructorPanel
-        v-if="instructorMode && section.instructorNotes"
-        :notes="section.instructorNotes"
-      />
-
       <!-- Topics -->
       <div v-if="section.topics && section.topics.length > 0" class="animate-slide-up">
         <h3 class="flex items-center gap-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100 m-0 mb-4">
@@ -130,7 +124,6 @@
 import { computed } from 'vue';
 import { useProgressStore } from '../stores/progress';
 import CodeRunner from './CodeRunner.vue';
-import InstructorPanel from './InstructorPanel.vue';
 import type { Section } from '../types/tutorial';
 
 const props = defineProps<{
