@@ -46,7 +46,7 @@ export const useProgressStore = defineStore('progress', () => {
     // Optimistic update - update UI immediately
     if (!progress.value) {
       progress.value = {
-        userId: userId,
+        userId,
         completedSections: {},
         completedExercises: {},
         lastAccessed: new Date().toISOString(),
@@ -87,7 +87,7 @@ export const useProgressStore = defineStore('progress', () => {
     // Initialize progress if it doesn't exist
     if (!progress.value) {
       progress.value = {
-        userId: userId,
+        userId,
         completedSections: {},
         completedExercises: {},
         lastAccessed: new Date().toISOString(),

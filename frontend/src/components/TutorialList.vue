@@ -19,30 +19,28 @@
       <div v-for="(tutorials, level) in tutorialsByLevel" :key="level" class="flex flex-col gap-3">
         <h3 class="m-0 px-1">
           <span
-            :class="[
-              'inline-flex items-center px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide rounded-md',
+            class="inline-flex items-center px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide rounded-md" :class="[
               getLevelClass(level as string) === 'level-beginner'
                 ? 'bg-green-100 dark:bg-green-950/30 text-green-700 dark:text-green-300'
                 : getLevelClass(level as string) === 'level-intermediate'
-                ? 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300'
-                : getLevelClass(level as string) === 'level-advanced'
-                ? 'bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-300'
-                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
+                  ? 'bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300'
+                  : getLevelClass(level as string) === 'level-advanced'
+                    ? 'bg-red-100 dark:bg-red-950/30 text-red-700 dark:text-red-300'
+                    : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
             ]"
           >{{ level }}</span>
         </h3>
         <div class="flex flex-col gap-2">
           <button
-            type="button"
             v-for="tutorial in tutorials"
             :key="tutorial.id"
-            @click="selectTutorial(tutorial.id)"
-            :class="[
-              'flex flex-col gap-2 w-full p-4 bg-white dark:bg-neutral-900 border rounded-xl text-left transition-all duration-150',
+            type="button"
+            class="flex flex-col gap-2 w-full p-4 bg-white dark:bg-neutral-900 border rounded-xl text-left transition-all duration-150" :class="[
               currentTutorialId === tutorial.id
                 ? 'border-[#00ADD8] bg-[#e6f7fb] dark:bg-neutral-800 shadow-[0_0_0_2px_rgba(0,173,216,0.2)]'
                 : 'border-neutral-200 dark:border-neutral-800 hover:border-[#00ADD8] hover:shadow-sm'
             ]"
+            @click="selectTutorial(tutorial.id)"
           >
             <div class="flex items-start justify-between gap-2">
               <h4 class="text-base font-semibold text-neutral-900 dark:text-neutral-100 m-0 leading-snug">{{ tutorial.title }}</h4>

@@ -81,9 +81,9 @@
     <div class="flex justify-between items-center gap-4 px-6 py-5 bg-neutral-50 dark:bg-neutral-950 border-t border-neutral-200 dark:border-neutral-800 sm:flex-wrap sm:p-4">
       <button
         type="button"
-        @click="$emit('previous')"
         :disabled="sectionIndex === 0"
         class="inline-flex items-center gap-2 px-5 py-3 text-base font-medium rounded-xl border-none transition-all duration-150 sm:px-3 sm:py-2 sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700"
+        @click="$emit('previous')"
       >
         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -94,13 +94,12 @@
       <div class="flex items-center gap-4">
         <button
           type="button"
-          @click="handleComplete"
-          :class="[
-            'inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded-xl border-none transition-all duration-150 sm:w-full sm:justify-center sm:mb-2 sm:order-first',
+          class="inline-flex items-center gap-2 px-6 py-3 text-base font-semibold rounded-xl border-none transition-all duration-150 sm:w-full sm:justify-center sm:mb-2 sm:order-first" :class="[
             isComplete
               ? 'bg-green-600 text-white'
               : 'bg-green-500 text-white hover:bg-green-600 hover:-translate-y-px'
           ]"
+          @click="handleComplete"
         >
           <svg v-if="isComplete" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -114,9 +113,9 @@
 
       <button
         type="button"
-        @click="$emit('next')"
         :disabled="sectionIndex >= totalSections - 1"
         class="inline-flex items-center gap-2 px-5 py-3 text-base font-medium rounded-xl border-none transition-all duration-150 sm:px-3 sm:py-2 sm:text-sm disabled:opacity-40 disabled:cursor-not-allowed bg-[#00ADD8] text-white hover:bg-[#007D9C]"
+        @click="$emit('next')"
       >
         <span class="hidden sm:inline">Next</span>
         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -2,8 +2,8 @@
   <div v-if="notes" class="instructor-panel mb-6">
     <button
       type="button"
-      @click="expanded = !expanded"
       class="w-full flex items-center justify-between gap-3 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl text-left transition-all duration-150 hover:bg-amber-100 dark:hover:bg-amber-950/50"
+      @click="expanded = !expanded"
     >
       <div class="flex items-center gap-3">
         <div class="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg">

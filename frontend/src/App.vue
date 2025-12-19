@@ -3,9 +3,9 @@
     <!-- Mobile menu toggle -->
     <button
       type="button"
-      @click="sidebarOpen = !sidebarOpen"
       class="lg:hidden fixed top-4 left-4 z-[60] p-3 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-md text-neutral-900 dark:text-neutral-100 transition-all duration-150 hover:bg-primary-light hover:border-go-blue items-center justify-center"
       aria-label="Toggle navigation"
+      @click="sidebarOpen = !sidebarOpen"
     >
       <svg v-if="!sidebarOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -17,9 +17,7 @@
 
     <!-- Sidebar -->
     <aside
-      :class="[
-        'fixed top-0 left-0 w-80 h-screen bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col z-50 transition-transform duration-200',
-        'lg:translate-x-0',
+      class="fixed top-0 left-0 w-80 h-screen bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 flex flex-col z-50 transition-transform duration-200 lg:translate-x-0" :class="[
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       ]"
     >

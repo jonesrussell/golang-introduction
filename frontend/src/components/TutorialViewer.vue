@@ -18,7 +18,7 @@
     <div v-else-if="tutorial">
       <!-- Breadcrumb Navigation -->
       <nav class="flex items-center gap-2 mb-6 text-sm flex-wrap">
-        <router-link
+        <RouterLink
           to="/"
           class="inline-flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400 bg-transparent border-none py-1.5 px-2 -my-1.5 -mx-2 rounded-md transition-all duration-150 hover:text-[#00ADD8] hover:bg-[#e6f7fb] dark:hover:bg-neutral-800"
         >
@@ -26,16 +26,16 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
           Home
-        </router-link>
+        </RouterLink>
         <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
-        <router-link
+        <RouterLink
           :to="{ name: 'tutorial', params: { id: tutorial.id } }"
           class="text-neutral-900 dark:text-neutral-100 font-medium hover:text-[#00ADD8] transition-colors"
         >
           {{ tutorial.title }}
-        </router-link>
+        </RouterLink>
         <template v-if="currentSection">
           <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -52,14 +52,13 @@
           <!-- Instructor Mode Toggle -->
           <button
             type="button"
-            @click="toggleInstructorMode"
-            :class="[
-              'inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-150',
+            class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-all duration-150" :class="[
               instructorMode
                 ? 'bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200'
                 : 'bg-neutral-100 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:border-amber-300 dark:hover:border-amber-700'
             ]"
             title="Toggle instructor mode"
+            @click="toggleInstructorMode"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>

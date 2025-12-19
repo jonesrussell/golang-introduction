@@ -9,12 +9,13 @@
       <div v-for="exercise in exercises" :key="exercise.id" class="mb-8 p-6 bg-white rounded-lg shadow">
         <div class="mb-4">
           <h3 class="text-xl font-bold mb-2">{{ exercise.title }}</h3>
-          <span :class="[
-            'px-2 py-1 rounded text-xs font-semibold',
-            exercise.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
-            exercise.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
-            'bg-red-100 text-red-800'
-          ]">
+          <span
+            class="px-2 py-1 rounded text-xs font-semibold" :class="[
+              exercise.difficulty === 'Easy' ? 'bg-green-100 text-green-800' :
+              exercise.difficulty === 'Medium' ? 'bg-yellow-100 text-yellow-800' :
+              'bg-red-100 text-red-800'
+            ]"
+          >
             {{ exercise.difficulty }}
           </span>
         </div>
@@ -39,22 +40,21 @@
         <div class="flex gap-2">
           <button
             type="button"
-            @click="executeSolution(exercise.id)"
             :disabled="executing"
+            class="px-4 py-2 rounded"
             :class="[
-              'px-4 py-2 rounded',
               executing
                 ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                 : 'bg-blue-500 text-white hover:bg-blue-600'
-            ]"
+            ]" @click="executeSolution(exercise.id)"
           >
             {{ executing ? 'Running...' : 'Run Solution' }}
           </button>
           
           <button
             type="button"
-            @click="checkSolution(exercise.id)"
             class="px-4 py-2 rounded bg-green-500 text-white hover:bg-green-600"
+            @click="checkSolution(exercise.id)"
           >
             Check Solution
           </button>

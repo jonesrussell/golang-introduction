@@ -28,8 +28,7 @@
             class="flex items-center gap-2 text-sm"
           >
             <span
-              :class="[
-                'w-4 h-4 rounded-full flex items-center justify-center',
+              class="w-4 h-4 rounded-full flex items-center justify-center" :class="[
                 section.completed
                   ? 'bg-green-500 text-white'
                   : 'bg-gray-300 text-gray-600'
