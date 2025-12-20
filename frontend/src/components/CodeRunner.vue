@@ -130,6 +130,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useCodeExecution } from '../composables/useCodeExecution';
 import { useSyntaxHighlight } from '../composables/useSyntaxHighlight';
+import { useCopyToClipboard } from '../composables/useCopyToClipboard';
 import CodeEditor from './CodeEditor.vue';
 
 const props = defineProps<{
@@ -141,11 +142,11 @@ const props = defineProps<{
 
 const { executing, result, error: executionError, executeCode: execCode, clearResult } = useCodeExecution();
 const { highlightCode } = useSyntaxHighlight();
+const { copied, copyToClipboard } = useCopyToClipboard();
 
 const editing = ref(false);
 const editableCode = ref(props.code);
 const highlightedCode = ref<string>('');
-const copied = ref(false);
 
 const currentCode = computed(() => {
   return editing.value && props.editable ? editableCode.value : props.code;
@@ -175,17 +176,7 @@ const executeCode = async () => {
   await execCode(codeToExecute, props.snippet || false);
 };
 
-const copyCode = async () => {
-  try {
-    await navigator.clipboard.writeText(currentCode.value);
-    copied.value = true;
-    setTimeout(() => {
-      copied.value = false;
-    }, 2000);
-  } catch (err) {
-    console.error('Failed to copy code', err);
-  }
-};
+const copyCode = () => copyToClipboard(currentCode.value);
 
 watch(() => props.code, () => {
   editableCode.value = props.code;

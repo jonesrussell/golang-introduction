@@ -76,7 +76,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
+import { useCopyToClipboard } from '../composables/useCopyToClipboard';
 
 const props = defineProps<{
   modelValue: string;
@@ -89,10 +90,11 @@ const emit = defineEmits<{
 }>();
 /* eslint-enable no-unused-vars */
 
+const { copied, copyToClipboard } = useCopyToClipboard();
+
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 const localCode = ref(props.modelValue);
 const originalCode = ref(props.modelValue);
-const copied = ref(false);
 
 const lineCount = computed(() => {
   return localCode.value.split('\n').length;
@@ -115,24 +117,14 @@ const handleKeydown = (e: KeyboardEvent) => {
     localCode.value = value.substring(0, start) + '\t' + value.substring(end);
     emit('update:modelValue', localCode.value);
 
-    // Move cursor after tab
-    setTimeout(() => {
+    // Move cursor after tab using nextTick for better reliability
+    nextTick(() => {
       textarea.selectionStart = textarea.selectionEnd = start + 1;
-    }, 0);
+    });
   }
 };
 
-const copyCode = async () => {
-  try {
-    await navigator.clipboard.writeText(localCode.value);
-    copied.value = true;
-    setTimeout(() => {
-      copied.value = false;
-    }, 2000);
-  } catch (err) {
-    console.error('Failed to copy code', err);
-  }
-};
+const copyCode = () => copyToClipboard(localCode.value);
 
 const resetCode = () => {
   localCode.value = originalCode.value;

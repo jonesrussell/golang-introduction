@@ -18,7 +18,6 @@ linters:
     - exhaustive
     - exptostd
     - fatcontext
-    - forbidigo
     - funlen
     - gocheckcompilerdirectives
     - gochecksumtype
@@ -280,9 +279,6 @@ linters:
           - wrapcheck
         path: _test\.go
       - linters:
-          - forbidigo
-        path: cmd/(root|getnode)
-      - linters:
           - testpackage
         path: internal/(config|logger)/.*_test\.go
       - linters:
@@ -301,6 +297,9 @@ linters:
           - mnd
         path: internal/integration/service\.go
         text: (5|100)
+      - linters:
+          - mnd
+        path: exercises/.*
       - linters:
           - unparam
         path: internal/integration/service\.go

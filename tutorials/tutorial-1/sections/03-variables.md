@@ -17,20 +17,34 @@
 var name string = "Russell"
 var age int = 30
 
+fmt.Println("Name:", name)
+fmt.Println("Age:", age)
+
 // Type inference
 var city = "Toronto"
 
+fmt.Println("City:", city)
+
 // Short declaration (most common)
 country := "Canada"
+
+fmt.Println("Country:", country)
 
 // Zero values
 var count int        // 0
 var isActive bool    // false
 var message string   // ""
 
+fmt.Println("Count:", count)
+fmt.Println("Is Active:", isActive)
+fmt.Println("Message:", message)
+
 // Constants
 const MaxRetries = 3
 const Pi = 3.14159
+
+fmt.Println("Max Retries:", MaxRetries)
+fmt.Println("Pi:", Pi)
 
 // Multiple declaration
 var (
@@ -38,6 +52,10 @@ var (
     lastName  string = "Doe"
     score     int    = 95
 )
+
+fmt.Println("First Name:", firstName)
+fmt.Println("Last Name:", lastName)
+fmt.Println("Score:", score)
 ```
 
 ## Key teaching points:

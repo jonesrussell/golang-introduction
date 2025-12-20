@@ -36,6 +36,24 @@ func NewProgressStorage(dataDir string) (*ProgressStorage, error) {
 	return storage, nil
 }
 
+// newEmptyProgress creates a new empty progress for a user.
+func newEmptyProgress(userID string) *models.Progress {
+	return &models.Progress{
+		UserID:             userID,
+		CompletedSections:  make(map[string][]string),
+		CompletedExercises: make(map[string][]string),
+	}
+}
+
+// ensureUserProgress ensures a progress entry exists for the user.
+// Must be called with the lock held.
+func (s *ProgressStorage) ensureUserProgress(userID string) *models.Progress {
+	if s.progress[userID] == nil {
+		s.progress[userID] = newEmptyProgress(userID)
+	}
+	return s.progress[userID]
+}
+
 // GetProgress retrieves progress for a user
 func (s *ProgressStorage) GetProgress(userID string) *models.Progress {
 	s.mu.RLock()
@@ -46,11 +64,7 @@ func (s *ProgressStorage) GetProgress(userID string) *models.Progress {
 	}
 
 	// Return empty progress
-	return &models.Progress{
-		UserID:             userID,
-		CompletedSections:  make(map[string][]string),
-		CompletedExercises: make(map[string][]string),
-	}
+	return newEmptyProgress(userID)
 }
 
 // UpdateProgress updates progress for a user
@@ -64,33 +78,32 @@ func (s *ProgressStorage) UpdateProgress(userID string, progress *models.Progres
 	return s.save()
 }
 
+// containsID checks if the given ID is already in the slice.
+func containsID(ids []string, id string) bool {
+	for _, existingID := range ids {
+		if existingID == id {
+			return true
+		}
+	}
+	return false
+}
+
 // MarkSectionComplete marks a section as completed
 func (s *ProgressStorage) MarkSectionComplete(userID, tutorialID, sectionID string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.progress[userID] == nil {
-		s.progress[userID] = &models.Progress{
-			UserID:             userID,
-			CompletedSections:  make(map[string][]string),
-			CompletedExercises: make(map[string][]string),
-		}
-	}
-
-	progress := s.progress[userID]
+	progress := s.ensureUserProgress(userID)
 	if progress.CompletedSections == nil {
 		progress.CompletedSections = make(map[string][]string)
 	}
 
 	// Check if already completed
-	sections := progress.CompletedSections[tutorialID]
-	for _, id := range sections {
-		if id == sectionID {
-			return nil // Already completed
-		}
+	if containsID(progress.CompletedSections[tutorialID], sectionID) {
+		return nil
 	}
 
-	progress.CompletedSections[tutorialID] = append(sections, sectionID)
+	progress.CompletedSections[tutorialID] = append(progress.CompletedSections[tutorialID], sectionID)
 	progress.CurrentTutorial = tutorialID
 	progress.CurrentSection = sectionID
 
@@ -102,28 +115,17 @@ func (s *ProgressStorage) MarkExerciseComplete(userID, tutorialID, exerciseID st
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.progress[userID] == nil {
-		s.progress[userID] = &models.Progress{
-			UserID:             userID,
-			CompletedSections:  make(map[string][]string),
-			CompletedExercises: make(map[string][]string),
-		}
-	}
-
-	progress := s.progress[userID]
+	progress := s.ensureUserProgress(userID)
 	if progress.CompletedExercises == nil {
 		progress.CompletedExercises = make(map[string][]string)
 	}
 
 	// Check if already completed
-	exercises := progress.CompletedExercises[tutorialID]
-	for _, id := range exercises {
-		if id == exerciseID {
-			return nil // Already completed
-		}
+	if containsID(progress.CompletedExercises[tutorialID], exerciseID) {
+		return nil
 	}
 
-	progress.CompletedExercises[tutorialID] = append(exercises, exerciseID)
+	progress.CompletedExercises[tutorialID] = append(progress.CompletedExercises[tutorialID], exerciseID)
 
 	return s.save()
 }

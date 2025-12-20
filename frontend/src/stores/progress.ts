@@ -3,10 +3,42 @@ import { ref, computed } from 'vue';
 import type { Progress, TutorialProgress } from '../types/progress';
 import { progressApi } from '../services/api';
 
+/** localStorage key for progress persistence */
+const PROGRESS_STORAGE_KEY = 'tutorial-progress';
+
+/**
+ * Creates a new empty progress object for a user.
+ */
+function createEmptyProgress(userId: string): Progress {
+  return {
+    userId,
+    completedSections: {},
+    completedExercises: {},
+    lastAccessed: new Date().toISOString(),
+  };
+}
+
+/**
+ * Persists progress to localStorage.
+ */
+function persistProgress(progressData: Progress): void {
+  localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progressData));
+}
+
 export const useProgressStore = defineStore('progress', () => {
   const progress = ref<Progress | null>(null);
   const loading = ref(false);
   const error = ref<string | null>(null);
+
+  /**
+   * Ensures progress exists for a user, creating if necessary.
+   */
+  const ensureProgress = (userId: string): Progress => {
+    if (!progress.value) {
+      progress.value = createEmptyProgress(userId);
+    }
+    return progress.value;
+  };
 
   const loadProgress = async (userId: string = 'default') => {
     loading.value = true;
@@ -24,8 +56,8 @@ export const useProgressStore = defineStore('progress', () => {
     // Optimistic update
     const previousProgress = progress.value;
     progress.value = newProgress;
-    localStorage.setItem('tutorial-progress', JSON.stringify(newProgress));
-    
+    persistProgress(newProgress);
+
     loading.value = true;
     error.value = null;
     try {
@@ -34,7 +66,7 @@ export const useProgressStore = defineStore('progress', () => {
       // Revert on error
       progress.value = previousProgress;
       if (previousProgress) {
-        localStorage.setItem('tutorial-progress', JSON.stringify(previousProgress));
+        persistProgress(previousProgress);
       }
       error.value = err instanceof Error ? err.message : 'Failed to update progress';
     } finally {
@@ -44,34 +76,24 @@ export const useProgressStore = defineStore('progress', () => {
 
   const markSectionComplete = async (tutorialId: string, sectionId: string, userId: string = 'default') => {
     // Optimistic update - update UI immediately
-    if (!progress.value) {
-      progress.value = {
-        userId,
-        completedSections: {},
-        completedExercises: {},
-        lastAccessed: new Date().toISOString(),
-      };
-    }
-    
-    // TypeScript now knows progress.value is not null after the check above
-    const currentProgress = progress.value;
-    
+    const currentProgress = ensureProgress(userId);
+
     if (!currentProgress.completedSections[tutorialId]) {
       currentProgress.completedSections[tutorialId] = [];
     }
-    
+
     // Only add if not already completed (idempotent)
     if (!currentProgress.completedSections[tutorialId].includes(sectionId)) {
       currentProgress.completedSections[tutorialId].push(sectionId);
     }
-    
+
     currentProgress.currentTutorial = tutorialId;
     currentProgress.currentSection = sectionId;
     currentProgress.lastAccessed = new Date().toISOString();
-    
+
     // Save to localStorage immediately
-    localStorage.setItem('tutorial-progress', JSON.stringify(currentProgress));
-    
+    persistProgress(currentProgress);
+
     // Then sync with server (non-blocking)
     try {
       await progressApi.markSectionComplete(tutorialId, sectionId, userId);
@@ -85,22 +107,15 @@ export const useProgressStore = defineStore('progress', () => {
 
   const setCurrentSection = (tutorialId: string, sectionId: string, userId: string = 'default') => {
     // Initialize progress if it doesn't exist
-    if (!progress.value) {
-      progress.value = {
-        userId,
-        completedSections: {},
-        completedExercises: {},
-        lastAccessed: new Date().toISOString(),
-      };
-    }
-    
+    const currentProgress = ensureProgress(userId);
+
     // Update current tutorial and section
-    progress.value.currentTutorial = tutorialId;
-    progress.value.currentSection = sectionId;
-    progress.value.lastAccessed = new Date().toISOString();
-    
+    currentProgress.currentTutorial = tutorialId;
+    currentProgress.currentSection = sectionId;
+    currentProgress.lastAccessed = new Date().toISOString();
+
     // Save to localStorage immediately
-    localStorage.setItem('tutorial-progress', JSON.stringify(progress.value));
+    persistProgress(currentProgress);
   };
 
   const isSectionComplete = (tutorialId: string, sectionId: string): boolean => {
@@ -134,7 +149,7 @@ export const useProgressStore = defineStore('progress', () => {
 
   // Load from localStorage on init
   const loadFromLocalStorage = () => {
-    const stored = localStorage.getItem('tutorial-progress');
+    const stored = localStorage.getItem(PROGRESS_STORAGE_KEY);
     if (stored) {
       try {
         progress.value = JSON.parse(stored);

@@ -37,7 +37,7 @@ export function useRetry<T>(
         if (onRetry) {
           onRetry(i);
         }
-        await sleep(retryDelay * i); // Exponential backoff
+        await sleep(retryDelay * Math.pow(2, i - 1)); // Exponential backoff: 1x, 2x, 4x, 8x...
       }
 
       try {

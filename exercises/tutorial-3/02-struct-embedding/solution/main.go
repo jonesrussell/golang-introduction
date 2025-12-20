@@ -31,5 +31,5 @@ func main() {
 	fmt.Println("Permissions:", admin.Permissions)
 
 	// Can still access via type name
-	fmt.Println("Via User field:", admin.User.Username)
+	fmt.Println("Via User field:", admin.Username)
 }

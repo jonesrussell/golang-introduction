@@ -39,56 +39,19 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useMarkdownRenderer } from '../composables/useMarkdownRenderer';
 
 const props = defineProps<{
   notes?: string;
 }>();
 
 const expanded = ref(true);
+const { renderInstructorMarkdown } = useMarkdownRenderer();
 
-// Simple markdown rendering (basic conversion)
 const renderedNotes = computed(() => {
   if (!props.notes) return '';
-  
-  let html = props.notes;
-  
-  // Convert headers
-  html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold text-amber-900 dark:text-amber-100 mt-6 mb-3">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold text-amber-900 dark:text-amber-100 mt-6 mb-4">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold text-amber-900 dark:text-amber-100 mb-4">$1</h1>');
-  
-  // Convert bold and italic
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-amber-900 dark:text-amber-100">$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  
-  // Convert inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 rounded text-sm font-mono">$1</code>');
-  
-  // Convert code blocks
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
-    return `<pre class="p-4 bg-neutral-900 rounded-lg overflow-x-auto my-4"><code class="text-sm font-mono text-neutral-100">${escapeHtml(code.trim())}</code></pre>`;
-  });
-  
-  // Convert bullet lists
-  html = html.replace(/^- (.+)$/gm, '<li class="text-amber-800 dark:text-amber-200 ml-4">$1</li>');
-  html = html.replace(/(<li.*?<\/li>\n?)+/g, '<ul class="list-disc space-y-1 my-3">$&</ul>');
-  
-  // Convert paragraphs (lines not already converted)
-  html = html.split('\n\n').map(para => {
-    if (para.trim() && !para.startsWith('<')) {
-      return `<p class="text-amber-800 dark:text-amber-200 leading-relaxed my-3">${para}</p>`;
-    }
-    return para;
-  }).join('\n');
-  
-  return html;
+  return renderInstructorMarkdown(props.notes);
 });
-
-function escapeHtml(text: string): string {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
 </script>
 
 <style scoped>

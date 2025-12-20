@@ -25,6 +25,7 @@
       <!-- Table of Contents (from content) -->
       <div v-if="parsedTableOfContents" class="animate-slide-up p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl border border-blue-200 dark:border-blue-900/50">
         <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-0 mb-4">Table of Contents</h2>
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <p v-if="parsedTableOfContents.intro" class="text-base text-neutral-900 dark:text-neutral-100 leading-relaxed my-3" v-html="renderMarkdown(parsedTableOfContents.intro)"></p>
         <ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">
           <li
@@ -37,7 +38,8 @@
             }"
             @click="handleTocClick(index)"
           >
-            <strong class="font-semibold">{{ item.title }}</strong> - <span v-html="renderMarkdown(item.description)"></span>
+            <strong class="font-semibold">{{ item.title }}</strong> - <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="renderMarkdown(item.description)"></span>
           </li>
         </ol>
       </div>
@@ -145,6 +147,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useProgressStore } from '../stores/progress';
+import { useMarkdownRenderer } from '../composables/useMarkdownRenderer';
 import CodeRunner from './CodeRunner.vue';
 import type { Section } from '../types/tutorial';
 
@@ -166,6 +169,7 @@ const emit = defineEmits<{
 }>();
 /* eslint-enable no-unused-vars */
 
+const { renderMarkdown } = useMarkdownRenderer();
 const progressStore = useProgressStore();
 
 const isComplete = computed(() => {
@@ -218,8 +222,8 @@ const parsedTableOfContents = computed((): ParsedToc | null => {
       }
       
       result.items.push({
-        title: itemMatch[2],
-        description: itemMatch[3]
+        title: itemMatch[2] ?? '',
+        description: itemMatch[3] ?? ''
       });
     } else if (!foundFirstItem && trimmed) {
       // Collect intro text before first item
@@ -238,123 +242,5 @@ const parsedTableOfContents = computed((): ParsedToc | null => {
 const handleTocClick = (index: number) => {
   emit('navigate-to-section', index);
 };
-
-// Convert markdown links and inline code to HTML
-function renderMarkdown(text: string): string {
-  let html = text;
-  
-  // Convert markdown links [text](url) to HTML anchors
-  html = html.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#00ADD8] hover:text-[#007D9C] underline underline-offset-2">$1</a>'
-  );
-  
-  // Convert inline code `code` to styled spans
-  html = html.replace(
-    /`([^`]+)`/g,
-    '<code class="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-[#00ADD8] rounded text-sm font-mono">$1</code>'
-  );
-  
-  return html;
-}
-
-// Render markdown content with full support for headers, lists, etc.
-function renderMarkdownContent(content: string): string {
-  const lines = content.split('\n');
-  const processedLines: string[] = [];
-  let inList = false;
-  let listItems: string[] = [];
-  
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const trimmed = line.trim();
-    
-    // Skip empty lines
-    if (!trimmed) {
-      if (listItems.length > 0) {
-        processedLines.push(`<ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">${listItems.join('')}</ol>`);
-        listItems = [];
-        inList = false;
-      }
-      continue;
-    }
-    
-    // Check for headers
-    if (trimmed.startsWith('## ')) {
-      if (listItems.length > 0) {
-        processedLines.push(`<ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">${listItems.join('')}</ol>`);
-        listItems = [];
-        inList = false;
-      }
-      const headerText = trimmed.replace(/^##\s+/, '');
-      processedLines.push(`<h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-6 mb-4">${headerText}</h2>`);
-      continue;
-    }
-    
-    if (trimmed.startsWith('### ')) {
-      if (listItems.length > 0) {
-        processedLines.push(`<ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">${listItems.join('')}</ol>`);
-        listItems = [];
-        inList = false;
-      }
-      const headerText = trimmed.replace(/^###\s+/, '');
-      processedLines.push(`<h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mt-4 mb-3">${headerText}</h3>`);
-      continue;
-    }
-    
-    // Check for numbered list items (1. **Title** - description)
-    const listMatch = trimmed.match(/^(\d+)\.\s+(.+)$/);
-    if (listMatch) {
-      inList = true;
-      let itemContent = listMatch[2];
-      
-      // Convert bold text
-      itemContent = itemContent.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
-      
-      // Convert markdown links
-      itemContent = itemContent.replace(
-        /\[([^\]]+)\]\(([^)]+)\)/g,
-        '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#00ADD8] hover:text-[#007D9C] underline underline-offset-2">$1</a>'
-      );
-      
-      listItems.push(`<li class="mb-2.5 text-base text-neutral-900 dark:text-neutral-100 leading-relaxed">${itemContent}</li>`);
-      continue;
-    }
-    
-    // If we were in a list but hit a non-list line, close the list
-    if (inList && listItems.length > 0) {
-      processedLines.push(`<ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">${listItems.join('')}</ol>`);
-      listItems = [];
-      inList = false;
-    }
-    
-    // Regular paragraph text
-    let paraText = trimmed;
-    
-    // Convert bold text (but not if already converted)
-    paraText = paraText.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>');
-    
-    // Convert markdown links
-    paraText = paraText.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-[#00ADD8] hover:text-[#007D9C] underline underline-offset-2">$1</a>'
-    );
-    
-    // Convert inline code
-    paraText = paraText.replace(
-      /`([^`]+)`/g,
-      '<code class="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-[#00ADD8] rounded text-sm font-mono">$1</code>'
-    );
-    
-    processedLines.push(`<p class="text-base text-neutral-900 dark:text-neutral-100 leading-relaxed my-3">${paraText}</p>`);
-  }
-  
-  // Close any remaining list
-  if (listItems.length > 0) {
-    processedLines.push(`<ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">${listItems.join('')}</ol>`);
-  }
-  
-  return processedLines.join('\n');
-}
 </script>
 

@@ -35,8 +35,8 @@ func (ba *BankAccount) Withdraw(amount float64) bool {
 	return false
 }
 
-// Value receiver - just formats output
-func (ba BankAccount) String() string {
+// Pointer receiver - formats output
+func (ba *BankAccount) String() string {
 	return fmt.Sprintf("%s's account: $%.2f", ba.Owner, ba.Balance)
 }
 
