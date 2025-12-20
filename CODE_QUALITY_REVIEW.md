@@ -13,22 +13,14 @@ A comprehensive review of DRY (Don't Repeat Yourself), SRP (Single Responsibilit
 
 **Top Priority Issues:**
 1. Markdown rendering logic duplicated 4 times across frontend components
-2. Missing entry point (`cmd/server/main.go`)
-3. User ID extraction repeated in 4 backend handlers
-4. Tutorial lookup logic repeated in 3 handlers
-5. SectionViewer.vue has 10+ responsibilities
+2. User ID extraction repeated in 4 backend handlers
+3. Tutorial lookup logic repeated in 3 handlers
+4. SectionViewer.vue has 10+ responsibilities
+5. Copy-to-clipboard logic duplicated in frontend
 
 ---
 
 ## Backend (Go) Issues
-
-### 🔴 Critical: Missing Entry Point
-
-**Location:** Project references `cmd/server/main.go` in `Taskfile.yml` but file doesn't exist.
-
-**Impact:** Backend cannot be started with `task dev:backend`.
-
----
 
 ### DRY Violations
 
@@ -386,19 +378,19 @@ theme: {
 
 ### Tier 1 - Critical (Should fix immediately)
 
-1. **Create `cmd/server/main.go`** - Backend cannot start
-2. **Extract markdown renderer composable** - 4 duplicated implementations
-3. **Split SectionViewer.vue** - 10+ responsibilities
-4. **Create user ID extraction helper** - 4 duplicates in handlers
-5. **Create tutorial lookup helper** - 3 duplicates in handlers
+1. **Extract markdown renderer composable** - 4 duplicated implementations
+2. **Split SectionViewer.vue** - 10+ responsibilities
+3. **Create user ID extraction helper** - 4 duplicates in handlers
+4. **Create tutorial lookup helper** - 3 duplicates in handlers
+5. **Extract copy-to-clipboard composable** - 2 duplicates in components
 
 ### Tier 2 - Important (Fix soon)
 
-6. Extract copy-to-clipboard composable
-7. Extract progress initialization helpers (both Go and Vue)
-8. Replace `alert()` with toast notifications
-9. Fix CORS wildcard for production
-10. Compile regex patterns at module level
+6. Extract progress initialization helpers (both Go and Vue)
+7. Replace `alert()` with toast notifications
+8. Fix CORS wildcard for production
+9. Compile regex patterns at module level
+10. Add error response helpers in handlers
 
 ### Tier 3 - Nice-to-have
 
