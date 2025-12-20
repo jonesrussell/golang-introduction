@@ -63,16 +63,24 @@
         </ul>
       </div>
 
-      <!-- Code examples -->
-      <div v-if="section.codeExamples && section.codeExamples.length > 0" class="flex flex-col gap-6 animate-slide-up">
-        <div v-for="example in section.codeExamples" :key="example.id" class="rounded-xl overflow-hidden">
-          <CodeRunner
-            :code="example.code"
-            :language="example.language"
-            :editable="example.runnable"
-            :snippet="example.snippet"
-          />
-        </div>
+      <!-- Section content with headings, explanations, and code examples interleaved -->
+      <div v-if="interleavedContent.length > 0" class="flex flex-col gap-6 animate-slide-up">
+        <template v-for="(item, index) in interleavedContent" :key="index">
+          <!-- Text content (headings, paragraphs) -->
+          <div v-if="item.type === 'text'" class="prose prose-neutral dark:prose-invert max-w-none">
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div v-html="item.content"></div>
+          </div>
+          <!-- Code example -->
+          <div v-else-if="item.type === 'code' && item.example" class="rounded-xl overflow-hidden">
+            <CodeRunner
+              :code="item.example.code"
+              :language="item.example.language"
+              :editable="item.example.runnable"
+              :snippet="item.example.snippet"
+            />
+          </div>
+        </template>
       </div>
 
       <!-- Teaching points -->
@@ -169,8 +177,93 @@ const emit = defineEmits<{
 }>();
 /* eslint-enable no-unused-vars */
 
-const { renderMarkdown } = useMarkdownRenderer();
+const { renderMarkdown, renderSectionContent } = useMarkdownRenderer();
 const progressStore = useProgressStore();
+
+interface ContentItem {
+  type: 'text' | 'code';
+  content?: string;
+  example?: import('../types/tutorial').CodeExample;
+}
+
+// Interleave text content and code examples in the correct order
+const interleavedContent = computed((): ContentItem[] => {
+  if (!props.section.content || !props.section.codeExamples || props.section.codeExamples.length === 0) {
+    // Fallback: render content separately if no code examples or no content
+    if (props.section.content) {
+      let content = props.section.content;
+      content = content.replace(/## Topics to cover:[\s\S]*?(?=##|$)/i, '');
+      content = content.replace(/## Key teaching points:[\s\S]*?(?=##|$)/i, '');
+      const rendered = renderSectionContent(content);
+      if (rendered.trim()) {
+        return [{ type: 'text', content: rendered }];
+      }
+    }
+    return [];
+  }
+
+  const items: ContentItem[] = [];
+  let content = props.section.content;
+  
+  // Remove topics and teaching points sections
+  content = content.replace(/## Topics to cover:[\s\S]*?(?=##|$)/i, '');
+  content = content.replace(/## Key teaching points:[\s\S]*?(?=##|$)/i, '');
+  
+  // Split content by code blocks (```...```)
+  const codeBlockRegex = /```[\w\s]*\n[\s\S]*?```/g;
+  const parts: Array<{ type: 'text' | 'code'; content: string; codeIndex?: number }> = [];
+  let lastIndex = 0;
+  let match;
+  let codeIndex = 0;
+  
+  while ((match = codeBlockRegex.exec(content)) !== null) {
+    // Add text before code block
+    if (match.index > lastIndex) {
+      const textContent = content.substring(lastIndex, match.index).trim();
+      if (textContent) {
+        parts.push({ type: 'text', content: textContent });
+      }
+    }
+    
+    // Add code block marker
+    parts.push({ type: 'code', content: match[0], codeIndex: codeIndex++ });
+    lastIndex = match.index + match[0].length;
+  }
+  
+  // Add remaining text after last code block
+  if (lastIndex < content.length) {
+    const textContent = content.substring(lastIndex).trim();
+    if (textContent) {
+      parts.push({ type: 'text', content: textContent });
+    }
+  }
+  
+  // If no code blocks found, render all as text
+  if (parts.length === 0) {
+    const rendered = renderSectionContent(content);
+    if (rendered.trim()) {
+      return [{ type: 'text', content: rendered }];
+    }
+    return [];
+  }
+  
+  // Convert parts to ContentItems, mapping code blocks to CodeExamples
+  for (const part of parts) {
+    if (part.type === 'text') {
+      const rendered = renderSectionContent(part.content);
+      if (rendered.trim()) {
+        items.push({ type: 'text', content: rendered });
+      }
+    } else if (part.type === 'code' && part.codeIndex !== undefined && props.section.codeExamples) {
+      const example = props.section.codeExamples[part.codeIndex];
+      if (example) {
+        items.push({ type: 'code', example });
+      }
+    }
+  }
+  
+  return items;
+});
 
 const isComplete = computed(() => {
   if (!props.tutorialId) return false;

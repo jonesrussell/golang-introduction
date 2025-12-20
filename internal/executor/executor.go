@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"os"
 	"time"
 )
 
@@ -24,35 +23,27 @@ type ExecutionResult struct {
 	Duration string `json:"duration"`
 }
 
-// CodeExecutor handles execution of Go code with security restrictions.
+// CodeExecutor handles execution of Go code with security restrictions via Docker.
 type CodeExecutor struct {
-	tempDir       string
 	timeout       time.Duration
 	maxOutput     int
-	allowNetwork  bool
-	allowFileIO   bool
 	maxMemoryMB   int
 	maxCPUPercent int
+	compileImage  string
+	execImage     string
 	logger        *slog.Logger
-	validator     *codeValidator
-	isolator      *isolatedExecutor
+	dockerExec    *dockerExecutor
 }
 
-// NewCodeExecutor creates a new code executor with security defaults.
+// NewCodeExecutor creates a new code executor with security defaults using Docker.
 func NewCodeExecutor(opts ...ExecutorOption) (*CodeExecutor, error) {
-	tempDir, err := os.MkdirTemp("", "go-tutorial-exec-")
-	if err != nil {
-		return nil, fmt.Errorf("create temp directory: %w", err)
-	}
-
 	executor := &CodeExecutor{
-		tempDir:       tempDir,
 		timeout:       defaultTimeout,
 		maxOutput:     defaultMaxOutput,
-		allowNetwork:  false,
-		allowFileIO:   false,
 		maxMemoryMB:   defaultMaxMemoryMB,
 		maxCPUPercent: defaultMaxCPUPercent,
+		compileImage:  defaultCompileImage,
+		execImage:     defaultExecImage,
 		logger:        slog.Default(),
 	}
 
@@ -61,25 +52,28 @@ func NewCodeExecutor(opts ...ExecutorOption) (*CodeExecutor, error) {
 		opt(executor)
 	}
 
-	// Initialize validator and isolator with current settings
-	executor.validator = newCodeValidator(
-		executor.allowNetwork,
-		executor.allowFileIO,
-		executor.logger,
-	)
-
-	executor.isolator = newIsolatedExecutor(
-		executor.tempDir,
+	// Initialize Docker executor
+	dockerExec, err := newDockerExecutor(
+		executor.compileImage,
+		executor.execImage,
+		executor.maxMemoryMB,
+		executor.maxCPUPercent,
 		executor.maxOutput,
-		executor.timeout.String(),
+		executor.timeout,
 		executor.logger,
 	)
+	if err != nil {
+		return nil, fmt.Errorf("initialize Docker executor: %w", err)
+	}
+
+	executor.dockerExec = dockerExec
 
 	executor.logger.Info("code executor initialized",
-		"temp_dir", tempDir,
 		"timeout", executor.timeout,
-		"allow_network", executor.allowNetwork,
-		"allow_file_io", executor.allowFileIO,
+		"max_memory_mb", executor.maxMemoryMB,
+		"max_cpu_percent", executor.maxCPUPercent,
+		"compile_image", executor.compileImage,
+		"exec_image", executor.execImage,
 	)
 
 	return executor, nil
@@ -97,32 +91,18 @@ func (e *CodeExecutor) ExecuteSnippet(ctx context.Context, code string) (*Execut
 
 // ExecuteWithOptions runs Go code with options for snippet handling.
 func (e *CodeExecutor) ExecuteWithOptions(ctx context.Context, code string, isSnippet bool) (*ExecutionResult, error) {
-	startTime := time.Now()
-
 	// Prepare code for execution (wrap if needed)
 	executableCode := PrepareForExecution(code, isSnippet)
-
-	// Validate code for security
-	if err := e.validator.validate(executableCode); err != nil {
-		return &ExecutionResult{
-			Output:   "",
-			Error:    err.Error(),
-			ExitCode: -1,
-			Duration: time.Since(startTime).String(),
-		}, nil
-	}
 
 	// Create execution context with timeout
 	execCtx, cancel := context.WithTimeout(ctx, e.timeout)
 	defer cancel()
 
-	// Execute in isolated environment
-	result, err := e.isolator.execute(execCtx, executableCode)
+	// Execute in Docker container (includes compilation and execution)
+	result, err := e.dockerExec.execute(execCtx, executableCode)
 	if err != nil {
 		return nil, fmt.Errorf("execute code: %w", err)
 	}
-
-	result.Duration = time.Since(startTime).String()
 
 	e.logger.DebugContext(ctx, "code execution completed",
 		"duration", result.Duration,
@@ -133,16 +113,10 @@ func (e *CodeExecutor) ExecuteWithOptions(ctx context.Context, code string, isSn
 	return result, nil
 }
 
-// Cleanup removes all temporary files created by the executor.
+// Cleanup cleans up resources (containers auto-remove, so this is mostly a no-op for compatibility).
 func (e *CodeExecutor) Cleanup() error {
-	if err := os.RemoveAll(e.tempDir); err != nil {
-		e.logger.Error("cleanup failed",
-			"temp_dir", e.tempDir,
-			"error", err)
-		return fmt.Errorf("remove temp directory: %w", err)
-	}
-
-	e.logger.Info("code executor cleaned up",
-		"temp_dir", e.tempDir)
+	// Docker containers use AutoRemove: true, so cleanup is automatic
+	// This method is kept for backward compatibility
+	e.logger.Info("code executor cleaned up")
 	return nil
 }

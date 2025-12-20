@@ -8,7 +8,9 @@
 - No parentheses needed (Go style)
 - [Comparison operators](https://go.dev/ref/spec#Comparison_operators)
 
-## Code Examples
+## Basic [if/else](https://go.dev/ref/spec#If_statements)
+
+The basic if/else statement allows you to make decisions based on conditions. Note that Go doesn't require parentheses around the condition.
 
 ```go snippet
 // Basic if/else
@@ -18,17 +20,30 @@ if age >= 18 {
 } else {
     fmt.Println("Minor")
 }
+```
 
+## [If with initialization statement](https://go.dev/tour/flowcontrol/6)
+
+You can declare and initialize a variable in the if statement, which is scoped only to the if/else block.
+
+```go snippet
 // If with initialization
-if score := calculateScore(); score > 90 {
+score := 95
+if score > 90 {
     fmt.Println("Excellent!")
 } else if score > 70 {
     fmt.Println("Good job!")
 } else {
     fmt.Println("Keep practicing!")
 }
-// score is only available inside if/else block
+// score variable scope is limited to if/else block
+```
 
+## [Comparison operators](https://go.dev/ref/spec#Comparison_operators)
+
+Go provides standard comparison operators for comparing values.
+
+```go snippet
 // Comparison operators
 x, y := 10, 20
 if x < y {
