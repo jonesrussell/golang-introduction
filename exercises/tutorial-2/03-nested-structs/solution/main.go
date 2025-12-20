@@ -30,6 +30,7 @@ func main() {
 	}
 
 	fmt.Println("Employee:", emp.Name)
+	fmt.Println("Email:", emp.Email)
 	fmt.Println("City:", emp.Address.City)
 	fmt.Println("Full Address:", emp.Address.FullAddress())
 }

@@ -62,8 +62,8 @@ func (h *Handlers) findTutorial(tutorialID string) *models.Tutorial {
 }
 
 // respondNotFound sends a 404 Not Found response.
-func respondNotFound(w http.ResponseWriter, resource string) {
-	http.Error(w, resource+" not found", http.StatusNotFound)
+func respondNotFound(w http.ResponseWriter) {
+	http.Error(w, "tutorial not found", http.StatusNotFound)
 }
 
 // respondBadRequest sends a 400 Bad Request response.
@@ -109,7 +109,7 @@ func (h *Handlers) GetTutorialByID(w http.ResponseWriter, r *http.Request, tutor
 	if instructorMode {
 		tutorial, err := h.parser.GetTutorial(tutorialID, true)
 		if err != nil {
-			respondNotFound(w, "tutorial")
+			respondNotFound(w)
 			return
 		}
 		respondJSON(w, h.logger, tutorial)
@@ -122,7 +122,7 @@ func (h *Handlers) GetTutorialByID(w http.ResponseWriter, r *http.Request, tutor
 		return
 	}
 
-	respondNotFound(w, "tutorial")
+	respondNotFound(w)
 }
 
 // GetTutorial returns a full tutorial by ID (query parameter version - for backward compatibility)
@@ -142,7 +142,7 @@ func (h *Handlers) GetTutorialSectionsByID(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	respondNotFound(w, "tutorial")
+	respondNotFound(w)
 }
 
 // GetTutorialSections returns sections for a tutorial (query parameter version - for backward compatibility)
@@ -258,7 +258,7 @@ func (h *Handlers) MarkSectionComplete(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetExercisesByTutorialID(w http.ResponseWriter, r *http.Request, tutorialID string) {
 	// Find the tutorial
 	if h.findTutorial(tutorialID) == nil {
-		respondNotFound(w, "tutorial")
+		respondNotFound(w)
 		return
 	}
 
