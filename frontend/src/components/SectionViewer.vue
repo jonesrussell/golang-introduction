@@ -25,6 +25,7 @@
       <!-- Table of Contents (from content) -->
       <div v-if="parsedTableOfContents" class="animate-slide-up p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl border border-blue-200 dark:border-blue-900/50">
         <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-0 mb-4">Table of Contents</h2>
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <p v-if="parsedTableOfContents.intro" class="text-base text-neutral-900 dark:text-neutral-100 leading-relaxed my-3" v-html="renderMarkdown(parsedTableOfContents.intro)"></p>
         <ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">
           <li
@@ -37,7 +38,8 @@
             }"
             @click="handleTocClick(index)"
           >
-            <strong class="font-semibold">{{ item.title }}</strong> - <span v-html="renderMarkdown(item.description)"></span>
+            <strong class="font-semibold">{{ item.title }}</strong> - <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-html="renderMarkdown(item.description)"></span>
           </li>
         </ol>
       </div>
