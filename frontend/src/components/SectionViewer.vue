@@ -23,9 +23,23 @@
     <!-- Section content -->
     <div class="p-6 flex flex-col gap-8 sm:p-5 sm:gap-6">
       <!-- Table of Contents (from content) -->
-      <div v-if="tableOfContents" class="animate-slide-up p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl border border-blue-200 dark:border-blue-900/50">
-        <!-- eslint-disable-next-line vue/no-v-html -->
-        <div v-html="tableOfContents" class="toc-content prose prose-blue dark:prose-invert max-w-none"></div>
+      <div v-if="parsedTableOfContents" class="animate-slide-up p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-xl border border-blue-200 dark:border-blue-900/50">
+        <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-100 mt-0 mb-4">Table of Contents</h2>
+        <p v-if="parsedTableOfContents.intro" class="text-base text-neutral-900 dark:text-neutral-100 leading-relaxed my-3" v-html="renderMarkdown(parsedTableOfContents.intro)"></p>
+        <ol class="list-decimal list-inside space-y-2.5 my-4 pl-6 marker:text-[#00ADD8] marker:font-semibold">
+          <li
+            v-for="(item, index) in parsedTableOfContents.items"
+            :key="index"
+            class="mb-2.5 text-base leading-relaxed cursor-pointer transition-all duration-150 rounded-md -ml-2 pl-2 py-1"
+            :class="{
+              'text-[#00ADD8] font-semibold bg-blue-100 dark:bg-blue-900/30 border-l-4 border-[#00ADD8]': index === sectionIndex,
+              'text-neutral-900 dark:text-neutral-100 hover:text-[#00ADD8] hover:bg-blue-50 dark:hover:bg-blue-950/20': index !== sectionIndex
+            }"
+            @click="handleTocClick(index)"
+          >
+            <strong class="font-semibold">{{ item.title }}</strong> - <span v-html="renderMarkdown(item.description)"></span>
+          </li>
+        </ol>
       </div>
 
       <!-- Topics -->
@@ -148,6 +162,7 @@ const emit = defineEmits<{
   (e: 'next'): void;
   (e: 'previous'): void;
   (e: 'complete'): void;
+  (e: 'navigate-to-section', index: number): void;
 }>();
 /* eslint-enable no-unused-vars */
 
@@ -162,17 +177,67 @@ const handleComplete = () => {
   emit('complete');
 };
 
-// Render table of contents from tutorial
-const tableOfContents = computed(() => {
+// Parse table of contents from tutorial
+interface TocItem {
+  title: string;
+  description: string;
+}
+
+interface ParsedToc {
+  intro?: string;
+  items: TocItem[];
+}
+
+const parsedTableOfContents = computed((): ParsedToc | null => {
   if (!props.tableOfContents) return null;
   
-  // Add a header to the TOC if it doesn't already have one
   const content = props.tableOfContents.trim();
-  const hasHeader = content.startsWith('#');
-  const tocContent = hasHeader ? content : `## Table of Contents\n\n${content}`;
+  const lines = content.split('\n');
   
-  return renderMarkdownContent(tocContent);
+  const result: ParsedToc = {
+    items: []
+  };
+  
+  let introLines: string[] = [];
+  let foundFirstItem = false;
+  
+  for (const line of lines) {
+    const trimmed = line.trim();
+    
+    // Skip empty lines at the start
+    if (!trimmed && !foundFirstItem) continue;
+    
+    // Check for numbered list item (1. **Title** - description)
+    const itemMatch = trimmed.match(/^(\d+)\.\s+\*\*(.+?)\*\*\s+-\s+(.+)$/);
+    if (itemMatch) {
+      foundFirstItem = true;
+      // Store intro before first item
+      if (introLines.length > 0 && result.intro === undefined) {
+        result.intro = introLines.join(' ').trim();
+        introLines = [];
+      }
+      
+      result.items.push({
+        title: itemMatch[2],
+        description: itemMatch[3]
+      });
+    } else if (!foundFirstItem && trimmed) {
+      // Collect intro text before first item
+      introLines.push(trimmed);
+    }
+  }
+  
+  // If we have intro lines but no items yet, set intro
+  if (introLines.length > 0 && result.intro === undefined) {
+    result.intro = introLines.join(' ').trim();
+  }
+  
+  return result.items.length > 0 ? result : null;
 });
+
+const handleTocClick = (index: number) => {
+  emit('navigate-to-section', index);
+};
 
 // Convert markdown links and inline code to HTML
 function renderMarkdown(text: string): string {

@@ -110,6 +110,7 @@
             @next="nextSection"
             @previous="previousSection"
             @complete="markComplete"
+            @navigate-to-section="navigateToSection"
           />
 
           <!-- Empty state -->
