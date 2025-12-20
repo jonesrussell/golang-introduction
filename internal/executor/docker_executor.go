@@ -11,10 +11,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/docker/docker/api/types"
+	"github.com/containerd/errdefs"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
 )
 
 const (
@@ -80,7 +83,51 @@ func newDockerExecutor(
 		logger:        logger,
 	}
 
+	// Ensure required images are available (pull if needed)
+	if pullErr := executor.ensureImage(pingCtx, compileImage); pullErr != nil {
+		return nil, fmt.Errorf("ensure compile image %s: %w", compileImage, pullErr)
+	}
+
+	if pullErr := executor.ensureImage(pingCtx, execImage); pullErr != nil {
+		return nil, fmt.Errorf("ensure exec image %s: %w", execImage, pullErr)
+	}
+
 	return executor, nil
+}
+
+// ensureImage ensures the Docker image exists locally, pulling it if necessary.
+func (de *dockerExecutor) ensureImage(ctx context.Context, imageName string) error {
+	// Check if image exists locally
+	filterArgs := filters.NewArgs()
+	filterArgs.Add("reference", imageName)
+	images, listErr := de.client.ImageList(ctx, image.ListOptions{
+		Filters: filterArgs,
+	})
+	if listErr != nil {
+		return fmt.Errorf("list images: %w", listErr)
+	}
+
+	// If image exists locally, no need to pull
+	if len(images) > 0 {
+		de.logger.DebugContext(ctx, "image already exists locally", "image", imageName)
+		return nil
+	}
+
+	// Image doesn't exist, pull it
+	de.logger.Info("pulling Docker image", "image", imageName)
+	reader, pullErr := de.client.ImagePull(ctx, imageName, image.PullOptions{})
+	if pullErr != nil {
+		return fmt.Errorf("pull image: %w", pullErr)
+	}
+	defer reader.Close()
+
+	// Read the output to ensure pull completes
+	if _, copyErr := io.Copy(io.Discard, reader); copyErr != nil {
+		return fmt.Errorf("read pull output: %w", copyErr)
+	}
+
+	de.logger.Info("Docker image pulled successfully", "image", imageName)
+	return nil
 }
 
 // execute runs Go code in a Docker container using two-stage execution.
@@ -130,45 +177,38 @@ func (de *dockerExecutor) compileCode(ctx context.Context, tempDir string) (stri
 	// Use parent context directly (timeout already applied)
 	compileCtx := ctx
 
-	// Create container for compilation
-	containerConfig := &container.Config{
-		Image: de.compileImage,
-		Env:   []string{"CGO_ENABLED=0"}, // Disable CGO for static binary
-		Cmd: []string{
-			"sh", "-c",
-			fmt.Sprintf("go build -o %s %s",
-				filepath.Join(containerWorkspace, "binary"),
-				filepath.Join(containerWorkspace, "code.go")),
-		},
-		WorkingDir: containerWorkspace,
-	}
-
-	hostConfig := &container.HostConfig{
-		Mounts: []mount.Mount{
-			{
-				Type:   mount.TypeBind,
-				Source: tempDir,
-				Target: containerWorkspace,
+	// Ensure image is available (should already be pulled at init, but double-check on error)
+	resp, createErr := de.createContainerWithImageCheck(compileCtx, de.compileImage, func() (*container.Config, *container.HostConfig) {
+		containerConfig := &container.Config{
+			Image: de.compileImage,
+			Env:   []string{"CGO_ENABLED=0"}, // Disable CGO for static binary
+			Cmd: []string{
+				"sh", "-c",
+				fmt.Sprintf("go build -o %s %s",
+					filepath.Join(containerWorkspace, "binary"),
+					filepath.Join(containerWorkspace, "code.go")),
 			},
-		},
-		AutoRemove: true,
-	}
+			WorkingDir: containerWorkspace,
+		}
 
-	resp, createErr := de.client.ContainerCreate(compileCtx, containerConfig, hostConfig, nil, nil, "")
+		hostConfig := &container.HostConfig{
+			Mounts: []mount.Mount{
+				{
+					Type:   mount.TypeBind,
+					Source: tempDir,
+					Target: containerWorkspace,
+				},
+			},
+			AutoRemove: true,
+		}
+		return containerConfig, hostConfig
+	})
 	if createErr != nil {
 		return "", fmt.Errorf("%w: %w", ErrCompilationFailed, createErr)
 	}
 
 	containerID := resp.ID
-
-	// Ensure container is removed
-	defer func() {
-		removeCtx, removeCancel := context.WithTimeout(context.Background(), dockerConnectionTimeout)
-		defer removeCancel()
-		if removeErr := de.client.ContainerRemove(removeCtx, containerID, container.RemoveOptions{Force: true}); removeErr != nil {
-			de.logger.WarnContext(removeCtx, "failed to remove compilation container", "error", removeErr, "container", containerID)
-		}
-	}()
+	// Note: No manual cleanup needed - AutoRemove: true handles container removal automatically
 
 	// Start container
 	if startErr := de.client.ContainerStart(compileCtx, containerID, container.StartOptions{}); startErr != nil {
@@ -205,6 +245,33 @@ func (de *dockerExecutor) compileCode(ctx context.Context, tempDir string) (stri
 	return binaryPath, nil
 }
 
+// createContainerWithImageCheck creates a container, pulling the image if it doesn't exist.
+func (de *dockerExecutor) createContainerWithImageCheck(
+	ctx context.Context,
+	imageName string,
+	configFn func() (*container.Config, *container.HostConfig),
+) (container.CreateResponse, error) {
+	containerConfig, hostConfig := configFn()
+
+	resp, createErr := de.client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, "")
+	if createErr != nil {
+		// If error is "No such image", try to pull it
+		if errdefs.IsNotFound(createErr) {
+			de.logger.Info("image not found locally, attempting to pull", "image", imageName)
+			if pullErr := de.ensureImage(ctx, imageName); pullErr != nil {
+				return container.CreateResponse{}, fmt.Errorf("pull image: %w", pullErr)
+			}
+			// Retry container creation after pull
+			resp, createErr = de.client.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, "")
+		}
+		if createErr != nil {
+			return container.CreateResponse{}, createErr
+		}
+	}
+
+	return resp, nil
+}
+
 // executeBinary executes a compiled binary in a minimal Docker container.
 func (de *dockerExecutor) executeBinary(ctx context.Context, binaryPath string) (*ExecutionResult, error) {
 	// Use parent context directly (timeout already applied)
@@ -216,43 +283,35 @@ func (de *dockerExecutor) executeBinary(ctx context.Context, binaryPath string) 
 		return nil, fmt.Errorf("read binary: %w", err)
 	}
 
-	// Create container for execution
-	containerConfig := &container.Config{
-		Image:      de.execImage,
-		Cmd:        []string{"/binary"},
-		WorkingDir: "/",
-	}
-
 	// Calculate CPU quota (CPUPercent * CPUPeriod / 100)
 	cpuPeriod := int64(cpuPeriodMicroseconds)
 	cpuQuota := int64(de.maxCPUPercent) * cpuPeriod / cpuPercentDenominator
 	memoryBytes := int64(de.maxMemoryMB) * bytesPerKB * bytesPerKB
 
-	hostConfig := &container.HostConfig{
-		Resources: container.Resources{
-			Memory:    memoryBytes,
-			CPUQuota:  cpuQuota,
-			CPUPeriod: cpuPeriod,
-		},
-		AutoRemove:  true,
-		NetworkMode: container.NetworkMode("none"), // No network access
-	}
+	// Create container for execution (with image check)
+	resp, createErr := de.createContainerWithImageCheck(execCtx, de.execImage, func() (*container.Config, *container.HostConfig) {
+		containerConfig := &container.Config{
+			Image:      de.execImage,
+			Cmd:        []string{"/binary"},
+			WorkingDir: "/",
+		}
 
-	resp, err := de.client.ContainerCreate(execCtx, containerConfig, hostConfig, nil, nil, "")
-	if err != nil {
-		return nil, fmt.Errorf("%w: create container: %w", ErrContainerExecution, err)
+		hostConfig := &container.HostConfig{
+			Resources: container.Resources{
+				Memory:    memoryBytes,
+				CPUQuota:  cpuQuota,
+				CPUPeriod: cpuPeriod,
+			},
+			AutoRemove:  false,                         // Disable auto-remove so we can get logs before cleanup
+			NetworkMode: container.NetworkMode("none"), // No network access
+		}
+		return containerConfig, hostConfig
+	})
+	if createErr != nil {
+		return nil, fmt.Errorf("%w: create container: %w", ErrContainerExecution, createErr)
 	}
 
 	containerID := resp.ID
-
-	// Ensure container is removed
-	defer func() {
-		removeCtx, removeCancel := context.WithTimeout(context.Background(), dockerConnectionTimeout)
-		defer removeCancel()
-		if removeErr := de.client.ContainerRemove(removeCtx, containerID, container.RemoveOptions{Force: true}); removeErr != nil {
-			de.logger.WarnContext(removeCtx, "failed to remove execution container", "error", removeErr, "container", containerID)
-		}
-	}()
 
 	// Copy binary into container
 	if copyErr := de.copyToContainer(execCtx, containerID, binaryData); copyErr != nil {
@@ -279,18 +338,26 @@ func (de *dockerExecutor) executeBinary(ctx context.Context, binaryPath string) 
 	case status := <-statusCh:
 		exitCode = int(status.StatusCode)
 	case <-execCtx.Done():
-		// Timeout - kill container
+		// Timeout - kill container and cleanup
 		killCtx, killCancel := context.WithTimeout(context.Background(), dockerConnectionTimeout)
 		defer killCancel()
 		_ = de.client.ContainerKill(killCtx, containerID, "SIGKILL")
+		_ = de.client.ContainerRemove(killCtx, containerID, container.RemoveOptions{Force: true})
 		return nil, fmt.Errorf("%w", ErrTimeout)
 	}
 
-	// Get container logs (stdout + stderr)
+	// Get container logs (stdout + stderr) BEFORE removing container
 	output, logErr := de.getContainerLogs(execCtx, containerID)
 	if logErr != nil {
 		de.logger.WarnContext(execCtx, "failed to get container logs", "error", logErr)
 		output = ""
+	}
+
+	// Cleanup container after getting logs
+	removeCtx, removeCancel := context.WithTimeout(context.Background(), dockerConnectionTimeout)
+	defer removeCancel()
+	if removeErr := de.client.ContainerRemove(removeCtx, containerID, container.RemoveOptions{Force: true}); removeErr != nil {
+		de.logger.WarnContext(removeCtx, "failed to remove execution container", "error", removeErr, "container", containerID)
 	}
 
 	// Truncate output if needed
@@ -338,6 +405,7 @@ func (de *dockerExecutor) copyToContainer(ctx context.Context, containerID strin
 }
 
 // getContainerLogs retrieves stdout and stderr from a container.
+// Docker logs use an 8-byte header format, so we use stdcopy to properly demultiplex.
 func (de *dockerExecutor) getContainerLogs(ctx context.Context, containerID string) (string, error) {
 	reader, logErr := de.client.ContainerLogs(ctx, containerID, container.LogsOptions{
 		ShowStdout: true,
@@ -348,24 +416,14 @@ func (de *dockerExecutor) getContainerLogs(ctx context.Context, containerID stri
 	}
 	defer reader.Close()
 
+	// Use stdcopy to properly demultiplex Docker's 8-byte header format
+	// Combine both stdout and stderr into a single buffer
 	var output bytes.Buffer
-	if _, copyErr := io.Copy(&output, reader); copyErr != nil {
+	if _, copyErr := stdcopy.StdCopy(&output, &output, reader); copyErr != nil {
 		return "", copyErr
 	}
 
-	// Docker logs are prefixed with [0-3] bytes indicating stream type (stdout/stderr)
-	// We need to strip these prefixes
-	outputBytes := output.Bytes()
-	if len(outputBytes) > 0 {
-		// Skip the stream type byte(s) if present
-		start := 0
-		for start < len(outputBytes) && (outputBytes[start] == 0 || outputBytes[start] == 1 || outputBytes[start] == 2) {
-			start++
-		}
-		return string(outputBytes[start:]), nil
-	}
-
-	return "", nil
+	return output.String(), nil
 }
 
 // truncateOutput truncates output if it exceeds maximum size.
