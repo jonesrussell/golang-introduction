@@ -267,6 +267,9 @@ const navigateToSection = (tutorialId: string, sectionIndex: number) => {
       id: tutorialId,
       sectionIndex: (sectionIndex + 1).toString() // Convert to 1-based for URL
     }
+  }).then(() => {
+    // Scroll to top after navigation
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 };
 

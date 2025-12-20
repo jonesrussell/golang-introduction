@@ -197,6 +197,9 @@ const navigateToSection = (index: number) => {
       id: tutorial.value.id,
       sectionIndex: (clampedIndex + 1).toString()
     }
+  }).then(() => {
+    // Scroll to top after navigation
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 };
 
@@ -253,6 +256,9 @@ watch(() => props.sectionIndex, (newIndex) => {
     if (section) {
       progressStore.setCurrentSection(tutorial.value.id, section.id);
     }
+    
+    // Scroll to top when section changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
