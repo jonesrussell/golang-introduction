@@ -291,12 +291,14 @@ func extractTopics(content string) []string {
 // full match, language, attribute (optional), code content
 const codeBlockMatchGroups = 4
 
+// codeBlockRegex matches code blocks with optional attributes.
+// Matches: ```go, ```go runnable, ```go snippet
+// Groups: [0]=full match, [1]=language, [2]=attribute, [3]=code content
+var codeBlockRegex = regexp.MustCompile("(?s)```(\\w+)(?:\\s+(runnable|snippet))?\\s*\\n(.*?)```")
+
 func extractCodeExamples(content string) []models.CodeExample {
 	var examples []models.CodeExample
 
-	// Regex to match code blocks with optional attributes
-	// Matches: ```go, ```go runnable, ```go snippet
-	codeBlockRegex := regexp.MustCompile("(?s)```(\\w+)(?:\\s+(runnable|snippet))?\\s*\\n(.*?)```")
 	matches := codeBlockRegex.FindAllStringSubmatch(content, -1)
 
 	for i, match := range matches {

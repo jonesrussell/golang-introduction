@@ -24,7 +24,7 @@ func (h *Handlers) SetupRoutes() *http.ServeMux {
 		case http.MethodPost:
 			h.UpdateProgress(w, r)
 		default:
-			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			respondMethodNotAllowed(w)
 		}
 	})
 	mux.HandleFunc("/api/progress/section", h.MarkSectionComplete)
@@ -41,7 +41,7 @@ func (h *Handlers) handleTutorialRoutes(w http.ResponseWriter, r *http.Request) 
 	parts := strings.Split(path, "/")
 
 	if len(parts) == 0 || parts[0] == "" {
-		http.Error(w, "tutorial ID required", http.StatusBadRequest)
+		respondBadRequest(w, "tutorial ID required")
 		return
 	}
 
@@ -62,7 +62,7 @@ func (h *Handlers) handleExerciseRoutes(w http.ResponseWriter, r *http.Request) 
 	parts := strings.Split(path, "/")
 
 	if len(parts) == 0 || parts[0] == "" {
-		http.Error(w, "tutorial ID required", http.StatusBadRequest)
+		respondBadRequest(w, "tutorial ID required")
 		return
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/jonesrussell/go-fundamentals-best-practices/internal/executor"
@@ -18,6 +19,7 @@ type Handlers struct {
 	executor  *executor.CodeExecutor
 	storage   *storage.ProgressStorage
 	tutorials []*models.Tutorial
+	logger    *slog.Logger
 }
 
 // NewHandlers creates a new handlers instance
@@ -37,7 +39,46 @@ func NewHandlers(
 		executor:  codeExecutor,
 		storage:   progressStorage,
 		tutorials: tutorials,
+		logger:    slog.Default(),
 	}, nil
+}
+
+// extractUserID extracts the user ID from the request query params, falling back to default.
+func extractUserID(r *http.Request) string {
+	if userID := r.URL.Query().Get("userId"); userID != "" {
+		return userID
+	}
+	return DefaultUserID
+}
+
+// findTutorial looks up a tutorial by ID in the cached tutorials.
+func (h *Handlers) findTutorial(tutorialID string) *models.Tutorial {
+	for _, t := range h.tutorials {
+		if t.ID == tutorialID {
+			return t
+		}
+	}
+	return nil
+}
+
+// respondNotFound sends a 404 Not Found response.
+func respondNotFound(w http.ResponseWriter, resource string) {
+	http.Error(w, resource+" not found", http.StatusNotFound)
+}
+
+// respondBadRequest sends a 400 Bad Request response.
+func respondBadRequest(w http.ResponseWriter, message string) {
+	http.Error(w, message, http.StatusBadRequest)
+}
+
+// respondMethodNotAllowed sends a 405 Method Not Allowed response.
+func respondMethodNotAllowed(w http.ResponseWriter) {
+	http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+}
+
+// respondInternalError sends a 500 Internal Server Error response.
+func respondInternalError(w http.ResponseWriter, message string) {
+	http.Error(w, message, http.StatusInternalServerError)
 }
 
 // ListTutorials returns all tutorials with metadata
@@ -56,7 +97,7 @@ func (h *Handlers) ListTutorials(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	respondJSON(w, metadata)
+	respondJSON(w, h.logger, metadata)
 }
 
 // GetTutorialByID returns a full tutorial by ID (path parameter version)
@@ -68,29 +109,27 @@ func (h *Handlers) GetTutorialByID(w http.ResponseWriter, r *http.Request, tutor
 	if instructorMode {
 		tutorial, err := h.parser.GetTutorial(tutorialID, true)
 		if err != nil {
-			http.Error(w, "tutorial not found", http.StatusNotFound)
+			respondNotFound(w, "tutorial")
 			return
 		}
-		respondJSON(w, tutorial)
+		respondJSON(w, h.logger, tutorial)
 		return
 	}
 
 	// Otherwise use cached tutorials
-	for _, tutorial := range h.tutorials {
-		if tutorial.ID == tutorialID {
-			respondJSON(w, tutorial)
-			return
-		}
+	if tutorial := h.findTutorial(tutorialID); tutorial != nil {
+		respondJSON(w, h.logger, tutorial)
+		return
 	}
 
-	http.Error(w, "tutorial not found", http.StatusNotFound)
+	respondNotFound(w, "tutorial")
 }
 
 // GetTutorial returns a full tutorial by ID (query parameter version - for backward compatibility)
 func (h *Handlers) GetTutorial(w http.ResponseWriter, r *http.Request) {
 	tutorialID := r.URL.Query().Get("id")
 	if tutorialID == "" {
-		http.Error(w, "tutorial ID required", http.StatusBadRequest)
+		respondBadRequest(w, "tutorial ID required")
 		return
 	}
 	h.GetTutorialByID(w, r, tutorialID)
@@ -98,21 +137,19 @@ func (h *Handlers) GetTutorial(w http.ResponseWriter, r *http.Request) {
 
 // GetTutorialSectionsByID returns sections for a tutorial (path parameter version)
 func (h *Handlers) GetTutorialSectionsByID(w http.ResponseWriter, r *http.Request, tutorialID string) {
-	for _, tutorial := range h.tutorials {
-		if tutorial.ID == tutorialID {
-			respondJSON(w, tutorial.Sections)
-			return
-		}
+	if tutorial := h.findTutorial(tutorialID); tutorial != nil {
+		respondJSON(w, h.logger, tutorial.Sections)
+		return
 	}
 
-	http.Error(w, "tutorial not found", http.StatusNotFound)
+	respondNotFound(w, "tutorial")
 }
 
 // GetTutorialSections returns sections for a tutorial (query parameter version - for backward compatibility)
 func (h *Handlers) GetTutorialSections(w http.ResponseWriter, r *http.Request) {
 	tutorialID := r.URL.Query().Get("id")
 	if tutorialID == "" {
-		http.Error(w, "tutorial ID required", http.StatusBadRequest)
+		respondBadRequest(w, "tutorial ID required")
 		return
 	}
 	h.GetTutorialSectionsByID(w, r, tutorialID)
@@ -121,7 +158,7 @@ func (h *Handlers) GetTutorialSections(w http.ResponseWriter, r *http.Request) {
 // ExecuteCode executes Go code and returns the result
 func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		respondMethodNotAllowed(w)
 		return
 	}
 
@@ -131,12 +168,12 @@ func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		respondBadRequest(w, "invalid request body")
 		return
 	}
 
 	if req.Code == "" {
-		http.Error(w, "code is required", http.StatusBadRequest)
+		respondBadRequest(w, "code is required")
 		return
 	}
 
@@ -153,54 +190,47 @@ func (h *Handlers) ExecuteCode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		http.Error(w, fmt.Sprintf("execution error: %v", err), http.StatusInternalServerError)
+		respondInternalError(w, fmt.Sprintf("execution error: %v", err))
 		return
 	}
 
-	respondJSON(w, result)
+	respondJSON(w, h.logger, result)
 }
 
 // GetProgress returns user progress
 func (h *Handlers) GetProgress(w http.ResponseWriter, r *http.Request) {
-	userID := r.URL.Query().Get("userId")
-	if userID == "" {
-		userID = DefaultUserID
-	}
-
+	userID := extractUserID(r)
 	progress := h.storage.GetProgress(userID)
-	respondJSON(w, progress)
+	respondJSON(w, h.logger, progress)
 }
 
 // UpdateProgress updates user progress
 func (h *Handlers) UpdateProgress(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		respondMethodNotAllowed(w)
 		return
 	}
 
 	var progress models.Progress
 	if err := json.NewDecoder(r.Body).Decode(&progress); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		respondBadRequest(w, "invalid request body")
 		return
 	}
 
-	userID := r.URL.Query().Get("userId")
-	if userID == "" {
-		userID = DefaultUserID
-	}
+	userID := extractUserID(r)
 
 	if err := h.storage.UpdateProgress(userID, &progress); err != nil {
-		http.Error(w, fmt.Sprintf("failed to update progress: %v", err), http.StatusInternalServerError)
+		respondInternalError(w, fmt.Sprintf("failed to update progress: %v", err))
 		return
 	}
 
-	respondJSON(w, map[string]string{"status": "success"})
+	respondJSON(w, h.logger, map[string]string{"status": "success"})
 }
 
 // MarkSectionComplete marks a section as completed
 func (h *Handlers) MarkSectionComplete(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		respondMethodNotAllowed(w)
 		return
 	}
 
@@ -210,43 +240,32 @@ func (h *Handlers) MarkSectionComplete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+		respondBadRequest(w, "invalid request body")
 		return
 	}
 
-	userID := r.URL.Query().Get("userId")
-	if userID == "" {
-		userID = DefaultUserID
-	}
+	userID := extractUserID(r)
 
 	if err := h.storage.MarkSectionComplete(userID, req.TutorialID, req.SectionID); err != nil {
-		http.Error(w, fmt.Sprintf("failed to mark section complete: %v", err), http.StatusInternalServerError)
+		respondInternalError(w, fmt.Sprintf("failed to mark section complete: %v", err))
 		return
 	}
 
-	respondJSON(w, map[string]string{"status": "success"})
+	respondJSON(w, h.logger, map[string]string{"status": "success"})
 }
 
 // GetExercisesByTutorialID returns exercises for a tutorial (path parameter version)
 func (h *Handlers) GetExercisesByTutorialID(w http.ResponseWriter, r *http.Request, tutorialID string) {
 	// Find the tutorial
-	var tutorial *models.Tutorial
-	for _, t := range h.tutorials {
-		if t.ID == tutorialID {
-			tutorial = t
-			break
-		}
-	}
-
-	if tutorial == nil {
-		http.Error(w, "tutorial not found", http.StatusNotFound)
+	if h.findTutorial(tutorialID) == nil {
+		respondNotFound(w, "tutorial")
 		return
 	}
 
 	// Find the matching file and parse exercises from it
 	tutorialFiles, err := h.parser.ListTutorials()
 	if err != nil {
-		respondJSON(w, []models.Exercise{})
+		respondJSON(w, h.logger, []models.Exercise{})
 		return
 	}
 
@@ -257,22 +276,24 @@ func (h *Handlers) GetExercisesByTutorialID(w http.ResponseWriter, r *http.Reque
 			break
 		}
 	}
-	respondJSON(w, exercises)
+	respondJSON(w, h.logger, exercises)
 }
 
 // GetExercises returns exercises for a tutorial (query parameter version - for backward compatibility)
 func (h *Handlers) GetExercises(w http.ResponseWriter, r *http.Request) {
 	tutorialID := r.URL.Query().Get("tutorialId")
 	if tutorialID == "" {
-		http.Error(w, "tutorial ID required", http.StatusBadRequest)
+		respondBadRequest(w, "tutorial ID required")
 		return
 	}
 	h.GetExercisesByTutorialID(w, r, tutorialID)
 }
 
 // respondJSON sends a JSON response with 200 OK status
-func respondJSON(w http.ResponseWriter, data any) {
+func respondJSON(w http.ResponseWriter, logger *slog.Logger, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		logger.Error("failed to encode JSON response", "error", err)
+	}
 }
