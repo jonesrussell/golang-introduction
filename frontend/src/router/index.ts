@@ -12,8 +12,9 @@ const router = createRouter({
     {
       path: '/tutorial/:id',
       name: 'tutorial',
-      component: () => import('../views/TutorialView.vue'),
-      props: true,
+      redirect: (to) => {
+        return { name: 'tutorial-section', params: { id: to.params.id, sectionIndex: '1' } };
+      },
     },
     {
       path: '/tutorial/:id/section/:sectionIndex',
