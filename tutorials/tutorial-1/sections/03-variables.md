@@ -10,7 +10,9 @@
 - [Constants](https://go.dev/ref/spec#Constant_declarations) with `const`
 - Multiple variable declaration
 
-## Code Examples
+## Variable declaration with [`var`](https://go.dev/ref/spec#Variable_declarations)
+
+The `var` keyword declares variables with explicit types. You can optionally provide an initial value.
 
 ```go snippet
 // Explicit type declaration
@@ -19,17 +21,35 @@ var age int = 30
 
 fmt.Println("Name:", name)
 fmt.Println("Age:", age)
+```
 
-// Type inference
+## [Type inference](https://go.dev/tour/basics/14)
+
+Go can infer the variable type from the initial value, so you can omit the type declaration.
+
+```go snippet
+// Type inference - Go determines the type from the value
 var city = "Toronto"
 
 fmt.Println("City:", city)
+```
 
+## [Short declaration](https://go.dev/ref/spec#Short_variable_declarations) (`:=`)
+
+The short variable declaration (`:=`) is the most common way to declare and initialize variables. It automatically infers the type and can only be used inside functions.
+
+```go snippet
 // Short declaration (most common)
 country := "Canada"
 
 fmt.Println("Country:", country)
+```
 
+## [Zero values](https://go.dev/ref/spec#The_zero_value)
+
+When you declare a variable without an initial value, Go assigns it a "zero value" based on its type. This prevents uninitialized variable bugs.
+
+```go snippet
 // Zero values
 var count int        // 0
 var isActive bool    // false
@@ -38,14 +58,26 @@ var message string   // ""
 fmt.Println("Count:", count)
 fmt.Println("Is Active:", isActive)
 fmt.Println("Message:", message)
+```
 
+## [Constants](https://go.dev/ref/spec#Constant_declarations) with `const`
+
+Constants are declared with the `const` keyword and must be compile-time values. They cannot be changed after declaration.
+
+```go snippet
 // Constants
 const MaxRetries = 3
 const Pi = 3.14159
 
 fmt.Println("Max Retries:", MaxRetries)
 fmt.Println("Pi:", Pi)
+```
 
+## Multiple variable declaration
+
+You can declare multiple variables together using parentheses, which is useful for grouping related declarations.
+
+```go snippet
 // Multiple declaration
 var (
     firstName string = "John"
