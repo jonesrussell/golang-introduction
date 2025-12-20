@@ -22,17 +22,24 @@ func WithMaxOutput(maxBytes int) ExecutorOption {
 	}
 }
 
-// WithNetworkAccess enables or disables network access.
-func WithNetworkAccess(allow bool) ExecutorOption {
+// WithMaxMemory sets the maximum memory limit in MB (enforced via Docker).
+func WithMaxMemory(mb int) ExecutorOption {
 	return func(e *CodeExecutor) {
-		e.allowNetwork = allow
+		e.maxMemoryMB = mb
 	}
 }
 
-// WithFileIO enables or disables file I/O operations.
-func WithFileIO(allow bool) ExecutorOption {
+// WithMaxCPU sets the maximum CPU usage as a percentage (enforced via Docker).
+func WithMaxCPU(percent int) ExecutorOption {
 	return func(e *CodeExecutor) {
-		e.allowFileIO = allow
+		e.maxCPUPercent = percent
+	}
+}
+
+// WithDockerImage sets the Docker image for Go compilation.
+func WithDockerImage(image string) ExecutorOption {
+	return func(e *CodeExecutor) {
+		e.compileImage = image
 	}
 }
 
