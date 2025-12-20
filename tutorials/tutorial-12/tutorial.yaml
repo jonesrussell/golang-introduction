@@ -7,3 +7,15 @@ prerequisites:
   - "Go Basics"
   - "Structs"
   - "Interfaces"
+tableOfContents: |
+  This tutorial covers building command-line tools in Go:
+  
+  1. **Introduction** - Welcome to CLI development in Go
+  2. **Standard Library flag Package** - Basic CLI argument parsing
+  3. **Cobra Introduction** - Getting started with Cobra framework
+  4. **Subcommands** - Building complex CLI applications
+  5. **Configuration with Viper** - Managing configuration files
+  6. **Practical Example: File Utility CLI** - Building a complete CLI tool
+  7. **User Experience** - Creating friendly CLI interfaces
+  8. **Testing CLI Tools** - How to test command-line applications
+  9. **Wrap-up** - Key takeaways for CLI development

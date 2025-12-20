@@ -5,3 +5,16 @@ difficulty: "Beginner to Intermediate"
 level: "Beginner"
 prerequisites:
   - "Go Basics (variables, types, functions)"
+tableOfContents: |
+  This tutorial covers how to work with structs in Go:
+  
+  1. **Introduction** - Welcome to structs and what you'll learn
+  2. **What Are Structs?** - Understanding structs as custom data types
+  3. **Defining Structs** - How to declare and structure your data
+  4. **Struct Initialization** - Different ways to create struct instances
+  5. **Accessing and Modifying Struct Fields** - Working with struct data
+  6. **Methods on Structs** - Adding behavior to your structs
+  7. **Practical Example: Building a User System** - Putting it all together
+  8. **Best Practices & Code Smells** - Writing clean struct code
+  9. **When to Use Structs vs Other Types** - Making the right choice
+  10. **Advanced Preview & Next Steps** - What's next in your Go journey

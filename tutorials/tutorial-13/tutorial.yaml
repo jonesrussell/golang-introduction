@@ -5,3 +5,15 @@ difficulty: "Intermediate"
 level: "Intermediate"
 prerequisites:
   - "Go Basics"
+tableOfContents: |
+  This tutorial covers Go package organization and module management:
+  
+  1. **Introduction** - Understanding Go's package system
+  2. **Package Basics** - What packages are and how they work
+  3. **Go Modules** - Dependency management with go.mod
+  4. **Project Layout** - Organizing your Go projects
+  5. **Visibility Rules** - Public vs private (capitalized vs lowercase)
+  6. **Package Design Principles** - Creating well-designed packages
+  7. **Practical Example: Well-Organized Project** - Building a proper package structure
+  8. **Common Patterns** - Standard package organization patterns
+  9. **Wrap-up** - Key takeaways for package organization

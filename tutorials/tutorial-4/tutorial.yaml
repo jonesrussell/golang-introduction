@@ -7,3 +7,16 @@ prerequisites:
   - "Go Basics"
   - "Structs"
   - "Methods"
+tableOfContents: |
+  This tutorial covers pointers in Go and when to use them:
+  
+  1. **Introduction** - Understanding pointers in Go
+  2. **What Are Pointers?** - Memory addresses and references
+  3. **Pass by Value vs Pass by Reference** - How Go passes arguments
+  4. **Pointers to Structs** - Working with pointers to struct types
+  5. **When to Use Pointers** - Guidelines for pointer usage
+  6. **Pointer Gotchas and Safety** - Common mistakes and how to avoid them
+  7. **Practical Example: Building a Linked List** - Implementing a data structure
+  8. **Pointers vs Reference Types** - Understanding slice, map, and channel behavior
+  9. **Best Practices Summary** - Key takeaways for pointer usage
+  10. **Next Steps & Wrap-up** - What's next in your Go journey

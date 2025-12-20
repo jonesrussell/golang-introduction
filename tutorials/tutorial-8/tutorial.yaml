@@ -6,3 +6,16 @@ level: "Intermediate"
 prerequisites:
   - "Go Basics"
   - "Pointers"
+tableOfContents: |
+  This tutorial covers slices and maps in depth:
+  
+  1. **Introduction** - Understanding Go's collection types
+  2. **Arrays - The Foundation** - Fixed-size arrays
+  3. **Slices - The Workhorse** - Dynamic slices and their internals
+  4. **Common Slice Patterns** - Idiomatic slice operations
+  5. **Maps - Key-Value Storage** - Working with map types
+  6. **Advanced Map Patterns** - Complex map usage patterns
+  7. **Performance Considerations** - Understanding memory and performance
+  8. **Practical Example: In-Memory Database** - Building a data store
+  9. **Common Pitfalls** - Avoiding slice and map mistakes
+  10. **Next Steps & Wrap-up** - What's next in your Go journey

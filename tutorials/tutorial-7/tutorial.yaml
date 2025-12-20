@@ -7,3 +7,17 @@ prerequisites:
   - "Go Basics"
   - "Functions"
   - "Error Handling"
+tableOfContents: |
+  This tutorial covers Go's concurrency primitives:
+  
+  1. **Introduction** - Welcome to Go concurrency
+  2. **Goroutines - The Basics** - Lightweight concurrent functions
+  3. **Channels - Goroutine Communication** - Passing data between goroutines
+  4. **Select Statement** - Working with multiple channels
+  5. **Common Concurrency Patterns** - Producer-consumer, worker pools, and more
+  6. **sync Package Essentials** - Mutexes, wait groups, and synchronization
+  7. **Context Package** - Cancellation and timeouts
+  8. **Practical Example: Concurrent Web Scraper** - Building a concurrent application
+  9. **Common Pitfalls** - Avoiding race conditions and deadlocks
+  10. **Best Practices Summary** - Key takeaways for concurrent code
+  11. **Next Steps & Wrap-up** - What's next in your Go journey

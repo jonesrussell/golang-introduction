@@ -5,3 +5,17 @@ difficulty: "Intermediate"
 level: "Beginner"
 prerequisites:
   - "Go Structs (definition, initialization, methods)"
+tableOfContents: |
+  This tutorial covers struct embedding and composition patterns:
+  
+  1. **Introduction** - Welcome to embedding and composition
+  2. **The Problem: Code Reuse Without Inheritance** - Why Go doesn't have inheritance
+  3. **Basic Struct Composition** - Composing structs from other structs
+  4. **Struct Embedding - The Basics** - Anonymous fields and embedded structs
+  5. **Multiple Embedding** - Working with multiple embedded structs
+  6. **Embedding and Interfaces** - How embedding satisfies interfaces
+  7. **Practical Patterns with Embedding** - Common design patterns
+  8. **When to Use Embedding vs Composition** - Making the right design choice
+  9. **Complete Practical Example: Employee Management System** - Building a complete system
+  10. **Common Pitfalls & Best Practices** - Avoiding mistakes and following best practices
+  11. **Comparison to Other Languages & Next Steps** - How Go differs and what's next

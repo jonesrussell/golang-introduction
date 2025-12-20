@@ -8,3 +8,16 @@ prerequisites:
   - "Structs"
   - "Methods"
   - "Pointers"
+tableOfContents: |
+  This tutorial covers Go interfaces from basics to advanced usage:
+  
+  1. **Introduction** - Welcome to Go interfaces
+  2. **What Are Interfaces?** - Defining contracts for behavior
+  3. **Interface Satisfaction Rules** - How types satisfy interfaces
+  4. **The Empty Interface** - Working with `interface{}` and `any`
+  5. **Standard Library Interfaces** - Common interfaces in Go's standard library
+  6. **Interface Design Principles** - Designing effective interfaces
+  7. **Practical Example: Plugin System** - Building a plugin architecture
+  8. **Testing with Interfaces** - Using interfaces for testability
+  9. **Common Interface Mistakes** - Pitfalls to avoid
+  10. **Next Steps & Wrap-up** - What's next in your Go journey

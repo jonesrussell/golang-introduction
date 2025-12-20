@@ -7,3 +7,14 @@ prerequisites:
   - "Go Basics"
   - "Interfaces"
   - "Error Handling"
+tableOfContents: |
+  This tutorial covers structured logging with Zap:
+  
+  1. **Introduction** - Why structured logging matters
+  2. **The Problem with Printf** - Limitations of fmt.Printf for logging
+  3. **Zap Basics** - Getting started with the Zap logger
+  4. **Custom Configuration** - Configuring Zap for your needs
+  5. **Logging Best Practices** - Writing effective log messages
+  6. **Practical Example: Application Logging** - Implementing logging in a real app
+  7. **Performance Tips** - Optimizing logging performance
+  8. **Wrap-up** - Key takeaways for production logging

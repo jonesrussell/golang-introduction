@@ -6,3 +6,16 @@ level: "Intermediate"
 prerequisites:
   - "Go Basics"
   - "Interfaces"
+tableOfContents: |
+  This tutorial covers error handling patterns and best practices:
+  
+  1. **Introduction** - Understanding Go's error handling philosophy
+  2. **The Error Interface** - How errors work in Go
+  3. **Error Handling Patterns** - Common patterns for handling errors
+  4. **Error Wrapping** - Adding context to errors
+  5. **Custom Error Types** - Creating your own error types
+  6. **Sentinel Errors** - Using pre-defined error values
+  7. **Panic and Recover** - When to use panic (rarely!)
+  8. **Practical Example: File Processor** - Building robust error handling
+  9. **Best Practices Summary** - Key takeaways for error handling
+  10. **Next Steps & Wrap-up** - What's next in your Go journey

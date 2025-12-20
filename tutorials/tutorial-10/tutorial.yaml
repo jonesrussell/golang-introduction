@@ -5,3 +5,17 @@ difficulty: "Advanced"
 level: "Advanced"
 prerequisites:
   - "Go Basics through Concurrency"
+tableOfContents: |
+  This tutorial covers common anti-patterns and how to avoid them:
+  
+  1. **Introduction** - Understanding what makes code idiomatic
+  2. **Context.Value Abuse** - When not to use context values
+  3. **Global State** - Avoiding global variables and singletons
+  4. **Interface Pollution** - Creating too many small interfaces
+  5. **Nil Pointer Paranoia / Over-Checking** - Excessive nil checks
+  6. **Error String Matching** - Why you shouldn't match error strings
+  7. **Goroutine Leaks** - Preventing goroutine leaks
+  8. **Premature Optimization** - When optimization hurts readability
+  9. **Mutex Misuse** - Common concurrency mistakes
+  10. **Init Function Abuse** - Problems with init functions
+  11. **Recap & Best Practices** - Key takeaways for writing idiomatic Go

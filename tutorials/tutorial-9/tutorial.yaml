@@ -7,3 +7,16 @@ prerequisites:
   - "Interfaces"
   - "Structs"
   - "Error Handling"
+tableOfContents: |
+  This tutorial covers dependency injection patterns in Go:
+  
+  1. **Introduction** - Welcome to dependency injection
+  2. **The Problem: Tight Coupling** - Why DI matters
+  3. **Constructor Injection Pattern** - Injecting dependencies via constructors
+  4. **Testing with Mocks** - Using interfaces for testability
+  5. **Interface Design for DI** - Designing injectable interfaces
+  6. **Functional Options Pattern** - Flexible dependency configuration
+  7. **Practical Example: Complete Application** - Building a DI-based system
+  8. **Dependency Injection Tools** - When and how to use DI frameworks
+  9. **Best Practices Summary** - Key takeaways for DI in Go
+  10. **Next Steps & Wrap-up** - What's next in your Go journey
