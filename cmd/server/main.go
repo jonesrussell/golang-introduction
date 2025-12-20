@@ -46,39 +46,75 @@ func main() {
 	}
 }
 
+// dependencies holds all initialized application components.
+type dependencies struct {
+	parser   *parser.TutorialParser
+	executor *executor.CodeExecutor
+	storage  *storage.ProgressStorage
+	handlers *api.Handlers
+}
+
 // run contains the main application logic, separated for better testability.
 func run(logger *slog.Logger) error {
-	// Load configuration
 	cfg := loadConfig()
 
-	// Ensure data directory exists
-	if err := os.MkdirAll(cfg.dataDir, 0o755); err != nil {
-		return fmt.Errorf("create data directory: %w", err)
-	}
-
-	// Initialize components with explicit error handling
-	tutorialParser := parser.NewTutorialParser(cfg.tutorialsDir)
-
-	codeExecutor, err := executor.NewCodeExecutor()
+	deps, err := initializeDependencies(cfg, logger)
 	if err != nil {
-		return fmt.Errorf("create code executor: %w", err)
+		return err
 	}
 	defer func() {
-		if cleanupErr := codeExecutor.Cleanup(); cleanupErr != nil {
+		if cleanupErr := deps.executor.Cleanup(); cleanupErr != nil {
 			logger.Error("cleanup code executor failed", "error", cleanupErr)
 		}
 	}()
 
+	return runServer(cfg, deps.handlers, logger)
+}
+
+// initializeDependencies creates and wires up all application components.
+func initializeDependencies(cfg config, logger *slog.Logger) (*dependencies, error) {
+	// Ensure data directory exists
+	if err := os.MkdirAll(cfg.dataDir, 0o755); err != nil {
+		logger.Error("failed to create data directory", "error", err, "dir", cfg.dataDir)
+		return nil, fmt.Errorf("create data directory: %w", err)
+	}
+
+	tutorialParser := parser.NewTutorialParser(cfg.tutorialsDir)
+
+	codeExecutor, err := executor.NewCodeExecutor()
+	if err != nil {
+		logger.Error("failed to create code executor", "error", err)
+		return nil, fmt.Errorf("create code executor: %w", err)
+	}
+
 	progressStorage, err := storage.NewProgressStorage(cfg.dataDir)
 	if err != nil {
-		return fmt.Errorf("create progress storage: %w", err)
+		logger.Error("failed to create progress storage", "error", err, "data_dir", cfg.dataDir)
+		if cleanupErr := codeExecutor.Cleanup(); cleanupErr != nil {
+			logger.Error("cleanup failed during progress storage error", "error", cleanupErr)
+		}
+		return nil, fmt.Errorf("create progress storage: %w", err)
 	}
 
 	handlers, err := api.NewHandlers(tutorialParser, codeExecutor, progressStorage)
 	if err != nil {
-		return fmt.Errorf("create handlers: %w", err)
+		logger.Error("failed to create handlers", "error", err)
+		if cleanupErr := codeExecutor.Cleanup(); cleanupErr != nil {
+			logger.Error("cleanup failed during handlers error", "error", cleanupErr)
+		}
+		return nil, fmt.Errorf("create handlers: %w", err)
 	}
 
+	return &dependencies{
+		parser:   tutorialParser,
+		executor: codeExecutor,
+		storage:  progressStorage,
+		handlers: handlers,
+	}, nil
+}
+
+// runServer starts the HTTP server and handles graceful shutdown.
+func runServer(cfg config, handlers *api.Handlers, logger *slog.Logger) error {
 	// Setup routes and middleware
 	mux := handlers.SetupRoutes()
 	handler := api.CORSMiddleware(mux)
