@@ -18,9 +18,9 @@ tasks:
     deps: [dev:backend, dev:frontend]
 
   dev:backend:
-    desc: Start the Go backend server
+    desc: Start the Go backend server with live reload (air)
     cmds:
-      - go run cmd/server/main.go
+      - air
     dir: '{{.ROOT_DIR}}'
 
   dev:frontend:
