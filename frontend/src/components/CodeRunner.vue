@@ -180,6 +180,7 @@ const copyCode = () => copyToClipboard(currentCode.value);
 
 watch(() => props.code, () => {
   editableCode.value = props.code;
+  clearResult(); // Clear execution results when code changes (e.g., switching sections)
   if (!editing.value) {
     loadHighlightedCode();
   }
