@@ -114,7 +114,7 @@ func (de *dockerExecutor) ensureImage(ctx context.Context, imageName string) err
 	}
 
 	// Image doesn't exist, pull it
-	de.logger.Info("pulling Docker image", "image", imageName)
+	de.logger.InfoContext(ctx, "pulling Docker image", "image", imageName)
 	reader, pullErr := de.client.ImagePull(ctx, imageName, image.PullOptions{})
 	if pullErr != nil {
 		return fmt.Errorf("pull image: %w", pullErr)
@@ -126,7 +126,7 @@ func (de *dockerExecutor) ensureImage(ctx context.Context, imageName string) err
 		return fmt.Errorf("read pull output: %w", copyErr)
 	}
 
-	de.logger.Info("Docker image pulled successfully", "image", imageName)
+	de.logger.InfoContext(ctx, "Docker image pulled successfully", "image", imageName)
 	return nil
 }
 
@@ -257,7 +257,7 @@ func (de *dockerExecutor) createContainerWithImageCheck(
 	if createErr != nil {
 		// If error is "No such image", try to pull it
 		if errdefs.IsNotFound(createErr) {
-			de.logger.Info("image not found locally, attempting to pull", "image", imageName)
+			de.logger.InfoContext(ctx, "image not found locally, attempting to pull", "image", imageName)
 			if pullErr := de.ensureImage(ctx, imageName); pullErr != nil {
 				return container.CreateResponse{}, fmt.Errorf("pull image: %w", pullErr)
 			}

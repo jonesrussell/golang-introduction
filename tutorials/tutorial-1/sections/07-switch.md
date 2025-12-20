@@ -8,7 +8,9 @@
 - [No fallthrough by default](https://go.dev/ref/spec#Switch_statements)
 - [Switch without expression](https://go.dev/tour/flowcontrol/11) (replaces if/else chains)
 
-## Code Examples
+## Basic [switch](https://go.dev/ref/spec#Switch_statements)
+
+The switch statement provides a clean way to handle multiple conditions. Unlike some languages, Go doesn't require `break` statements - cases don't fall through by default.
 
 ```go snippet
 // Basic switch
@@ -23,9 +25,31 @@ case "Saturday", "Sunday":
 default:
     fmt.Println("Midweek day")
 }
+```
 
-// Switch with initialization
-switch hour := 14; {
+## [Multiple values in case](https://go.dev/tour/flowcontrol/10)
+
+You can list multiple values in a single case statement, separated by commas.
+
+```go snippet
+// Multiple values in case (already shown above)
+day := "Saturday"
+switch day {
+case "Saturday", "Sunday":
+    fmt.Println("Weekend!")
+default:
+    fmt.Println("Weekday")
+}
+```
+
+## [Switch without expression](https://go.dev/tour/flowcontrol/11)
+
+A switch without an expression acts like an if/else chain, making it cleaner than long if/else statements.
+
+```go snippet
+// Switch without expression (acts like if/else chain)
+hour := 14
+switch {
 case hour < 12:
     fmt.Println("Good morning")
 case hour < 17:
@@ -33,9 +57,6 @@ case hour < 17:
 default:
     fmt.Println("Good evening")
 }
-
-// Type switch (preview for later)
-// We'll cover this more when we get to interfaces
 ```
 
 ## Key teaching points:
