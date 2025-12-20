@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	// Explicit type declaration
-	var greeting string = "Welcome to Go"
+	var greeting = "Welcome to Go"
 
 	// Short declaration
 	year := 2024
@@ -14,8 +14,8 @@ func main() {
 
 	// Block declaration
 	var (
-		firstName string = "Jane"
-		lastName  string = "Doe"
+		firstName = "Jane"
+		lastName  = "Doe"
 	)
 
 	fmt.Println("Greeting:", greeting)

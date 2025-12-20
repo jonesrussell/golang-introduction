@@ -149,8 +149,6 @@ import { useMarkdownRenderer } from '../composables/useMarkdownRenderer';
 import CodeRunner from './CodeRunner.vue';
 import type { Section } from '../types/tutorial';
 
-const { renderMarkdown } = useMarkdownRenderer();
-
 const props = defineProps<{
   section: Section;
   sectionIndex: number;
@@ -169,6 +167,7 @@ const emit = defineEmits<{
 }>();
 /* eslint-enable no-unused-vars */
 
+const { renderMarkdown } = useMarkdownRenderer();
 const progressStore = useProgressStore();
 
 const isComplete = computed(() => {
@@ -221,8 +220,8 @@ const parsedTableOfContents = computed((): ParsedToc | null => {
       }
       
       result.items.push({
-        title: itemMatch[2],
-        description: itemMatch[3]
+        title: itemMatch[2] ?? '',
+        description: itemMatch[3] ?? ''
       });
     } else if (!foundFirstItem && trimmed) {
       // Collect intro text before first item
