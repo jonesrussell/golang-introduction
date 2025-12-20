@@ -61,9 +61,11 @@ const route = useRoute();
 const sidebarOpen = ref(false);
 
 const currentTutorialId = computed(() => {
-  return route.name === 'tutorial' && typeof route.params.id === 'string' 
-    ? route.params.id 
-    : '';
+  // Handle both 'tutorial' and 'tutorial-section' routes
+  if ((route.name === 'tutorial' || route.name === 'tutorial-section') && typeof route.params.id === 'string') {
+    return route.params.id;
+  }
+  return '';
 });
 
 // Close sidebar on route change (for mobile)
